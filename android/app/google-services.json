@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "536684787062",
+    "project_id": "online-reading-app",
+    "storage_bucket": "online-reading-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536684787062:android:7f46dfa6bd6bcb75223657",
+        "android_client_info": {
+          "package_name": "com.snoopycodex.read_and_learn_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "536684787062-3eap174r3uqekt8cbgm2gof3ajn6sjtf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwEUDNO_SJff8CHVllRL-I0xbJL3PFLW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "536684787062-3eap174r3uqekt8cbgm2gof3ajn6sjtf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
