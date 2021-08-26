@@ -36,6 +36,22 @@ dependencies:
   cloud_firestore: ^2.4.0
   paginate_firestore: ^1.0.2
   firebase_storage: ^10.0.1
+  google_fonts: ^2.1.0
+  flutter_radio_group: ^2.1.0
+  uuid: ^3.0.4
+  dbcrypt: ^2.0.0
+  getwidget: ^2.0.3
+  image_picker: ^0.8.2
+  ndialog: ^4.1.0
+  permission_handler: ^8.1.4+2
+  connectivity_wrapper: ^1.0.6
+  email_validator: ^2.0.1
+  custom_pop_up_menu: ^1.2.0
+  flutter_cache: ^0.1.0
+  font_awesome_flutter: ^9.1.0
+  shimmer: ^2.0.0
+  provider: ^5.0.0
+  flutter_webview_plugin: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +72,7 @@ flutter:
   assets:
     - images/
     - images/icons/
+    - images/illustrations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

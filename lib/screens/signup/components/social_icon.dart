@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SocalIcon extends StatelessWidget {
+class SocialIcon extends StatelessWidget {
   final String iconSrc;
   final Function press;
-  const SocalIcon({
+  const SocialIcon({
     required this.iconSrc,
     required this.press,
   });

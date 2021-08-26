@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants.dart';
 
 class AlreadyHaveAnAccountCheck extends StatelessWidget {
@@ -17,13 +18,13 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
       children: <Widget>[
         Text(
           login ? "Don’t have an Account ? " : "Already have an Account ? ",
-          style: TextStyle(color: kPrimaryColor),
+          style: GoogleFonts.delius(color: kPrimaryColor),
         ),
         GestureDetector(
           onTap: press as void Function()?,
           child: Text(
             login ? "Sign Up" : "Sign In",
-            style: TextStyle(
+            style: GoogleFonts.delius(
               color: kPrimaryColor,
               fontWeight: FontWeight.bold,
             ),

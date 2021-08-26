@@ -1,0 +1,81 @@
+===[UI SCREENS]===
+
+A. Main Screen
+  [x] a.1. Welcome Screen
+  [x] a.2. Sign in Screen
+  [x] a.3. Sign up Screen
+  [x] a.3.a Additional Sign up Screen
+
+B. Teacher Screen
+  b.1. Home Screen
+    [x] b.1.a. List of classrooms
+
+  b.2. Classroom Screen [With search for members and stories]
+    [ ] b.2.a. List of stories screen (in GridView)
+    [ ] b.2.b. List of pending members screen (List)
+    [ ] b.2.c. List of members screen (List)
+    [ ] b.2.d. Classroom settings screen
+      [ ] b.2.d.1. Change name
+      [ ] b.2.d.2. Delete class
+   
+  b.3. Story Screen [With search for members]
+    [ ] b.3.a. List of students that finished reading the book screen.
+    [ ] b.3.b. List of students that just started reading the book screen.
+
+  b.4. Create Class Screen [ ] 
+
+  b.5. Account Settings Screen
+    [x] b.5.a. Change profile picture
+    [x] b.5.b. Change first name
+    [x] b.5.c. Change last name
+    [x] b.5.d. Change password
+    [x] b.5.e. Change email
+    [x] b.5.f. Change gender
+    [x] b.5.g. Change school name
+    [x] b.5.h. Change school address
+    [x] b.5.i. Change school type
+    [x] b.5.j. Delete Account
+    [x] b.5.k. Logout Account
+
+C. Parent Screen
+  [ ] c.1. Home Screen
+    [ ] c.1.a. List of classrooms
+
+  [ ] c.2. Classroom Screen [With search for stories (maybe)]
+    [ ] c.2.a. List of stories screen (in GridView)
+    [ ] c.2.b. List of members screen (in ListView)
+    [ ] c.2.c. Leave classroom
+
+  [ ] c.3. Story Screen
+    [ ] c.3.a. Title and content of story
+    [ ] c.3.b. Accuracy and Length of time reading the story
+    [ ] c.3.c. Record audio button and submit button (will only enable if accuracy is good)
+    [ ] c.3.d. Certificate Screen [Generate Programmatically]
+
+  [ ] c.4. Account Settins Screen
+    [ ] c.4.a. Change profile picture
+    [ ] c.4.b. Change first name
+    [ ] c.4.c. Change last name
+    [ ] c.4.d. Change password
+    [ ] c.4.e. Change email
+    [ ] c.4.f. Change gender
+    [ ] c.4.g. Change child's name
+    [ ] c.4.h. Change child's age
+    [ ] c.4.i. Delete Account
+    [ ] c.4.j. Logout Account
+
+D. Admin Screen
+  [ ] d.1. Admins, Parents, Students and Teachers List Screen
+    [ ] d.1.a. View info of Admin, Parent, Student or Teacher
+    [ ] d.1.b. Edit info of Admin, Parent, Student or Teacher
+    [ ] d.1.c. Delete info of Admin, Parent, Student or Teacher
+    [ ] d.1.d. Add new admin
+  
+  [ ] d.2. Stories Screen
+    [ ] d.2.a. View, add, edit and delete story screen.
+
+  [ ] d.3. Certificate Holders Screen
+    [ ] d.2.a. Ranked based on their overall reading accuracy
+
+  [ ] d.4. Settings Screen
+    [ ] d.2.a. Change admin credentials such as username, email password and profile.

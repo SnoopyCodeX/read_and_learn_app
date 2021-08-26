@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FlatButton extends StatelessWidget {
   final EdgeInsets? padding;
@@ -30,7 +31,7 @@ class FlatButton extends StatelessWidget {
         backgroundColor: backgroundColor,
       ),
       onPressed: press as void Function()?, 
-      child: Text(text), 
+      child: Text(text, style: GoogleFonts.delius(),),
     );
   }
 }

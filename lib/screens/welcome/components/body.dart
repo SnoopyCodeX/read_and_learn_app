@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../login/login_screen.dart';
-import '../../signup/signup_screen.dart';
-import './background.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../../components/rounded_button.dart';
 import '../../../constants.dart';
-import 'package:flutter_svg/svg.dart';
+import '../../login/login_screen.dart';
+import '../../signup/signup_screen.dart';
+import 'background.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -17,9 +19,9 @@ class Body extends StatelessWidget {
           children: <Widget>[
             Text(
               "WELCOME TO READ AND LEARN",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: GoogleFonts.delius(fontWeight: FontWeight.bold, fontSize: 22),
             ),
-            SizedBox(height: size.height * 0.05),
+            SizedBox(height: size.height * 0.08),
             SvgPicture.asset(
               "images/icons/chat.svg",
               height: size.height * 0.45,

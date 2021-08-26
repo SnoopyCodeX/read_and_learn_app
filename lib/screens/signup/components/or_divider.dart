@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../constants.dart';
 
 class OrDivider extends StatelessWidget {
@@ -15,7 +16,7 @@ class OrDivider extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               "OR",
-              style: TextStyle(
+              style: GoogleFonts.delius(
                 color: kPrimaryColor,
                 fontWeight: FontWeight.w600,
               ),
