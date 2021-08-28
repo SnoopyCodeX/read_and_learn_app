@@ -1,5 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../constants.dart';
+
 class Utils {
   static String bytesToString(Uint8List bytes) {
     StringBuffer buffer = new StringBuffer();
@@ -38,5 +43,102 @@ class Utils {
     Uint8List bytes = Uint8List.fromList(list);
 
     return bytes;
+  }
+
+  static void showAlertDialog({
+    required BuildContext context,
+    required String title, 
+    required String message, 
+    required List<Widget> actions
+  }) {
+    showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        content: Text(
+          message,
+          style: GoogleFonts.poppins(),
+        ),
+        actions: actions,
+      ),
+    );
+  }
+
+  static void showCustomAlertDialog({
+    required BuildContext context,
+    required Widget content,
+    required List<Widget> actions,
+    String? title,
+  }) {
+    showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        title: title == null 
+          ? null
+          : Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+        content: content,
+        actions: actions,
+      ),
+    );
+  }
+
+  static void showProgressDialog({
+    required BuildContext context,
+    required String message,
+    bool barrierDismissable = false,
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: barrierDismissable,
+      builder: (context) => AlertDialog(
+        content: Container(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                color: kPrimaryColor,
+                strokeWidth: 4,
+              ),
+              SizedBox(width: 10),
+              Text(
+                message,
+                style: GoogleFonts.poppins(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static void showSnackbar({
+    required BuildContext context, 
+    required String message, 
+    required String actionLabel, 
+    required void Function() onPressed
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: GoogleFonts.poppins(),
+        ),
+        action: SnackBarAction(
+          label: actionLabel,
+          onPressed: onPressed,
+        ),
+      ),
+    );
   }
 }

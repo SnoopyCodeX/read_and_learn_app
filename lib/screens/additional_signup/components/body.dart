@@ -91,7 +91,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
           dialog: AlertDialog(
             content: Text(
               'Are you sure you want to cancel creating your account?',
-                style: GoogleFonts.delius(color: kPrimaryColor)
+                style: GoogleFonts.poppins(color: kPrimaryColor)
             ),
             actions: [
               GFButton(
@@ -120,14 +120,14 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                 color: kPrimaryColor,
                 textColor: Colors.white,
                 text: 'Yes',
-                textStyle: GoogleFonts.delius(),
+                textStyle: GoogleFonts.poppins(),
               ),
               GFButton(
                 onPressed: () => Navigator.of(context).pop(),
                 color: kPrimaryColor,
                 textColor: Colors.white,
                 text: 'No',
-                textStyle: GoogleFonts.delius(),
+                textStyle: GoogleFonts.poppins(),
               ),
             ],
           ),
@@ -146,7 +146,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
               ),
               Text(
                 'Finish your account',
-                style: GoogleFonts.delius(
+                style: GoogleFonts.poppins(
                     fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(
@@ -187,7 +187,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                             dialog: AlertDialog(
                               content: Text(
                                 'Pick your profile image from...', 
-                                style: GoogleFonts.delius(
+                                style: GoogleFonts.poppins(
                                   color: kPrimaryColor,
                                 ),
                               ),
@@ -205,7 +205,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                                   color: kPrimaryColor,
                                   textColor: Colors.white,
                                   text: 'Gallery',
-                                  textStyle: GoogleFonts.delius(),
+                                  textStyle: GoogleFonts.poppins(),
                                 ),
                                 GFButton(
                                   blockButton: true,
@@ -224,7 +224,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                                   color: kPrimaryColor,
                                   textColor: Colors.white,
                                   text: 'Camera',
-                                  textStyle: GoogleFonts.delius(),
+                                  textStyle: GoogleFonts.poppins(),
                                 ),
                               ],
                             ),
@@ -330,9 +330,9 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                       titles: _types,
                       label: 'Type of School',
                       labelStyle:
-                          GoogleFonts.delius(color: kPrimaryColor, fontSize: 18),
+                          GoogleFonts.poppins(color: kPrimaryColor, fontSize: 18),
                       titleStyle:
-                          GoogleFonts.delius(color: kPrimaryColor, fontSize: 18),
+                          GoogleFonts.poppins(color: kPrimaryColor, fontSize: 18),
                       defaultSelected: _typeOfSchool,
                       activeColor: kPrimaryColor,
                       orientation: RGOrientation.HORIZONTAL,
@@ -351,9 +351,9 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                   titles: _genders,
                   label: 'Gender',
                   labelStyle:
-                      GoogleFonts.delius(color: kPrimaryColor, fontSize: 18),
+                      GoogleFonts.poppins(color: kPrimaryColor, fontSize: 18),
                   titleStyle:
-                      GoogleFonts.delius(color: kPrimaryColor, fontSize: 18),
+                      GoogleFonts.poppins(color: kPrimaryColor, fontSize: 18),
                   defaultSelected: _genderIndex,
                   activeColor: kPrimaryColor,
                   orientation: RGOrientation.HORIZONTAL,
@@ -371,9 +371,9 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                   titles: _account,
                   label: 'Account Type',
                   labelStyle:
-                      GoogleFonts.delius(color: kPrimaryColor, fontSize: 18),
+                      GoogleFonts.poppins(color: kPrimaryColor, fontSize: 18),
                   titleStyle:
-                      GoogleFonts.delius(color: kPrimaryColor, fontSize: 18),
+                      GoogleFonts.poppins(color: kPrimaryColor, fontSize: 18),
                   defaultSelected: _accountIndex,
                   activeColor: kPrimaryColor,
                   orientation: RGOrientation.HORIZONTAL,
@@ -447,7 +447,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
           ),
           Text(
             message,
-            style: GoogleFonts.delius(
+            style: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold, color: Colors.red),
           ),
           SizedBox(
@@ -528,7 +528,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => _accountIndex == 1 
-            ? TeacherPanel(user) 
+            ? TeacherPanel() 
             : Container(),
           ),
         );

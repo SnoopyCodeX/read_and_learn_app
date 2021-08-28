@@ -44,7 +44,7 @@ class _BodyState extends State<Body> {
             SizedBox(height: 20,),
             Text(
               "Create an Account",
-              style: GoogleFonts.delius(fontWeight: FontWeight.bold, fontSize: 24), 
+              style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 24), 
             ),
             SizedBox(height: size.height * 0.03),
             SvgPicture.asset(
@@ -221,7 +221,7 @@ class _BodyState extends State<Body> {
           Text(
             message, 
             textAlign: TextAlign.center,
-            style: GoogleFonts.delius(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold, 
               color: Colors.red,
             ),

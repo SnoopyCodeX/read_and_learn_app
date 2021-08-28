@@ -24,10 +24,10 @@ class RoundedPasswordField extends StatelessWidget {
         autocorrect: false,
         enableSuggestions: false,
         autofillHints: null,
-        style: GoogleFonts.delius(),
+        style: GoogleFonts.poppins(),
         decoration: InputDecoration(
           hintText: "Password",
-          hintStyle: GoogleFonts.delius(),
+          hintStyle: GoogleFonts.poppins(),
           icon: Icon(
             icon,
             color: kPrimaryColor,

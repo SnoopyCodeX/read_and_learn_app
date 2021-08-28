@@ -38,7 +38,7 @@ class _BodyState extends State<Body> {
           children: <Widget>[
             Text(
               "Sign In",
-              style: GoogleFonts.delius(fontWeight: FontWeight.bold, fontSize: 24),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 24),
             ),
             SizedBox(height: size.height * 0.03),
             SvgPicture.asset(
@@ -73,7 +73,7 @@ class _BodyState extends State<Body> {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => user.type == 1
-                                ? TeacherPanel(user)
+                                ? TeacherPanel()
                                 : Container(),
                             ),
                           );
@@ -148,7 +148,7 @@ class _BodyState extends State<Body> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: 10,),
-          Text(message, textAlign: TextAlign.center, style: GoogleFonts.delius(fontWeight: FontWeight.bold, color: Colors.red),),
+          Text(message, textAlign: TextAlign.center, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.red),),
           SizedBox(height: 10,)
         ],
       ),
@@ -180,7 +180,17 @@ class _BodyState extends State<Body> {
         User user = data.data![0];
 
         if(DBCrypt().checkpw(_password as String, user.password))
+        {
+          if(user.isDeleted) {
+            Map<String, dynamic> json = user.toJson();
+            json['is_deleted'] = false;
+            user = User.fromJson(json);
+
+            await UserService.instance.recoverUser(user);
+          }
+
           return user;
+        }
         else 
           setState(() {
             _loggingIn = false;

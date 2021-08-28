@@ -22,7 +22,7 @@ void main() async {
         theme: ThemeData(
           primaryColor: kPrimaryColor,
           primaryColorLight: kPrimaryLightColor,
-          scaffoldBackgroundColor: Colors.white
+          scaffoldBackgroundColor: Colors.white,
         ),
       ),
     ),

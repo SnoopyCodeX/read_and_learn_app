@@ -15,13 +15,15 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../auth/auth.dart';
 import '../../../constants.dart';
+import '../../../models/result_model.dart';
 import '../../../models/user_model.dart';
 import '../../../providers/temp_variables_provider.dart';
 import '../../../services/user_services.dart';
 import '../../welcome/welcome_screen.dart';
 
 class SettingsPanel extends StatefulWidget {
-  const SettingsPanel();
+  final User user;
+  const SettingsPanel(this.user);
 
   @override
   _SettingsPanelState createState() => _SettingsPanelState();
@@ -35,7 +37,6 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                         _passwordController = TextEditingController(),
                         _schoolNameController = TextEditingController(),
                         _schoolAddressController = TextEditingController();
-  User? _user;
   File? _profileImg;
 
   String _message = '';
@@ -53,21 +54,18 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
   void initState() {
     super.initState();
 
-    _loadUserData();
-
-    _firstNameController.text = _user!.firstName;
-    _lastNameController.text = _user!.lastName;
-    _emailController.text = _user!.email;
+    _firstNameController.text = widget.user.firstName;
+    _lastNameController.text = widget.user.lastName;
+    _emailController.text = widget.user.email;
     _passwordController.text = '--------';
-    _schoolNameController.text = _user!.schoolName;
-    _schoolAddressController.text = _user!.schoolAddress;
+    _schoolNameController.text = widget.user.schoolName;
+    _schoolAddressController.text = widget.user.schoolAddress;
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    _user = null;
     _scrollController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -75,11 +73,6 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
     _passwordController.dispose();
     _schoolNameController.dispose();
     _schoolAddressController.dispose();
-  }
-
-  Future<void> _loadUserData() async {
-    Map<String, dynamic> json = await Cache.load('user', <String, dynamic>{});
-    _user = User.fromJson(json);
   }
 
   @override
@@ -178,7 +171,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                   _profileImg == null
                                     ? FadeInImage.memoryNetwork(
                                       placeholder: kTransparentImage, 
-                                      image: _user!.photo,
+                                      image: widget.user.photo,
                                       width: 88,
                                       height: 88,
                                       fit: BoxFit.cover,
@@ -277,7 +270,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            context.watch<TempVariables>().tempFirstName ?? _user!.firstName,
+                            context.watch<TempVariables>().tempFirstName ?? widget.user.firstName,
                             style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 26,
@@ -335,10 +328,10 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
 
                                 if(!_editFirstName)
                                 {
-                                  context.read<TempVariables>().setTempFirstName(_user!.firstName);
+                                  context.read<TempVariables>().setTempFirstName(widget.user.firstName);
                                   
-                                  _firstNameController.text = _user!.firstName;
-                                  _firstNameController.selection = TextSelection.collapsed(offset: _user!.firstName.length);
+                                  _firstNameController.text = widget.user.firstName;
+                                  _firstNameController.selection = TextSelection.collapsed(offset: widget.user.firstName.length);
                                 }
 
                                 if(_isEditing)
@@ -367,7 +360,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                 _editLastName = !_editLastName;
 
                                 if(!_editLastName)
-                                  _lastNameController.text = _user!.lastName;
+                                  _lastNameController.text = widget.user.lastName;
 
                                 if(_isEditing)
                                   _isEditing = !_isEditing;
@@ -389,7 +382,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                 _editEmail = !_editEmail;
 
                                 if(!_editEmail)
-                                  _emailController.text = _user!.email;
+                                  _emailController.text = widget.user.email;
 
                                 if(_isEditing)
                                   _isEditing = !_isEditing;
@@ -436,7 +429,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                 _editSchoolName = !_editSchoolName;
 
                                 if(!_editSchoolName)
-                                  _schoolNameController.text = _user!.schoolName;
+                                  _schoolNameController.text = widget.user.schoolName;
 
                                 if(_isEditing)
                                   _isEditing = !_isEditing;
@@ -458,7 +451,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                 _editSchoolAddress = !_editSchoolAddress;
 
                                 if(!_editSchoolAddress)
-                                  _schoolAddressController.text = _user!.schoolAddress;
+                                  _schoolAddressController.text = widget.user.schoolAddress;
 
                                 if(_isEditing)
                                   _isEditing = !_isEditing;
@@ -520,7 +513,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
     );
   }
 
-  Future _pickOrCaptureImage(ImageSource source) async {
+  Future<void> _pickOrCaptureImage(ImageSource source) async {
     ImagePicker _picker = ImagePicker();
     XFile? _xfile = await _picker.pickImage(source: source);
 
@@ -589,12 +582,12 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
     );
   }
 
-  Future<bool> _saveChanges() async {
+  Future<void> _saveChanges() async {
     String _firstName = _firstNameController.text;
     String _lastName = _lastNameController.text;
     String _email = _emailController.text;
     String _password = _passwordController.text == '--------' 
-      ? _user!.password 
+      ? widget.user.password 
       : DBCrypt().hashpw(_passwordController.text, DBCrypt().gensalt());
     String _schoolName = _schoolNameController.text;
     String _schoolAddress = _schoolAddressController.text;
@@ -619,17 +612,17 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
     else {
       String? _photoUrl;
       if(_profileImg != null)
-        _photoUrl = (await UserService.instance.uploadPhoto(_user!.id, _profileImg!)).data;
+        _photoUrl = (await UserService.instance.uploadPhoto(widget.user.id, _profileImg!)).data;
 
       Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
-      Map<String, dynamic> json = _user!.toJson();
+      Map<String, dynamic> json = widget.user.toJson();
       json['first_name'] = _firstName;
       json['last_name'] = _lastName;
       json['email'] = _email;
       json['password'] = _password;
       json['school_name'] = _schoolName;
       json['school_address'] = _schoolAddress;
-      json['photo'] = _photoUrl ?? _user!.photo;
+      json['photo'] = _photoUrl ?? widget.user.photo;
 
       data['first_name'] = _firstName;
       data['last_name'] = _lastName;
@@ -637,37 +630,167 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
       data['password'] = _password;
       data['school_name'] = _schoolName;
       data['school_address'] = _schoolAddress;
-      data['photo'] = _photoUrl ?? _user!.photo;
+      data['photo'] = _photoUrl ?? widget.user.photo;
 
       await UserService.instance.setUser(User.fromJson(json));
       await Cache.write('user', data);
 
       setState(() {
+        _editFirstName = false;
+        _editLastName = false;
+        _editEmail = false;
+        _editPassword = false;
+        _editSchoolName = false;
+        _editSchoolAddress = false;
+
         _isSaving = false;
         _hasError = false;
         _message = '';
       });
 
-      return true;
+      showDialog(
+        context: context, 
+        builder: (_) => AlertDialog(
+          title: Text('Changes Saved!', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+          content: Text(
+            'Changes has been saved successfully!',
+            textAlign: TextAlign.start,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+              child: Text(
+                'Okay',
+                style: GoogleFonts.poppins(
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
     }
-
-    return false;
   }
 
-  Future _signOut() async {
-    await Auth.instance.signOutUsingFirebaseAuth();
-    Navigator.of(context).pop(); // Close Settings
-    Navigator.of(context).pop(); // Close Main UI
-    Cache.clear();               // Clear cache
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => WelcomeScreen(),
+  Future<void> _signOut() async {
+    showDialog(
+      context: context, 
+      builder: (_) => AlertDialog(
+        title: Text('Are you sure?', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        content: Text(
+          'Do you really want to sign out?',
+          textAlign: TextAlign.start,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await Auth.instance.signOutUsingFirebaseAuth();
+              Navigator.of(context, rootNavigator: true).pop(); // Close Dialog
+              Navigator.of(context).pop(); // Close Settings
+              Navigator.of(context).pop(); // Close Main UI
+              Cache.clear();               // Clear cache
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => WelcomeScreen(),
+                ),
+              );
+            }, 
+            child: Text(
+              'Yes',
+              style: GoogleFonts.poppins(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+            child: Text(
+              'No',
+              style: GoogleFonts.poppins(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Future _deleteAccount() async {
-    // TODO: Show alert dialog before deleting account
+  Future<void> _deleteAccount() async {
+    showDialog(
+      context: context, 
+      builder: (_) => AlertDialog(
+        title: Text('Are you sure?', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        content: Text(
+          'Do you really want to delete your account? You can still recover your account by re-logging in.',
+          textAlign: TextAlign.start,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
+              Result<dynamic> result = await UserService.instance.deleteUser(widget.user);
+
+              if(!result.hasError) {
+                Navigator.of(context).pop(); // Close Settings
+                Navigator.of(context).pop(); // Close Main UI
+                Cache.clear();               // Clear cache
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => WelcomeScreen(),
+                  ),
+                );
+
+                return;
+              }
+
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Saving Failed', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                  content: Text(
+                    result.message,
+                    textAlign: TextAlign.start,
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+                      child: Text(
+                        'Okay',
+                        style: GoogleFonts.poppins(
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }, 
+            child: Text(
+              'Yes',
+              style: GoogleFonts.poppins(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+            child: Text(
+              'No',
+              style: GoogleFonts.poppins(
+                color: kPrimaryColor,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _showError() {

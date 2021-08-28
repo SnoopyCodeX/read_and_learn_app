@@ -16,7 +16,7 @@ class OrDivider extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               "OR",
-              style: GoogleFonts.delius(
+              style: GoogleFonts.poppins(
                 color: kPrimaryColor,
                 fontWeight: FontWeight.w600,
               ),

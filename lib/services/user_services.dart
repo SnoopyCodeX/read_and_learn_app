@@ -145,7 +145,7 @@ class UserService {
     await _firestoreService.deleteFile('$AUDIOS_FOLDER/$id');
 
     return Result(
-      message: MESSAGES['users']!['audio_delete_failed']!
+      message: MESSAGES['users']!['audio_delete_success']!
     );
   } 
 }

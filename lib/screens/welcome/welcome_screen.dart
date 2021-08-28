@@ -2,7 +2,6 @@ import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 
-import '../../models/user_model.dart';
 import '../teacher/teacher_panel.dart';
 import 'components/body.dart';
 
@@ -27,7 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       Navigator.of(context).pop();
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => TeacherPanel(User.fromJson(data)),
+          builder: (_) => TeacherPanel(),
         ),
       );
     }

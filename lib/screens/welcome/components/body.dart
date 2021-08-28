@@ -19,7 +19,7 @@ class Body extends StatelessWidget {
           children: <Widget>[
             Text(
               "WELCOME TO READ AND LEARN",
-              style: GoogleFonts.delius(fontWeight: FontWeight.bold, fontSize: 22),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 22),
             ),
             SizedBox(height: size.height * 0.08),
             SvgPicture.asset(

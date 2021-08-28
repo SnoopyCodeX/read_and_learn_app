@@ -31,7 +31,7 @@ class FlatButton extends StatelessWidget {
         backgroundColor: backgroundColor,
       ),
       onPressed: press as void Function()?, 
-      child: Text(text, style: GoogleFonts.delius(),),
+      child: Text(text, style: GoogleFonts.poppins(),),
     );
   }
 }

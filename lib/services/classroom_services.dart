@@ -47,7 +47,7 @@ class ClassroomService {
     );
 
     return Result<void>(
-      message: MESSAGES['classroom']!['classroom_create_or_update_success']!
+      message: MESSAGES['classroom']!['classroom_create_or_update_successful']!
     );
   }
 

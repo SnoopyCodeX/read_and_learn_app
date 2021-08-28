@@ -1,13 +1,9 @@
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/user_model.dart';
 import 'components/body.dart';
 
 class TeacherPanel extends StatefulWidget {
-  final User user;
-  const TeacherPanel(this.user);
-
   @override
   _TeacherPanelState createState() => _TeacherPanelState();
 }

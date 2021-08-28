@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-// Facebook Login Configs
+// Facebook Login API Configs
 const String FB_CLIENT_ID = "568702960959014";
 const String FB_REDIRECT_URL = "https://online-reading-app.firebaseapp.com/__/auth/handler";
 

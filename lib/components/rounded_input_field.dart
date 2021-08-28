@@ -7,23 +7,28 @@ class RoundedInputField extends StatelessWidget {
   final String hintText;
   final String? defaultValue;
   final IconData icon;
+  final TextEditingController? controller;
   final ValueChanged<String> onChanged;
 
   const RoundedInputField({
     this.defaultValue,
     required this.hintText,
     this.icon = Icons.person,
+    this.controller,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    if(controller != null)
+      controller!.text = defaultValue ?? '';
+
     return TextFieldContainer(
       child: TextField(
-        controller: TextEditingController(text: defaultValue),
+        controller: controller ?? TextEditingController(text: defaultValue),
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
-        style: GoogleFonts.delius(),
+        style: GoogleFonts.poppins(),
         autocorrect: false,
         enableSuggestions: false,
         autofillHints: null,
@@ -33,7 +38,7 @@ class RoundedInputField extends StatelessWidget {
             color: kPrimaryColor,
           ),
           hintText: hintText,
-          hintStyle: GoogleFonts.delius(),
+          hintStyle: GoogleFonts.poppins(),
           border: InputBorder.none,
         ),
       ),

@@ -20,6 +20,8 @@ class ClassroomList extends StatefulWidget {
 }
 
 class _ClassroomListState extends State<ClassroomList> {
+  int _numOfStudents = 0;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -41,13 +43,16 @@ class _ClassroomListState extends State<ClassroomList> {
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     Classroom classroom = classrooms[index];
+                    _getNumOfStudents(classroom.id);
 
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                       width: 300,
                       height: 160,
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          print('Tapped class: ${classroom.name}');
+                        },
                         borderRadius: BorderRadius.circular(10),
                         child: Card(
                           color: Colors.white,
@@ -84,13 +89,15 @@ class _ClassroomListState extends State<ClassroomList> {
                                     Spacer(),
                                     IconButton(
                                       icon: Icon(Icons.menu_open_outlined),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        print('Tapped class menu: ${classroom.name}');
+                                      },
                                     ),
                                   ],
                                 ),
                                 Spacer(),
                                 Text(
-                                  '${ClassMemberService.instance.countStudentsFromClass(classroom.id)} Students',
+                                  '$_numOfStudents Student(s)',
                                   style: GoogleFonts.poppins(
                                     fontSize: 15,
                                   )
@@ -211,5 +218,9 @@ class _ClassroomListState extends State<ClassroomList> {
         );
       },
     );
+  }
+
+  Future<void> _getNumOfStudents(String id) async {
+    _numOfStudents = await ClassMemberService.instance.countStudentsFromClass(id);
   }
 }
