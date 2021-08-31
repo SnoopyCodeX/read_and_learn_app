@@ -22,6 +22,24 @@ class ClassroomService {
       hasError: data.length <= 0
     );
   }
+  
+  Future<Result<List<Classroom>>> getAllActiveClassrooms() async {
+    List<Map<String, dynamic>> data = await _firestoreService.getData(CLASSROOMS_TABLE);
+
+    // Filter out deleted classrooms
+    List<Map<String, dynamic>> filteredData = [];
+    for(Map<String, dynamic> json in data)
+      if(!json['is_deleted'])
+        filteredData.add(json);
+
+    return Result<List<Classroom>>(
+      data: filteredData.length > 0
+        ? filteredData.map((json) => Classroom.fromJson(json)).toList()
+        : null,
+      message: MESSAGES['classroom']!['no_classrooms_found']!,
+      hasError: filteredData.length <= 0
+    );
+  }
 
   Future<Result<List<Classroom>>> getClassroom(String key, dynamic value) async {
     List<Map<String, dynamic>> data = await _firestoreService.findData(
@@ -36,6 +54,28 @@ class ClassroomService {
         : null,
       message: MESSAGES['classroom']!['no_classrooms_found']!,
       hasError: data.length <= 0
+    );
+  }
+
+  Future<Result<List<Classroom>>> getActiveClassroom(String key, dynamic value) async {
+    List<Map<String, dynamic>> data = await _firestoreService.findData(
+      CLASSROOMS_TABLE, 
+      key: key,
+      isEqualTo: value
+    );
+
+    // Filter out deleted classrooms
+    List<Map<String, dynamic>> filteredData = [];
+    for(Map<String, dynamic> json in data)
+      if(!json['is_deleted'])
+        filteredData.add(json);
+
+    return Result<List<Classroom>>(
+      data: filteredData.length > 0 
+        ? filteredData.map((json) => Classroom.fromJson(json)).toList()
+        : null,
+      message: MESSAGES['classroom']!['no_classrooms_found']!,
+      hasError: filteredData.length <= 0
     );
   }
 

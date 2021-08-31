@@ -26,6 +26,29 @@ const String STORIES_TABLE = 'stories';
 const String CLASSROOMS_TABLE = 'classrooms';
 const String CLASS_MEMBERS_TABLE = 'class_members';
 
+// Width and Height of Certificate
+const int CERT_WIDTH = 1358;
+const int CERT_HEIGHT = 960;
+
+// Outside classroom options
+const List<String> CLASSROOM_OPTIONS = [
+  'Edit',
+  'Delete',
+];
+
+// Inside classroom options
+const List<String> CLASSROOM_PANEL_OPTIONS = [
+  'Copy class code',
+  'Edit',
+  'Delete',
+];
+
+// Outside story options
+const List<String> STORY_OPTIONS = [
+  'Edit',
+  'Delete',
+];
+
 // MESSAGES
 const MESSAGES = {
   'email': {

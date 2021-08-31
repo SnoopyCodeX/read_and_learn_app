@@ -36,7 +36,7 @@ class StoryService {
       data: data.length > 0
         ? data.map((json) => Story.fromJson(json)).toList()
         : null,
-      message: MESSAGES['story']!['stories_not_found']!,
+      message: MESSAGES['story']!['no_stories_found']!,
       hasError: data.length <= 0
     );
   }

@@ -57,7 +57,7 @@ class Utils {
         title: Text(
           title,
           style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
@@ -125,8 +125,8 @@ class Utils {
   static void showSnackbar({
     required BuildContext context, 
     required String message, 
-    required String actionLabel, 
-    required void Function() onPressed
+    String? actionLabel, 
+    void Function()? onPressed
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -134,10 +134,12 @@ class Utils {
           message,
           style: GoogleFonts.poppins(),
         ),
-        action: SnackBarAction(
-          label: actionLabel,
-          onPressed: onPressed,
-        ),
+        action: actionLabel != null 
+          ? SnackBarAction(
+              label: actionLabel,
+              onPressed: onPressed!,
+            )
+          : null,
       ),
     );
   }

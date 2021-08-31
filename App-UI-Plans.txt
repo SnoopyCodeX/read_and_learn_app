@@ -11,18 +11,22 @@ B. Teacher Screen
     [x] b.1.a. List of classrooms
 
   b.2. Classroom Screen [With search for members and stories]
-    [ ] b.2.a. List of stories screen (in GridView)
+    [x] b.2.a. List of stories screen (in GridView)
+      [ ] b.2.a.1. Create story functionality
+      [ ] b.2.a.2. Edit story screen
+      [ ] b.2.a.3. Delete story screen
     [ ] b.2.b. List of pending members screen (List)
     [ ] b.2.c. List of members screen (List)
-    [ ] b.2.d. Classroom settings screen
-      [ ] b.2.d.1. Change name
-      [ ] b.2.d.2. Delete class
+    [x] b.2.d. Classroom options
+      [x] b.2.d.1. Delete class
+      [x] b.2.d.2. Edit class
+      [x] b.2.d.3. Copy class code
    
   b.3. Story Screen [With search for members]
     [ ] b.3.a. List of students that finished reading the book screen.
     [ ] b.3.b. List of students that just started reading the book screen.
 
-  b.4. Create Class Screen [ ] 
+  b.4. Create Class Screen [x] 
 
   b.5. Account Settings Screen
     [x] b.5.a. Change profile picture
@@ -66,9 +70,9 @@ C. Parent Screen
 
 D. Admin Screen
   [ ] d.1. Admins, Parents, Students and Teachers List Screen
-    [ ] d.1.a. View info of Admin, Parent, Student or Teacher
-    [ ] d.1.b. Edit info of Admin, Parent, Student or Teacher
-    [ ] d.1.c. Delete info of Admin, Parent, Student or Teacher
+    [ ] d.1.a. View info of Admin, Parent or Student, Teacher
+    [ ] d.1.b. Edit info of Admin, Parent or Student, Teacher
+    [ ] d.1.c. Delete info of Admin, Parent or Student, Teacher
     [ ] d.1.d. Add new admin
   
   [ ] d.2. Stories Screen

@@ -150,7 +150,7 @@ class _BodyState extends State<Body> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      onPressed: () => _showCreateClassBottomSheet(),
+                      onPressed: () => _showCreateClassDialog(),
                       color: Colors.white,
                       elevation: 4,
                     ),
@@ -176,9 +176,7 @@ class _BodyState extends State<Body> {
               ),
               Spacer(),
               InkWell(
-                onTap: () {
-                  setState(() {});
-                },
+                onTap: () => setState(() {}),
                 borderRadius: BorderRadius.all(Radius.circular(14)),
                 child: Container(
                   child: Icon(Icons.refresh_outlined, color: kPrimaryColor),
@@ -196,13 +194,13 @@ class _BodyState extends State<Body> {
           ),
         ),
         _user != null
-          ? ClassroomList(_user!)
+          ? ClassroomList(_user!, () => setState(() {}))
           : Container(),
       ],
     );
   }
 
-  void _showCreateClassBottomSheet() {
+  void _showCreateClassDialog() {
     Utils.showCustomAlertDialog(
 			context: context,
 			content: SingleChildScrollView(
