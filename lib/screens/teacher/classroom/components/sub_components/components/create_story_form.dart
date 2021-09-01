@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:read_and_learn/utils/utils.dart';
 
 import '../../../../../../constants.dart';
 
@@ -195,7 +196,7 @@ class _CreateStoryFormState extends State<CreateStoryForm> {
                     children: [
                       Expanded(
                         child: MaterialButton(
-                          onPressed: () {}, // TODO: Save story
+                          onPressed: () => _showSaveDialog(), // TODO: Save story
                           color: Colors.green,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -221,5 +222,18 @@ class _CreateStoryFormState extends State<CreateStoryForm> {
         ),
       ),
     );
+  }
+
+  void _showSaveDialog() {
+    Utils.showAlertDialog(
+      context: context, 
+      title: 'Confirm Action', 
+      message: 'Are you sure you want to save this story?', 
+      actions: []
+    );
+  }
+
+  Future<void> _saveStory() async {
+
   }
 }
