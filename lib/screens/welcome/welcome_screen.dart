@@ -2,6 +2,8 @@ import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 
+import '../admin/admin_panel.dart';
+import '../parent/parent_panel.dart';
 import '../teacher/teacher_panel.dart';
 import 'components/body.dart';
 
@@ -26,7 +28,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       Navigator.of(context).pop();
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => TeacherPanel(),
+          builder: (_) {
+            if(data['type'] == 0)
+              return ParentPanel();
+            else if(data['type'] == 1)
+              return TeacherPanel();
+
+            return AdminPanel();
+          }
         ),
       );
     }

@@ -1,7 +1,10 @@
 import '../constants.dart';
+import '../models/class_member_model.dart';
 import '../models/classroom_model.dart';
 import '../models/result_model.dart';
+import 'classroom_member_services.dart';
 import 'firestore_services.dart';
+import 'story_services.dart';
 
 class ClassroomService {
   
@@ -79,6 +82,37 @@ class ClassroomService {
     );
   }
 
+  Future<Result<List<Classroom>>> getJoinedClassroom(String userId) async {
+    List<Map<String, dynamic>> data = await _firestoreService.findData(
+      CLASS_MEMBERS_TABLE, 
+      key: 'member_id',
+      isEqualTo: userId,
+    );
+
+    if(data.isNotEmpty) {
+      List<ClassMember> members = data.map((json) => ClassMember.fromJson(json)).toList();
+      List<Classroom> classes = [];
+
+      for(ClassMember member in members)
+        if(!member.isPending)
+          classes.add((await getClassroom('id', member.classId)).data![0]);
+
+      return Result<List<Classroom>>(
+        data: classes,
+        hasError: classes.isEmpty,
+      );
+    }
+
+    return Result<List<Classroom>>(
+      hasError: true,
+      message: 'No classes joined',
+    );
+  }
+
+  Future<void> leaveClassroom(String userId, String classId) async {
+    await ClassMemberService.instance.denyOrRemoveMember(classId, userId);
+  }
+
   Future<Result<void>> setClassroom(Classroom classroom) async {
     await _firestoreService.setData(
       CLASSROOMS_TABLE, 
@@ -92,10 +126,11 @@ class ClassroomService {
   }
 
   Future<Result<void>> deleteClassroom(String id) async {
-    await _firestoreService.setData(
+    await StoryService.instance.deleteAllStoriesFromClass(id);
+
+    await _firestoreService.deleteData(
       CLASSROOMS_TABLE,
-      id,
-      {'is_deleted': true} 
+      id
     );
 
     return Result<void>(

@@ -10,7 +10,7 @@ class User {
   final String schoolAddress;
   final String schoolType;
   final String childName;
-  final int childAge;
+  final String childAge;
   final int type;
   final bool isDeleted;
 
@@ -24,7 +24,7 @@ class User {
     this.schoolAddress = '',
     this.schoolName = '',
     this.schoolType = '',
-    this.childAge = 0,
+    this.childAge = '',
     this.childName = '',
     required this.photo,
     this.type = 0,

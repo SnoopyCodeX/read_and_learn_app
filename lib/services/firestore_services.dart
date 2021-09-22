@@ -56,10 +56,12 @@ class FirestoreService {
       List<Object?>? arrayContainsAny,
       List<Object?>? whereIn,
       List<Object?>? whereNotIn,
-      bool? isNull
+      bool? isNull,
+      Object? orderBy,
+      bool orderDescending = false,
     }) async {
 
-    return (_firestore.collection(collection)
+    Query<Map<String, dynamic>> _query = (_firestore.collection(collection)
       .where(key, 
         isEqualTo: isEqualTo,
         isNotEqualTo: isNotEqualTo,
@@ -71,8 +73,12 @@ class FirestoreService {
         arrayContainsAny: arrayContainsAny,
         whereIn: whereIn,
         whereNotIn: whereNotIn,
-        isNull: isNull))
-      .get()
+        isNull: isNull));
+
+    if(orderBy != null)
+      _query = _query.orderBy(orderBy, descending: orderDescending);
+
+    return _query.get()
       .then((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 

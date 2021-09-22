@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../../constants.dart';
 import '../../../../../../models/result_model.dart';
 import '../../../../../../models/story_model.dart';
+import '../../../../../../providers/temp_variables_provider.dart';
 import '../../../../../../services/story_services.dart';
+import '../../../story/story_screen.dart';
 
 class ClassroomStoryListPanel extends StatefulWidget {
   final String classId;
@@ -18,10 +21,12 @@ class ClassroomStoryListPanel extends StatefulWidget {
 }
 
 class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
+  Story? _story;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: StoryService.instance.getStory('class_id', widget.classId),
+      future: StoryService.instance.getStory('classroom', widget.classId),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
           Result<List<Story>> data = snapshot.data as Result<List<Story>>;
@@ -29,22 +34,40 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
           if(!data.hasError) {
             List<Story> stories = data.data as List<Story>;
 
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: StaggeredGridView.countBuilder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 4, 
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-                    itemBuilder: (context, index) => _buildStoryCard(stories[index]),
+            WidgetsBinding.instance!.addPostFrameCallback((_) { 
+              if(_story != null)
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => StoryScreen(
+                      _story!, 
+                      () => _refreshStoryList(), 
+                      (_) => _openStory(_),
+                      () => _resetOpenedStory(),
+                    ),
                   ),
-                ),
-              ],
+                );
+            });
+
+            return Container(
+              width: MediaQuery.of(context).size.width * 0.86,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: StaggeredGridView.countBuilder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      crossAxisCount: 4, 
+                      mainAxisSpacing: 2,
+                      crossAxisSpacing: 1,
+                      itemCount: stories.length,
+                      staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+                      itemBuilder: (context, index) => _buildStoryCard(stories[index]),
+                    ),
+                  ),
+                ],
+              ),
             );
           }
 
@@ -90,7 +113,16 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
   Widget _buildStoryCard(Story story) {
     return Container(
       child: InkWell(
-        onTap: () {}, // TODO: Open story
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => StoryScreen(
+              story, 
+              () => _refreshStoryList(), 
+              (_) => _openStory(_),
+              () => _resetOpenedStory(),
+            ),
+          ),
+        ),
         borderRadius: BorderRadius.circular(10),
         child: Card(
           elevation: 5,
@@ -103,6 +135,7 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
+                  height: 160,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(story.thumbnail),
@@ -112,9 +145,19 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
                 ),
                 Container(
                   padding: const EdgeInsets.all(6),
-                  child: Text(
-                    story.title,
-                    style: GoogleFonts.poppins(),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          story.title,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -123,5 +166,20 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
         ),
       ),
     );
+  }
+
+  void _refreshStoryList() {
+    setState(() {});
+  }
+
+  void _resetOpenedStory() {
+    _story = null;
+    Provider.of<TempVariables>(context, listen: false).setTempStoryIndex(1);
+  }
+
+  void _openStory(Story story) {
+    setState(() {
+      _story = story;
+    });
   }
 }

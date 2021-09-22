@@ -20,7 +20,7 @@ class StoryService {
       data: data.length > 0 
         ? data.map((json) => Story.fromJson(json)).toList()
         : null,
-      message: MESSAGES['story']!['stories_not_found']!,
+      message: MESSAGES['story']!['no_stories_found']!,
       hasError: data.length <= 0
     );
   }
@@ -61,11 +61,39 @@ class StoryService {
     );
 
     if(data.length > 0)
-      await _firestoreService.setData(
+      await _firestoreService.deleteData(
         STORIES_TABLE, 
-        id,
-        {'is_deleted': true}
+        id
       );
+
+    return Result<void>(
+      message: data.length > 0 
+        ? MESSAGES['story']!['story_delete_success']!
+        : MESSAGES['story']!['stories_not_found']!,
+      hasError: data.length <= 0
+    );
+  }
+
+  Future<Result<void>> deleteAllStoriesFromClass(String classId) async {
+    List<Map<String, dynamic>> data = await _firestoreService.findData(
+      STORIES_TABLE, 
+      key: 'classroom',
+      isEqualTo: classId
+    );
+
+    if(data.length > 0)
+      for(Map<String, dynamic> json in data)
+      {
+        Story story = Story.fromJson(json);
+
+        if(story.thumbnail != DEFAULT_STORY_THUMBNAIL)
+          await deleteThumbnail(story.id);
+
+        await _firestoreService.deleteData(
+          STORIES_TABLE, 
+          story.id
+        );
+      }
 
     return Result<void>(
       message: data.length > 0 

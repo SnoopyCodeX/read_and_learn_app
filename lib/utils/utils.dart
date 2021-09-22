@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants.dart';
@@ -111,9 +113,11 @@ class Utils {
                 strokeWidth: 4,
               ),
               SizedBox(width: 10),
-              Text(
-                message,
-                style: GoogleFonts.poppins(),
+              Expanded(
+                child: Text(
+                  message,
+                  style: GoogleFonts.poppins(),
+                ),
               ),
             ],
           ),
@@ -142,5 +146,17 @@ class Utils {
           : null,
       ),
     );
+  }
+
+  static Future<Uint8List?> capture(GlobalKey? key) async {
+    if(key == null) 
+      return null;
+
+    RenderRepaintBoundary renderObject = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    ui.Image image = await renderObject.toImage(pixelRatio: 3);
+    final ByteData byteData = (await image.toByteData(format: ui.ImageByteFormat.png))!;
+    final Uint8List pngByteData = byteData.buffer.asUint8List();
+
+    return pngByteData;
   }
 }

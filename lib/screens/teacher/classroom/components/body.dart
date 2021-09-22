@@ -82,11 +82,11 @@ class _BodyState extends State<Body> {
         ),
 
         if(_index == 0)
-          ClassroomActiveMembersPanel()
+          ClassroomActiveMembersPanel(widget.classroom)
         else if(_index == 1)
           ClassroomHomePanel(widget.classroom)
         else if(_index == 2)
-          ClassroomPendingMembersPanel(),
+          ClassroomPendingMembersPanel(widget.classroom),
       ],
     );
   }

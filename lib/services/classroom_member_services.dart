@@ -31,19 +31,24 @@ class ClassMemberService {
 
       members.forEach((member) {
         if(member.isPending == pending)
-          memberIds.add(member.id);
+          memberIds.add(member.memberId);
       });
 
       Result<List<User>> resultUsers = await UserService.instance.getAllUsers();
       List<User> users = resultUsers.data as List<User>;
+      List<User> temp = [];
       
-      users.forEach((user) {
+      for(User user in users) 
+        temp.add(user);
+      
+      for(User user in temp) {
         if(!memberIds.contains(user.id) || user.type == 1)
           users.remove(user);
-      });
+      }
 
       return Result<List<User>?>(
         data: users,
+        hasError: users.isEmpty,
       );
     }
     else
@@ -126,29 +131,27 @@ class ClassMemberService {
     Result<List<User>?> result = await getAllMembers(classId, pending: true);
 
     if(!result.hasError)
-    {
       for(User user in result.data!)
         if(user.id == member.id) {
           exists = true;
           break;
         }
 
-      if(!exists) {
-        ClassMember newMember = ClassMember(
-          id: Uuid().v4(),
-          classId: classId,
-          memberId: member.id,
-          isPending: true,
-        );
+    if(!exists) {
+      ClassMember newMember = ClassMember(
+        id: Uuid().v4(),
+        classId: classId,
+        memberId: member.id,
+        isPending: true,
+      );
 
-        await _firestoreService.setData(
-          CLASS_MEMBERS_TABLE, 
-          newMember.id, 
-          newMember.toJson(),
-        );
-      }
+      await _firestoreService.setData(
+        CLASS_MEMBERS_TABLE, 
+        newMember.id, 
+        newMember.toJson(),
+      );
 
-      added = !exists;
+      added = true;
     }
 
     return added;

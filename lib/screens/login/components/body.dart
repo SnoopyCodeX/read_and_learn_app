@@ -13,6 +13,9 @@ import '../../../constants.dart';
 import '../../../models/result_model.dart';
 import '../../../models/user_model.dart';
 import '../../../services/user_services.dart';
+import '../../../utils/utils.dart';
+import '../../admin/admin_panel.dart';
+import '../../parent/parent_panel.dart';
 import '../../signup/signup_screen.dart';
 import '../../teacher/teacher_panel.dart';
 import 'background.dart';
@@ -72,9 +75,14 @@ class _BodyState extends State<Body> {
                           await Cache.write('user', user.toJson());
                           await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => user.type == 1
-                                ? TeacherPanel()
-                                : Container(),
+                              builder: (_) {
+                                if(user.type == 0)
+                                  return ParentPanel();
+                                else if(user.type == 1)
+                                  return TeacherPanel();
+                                
+                                return AdminPanel();
+                              }
                             ),
                           );
 
@@ -186,7 +194,14 @@ class _BodyState extends State<Body> {
             json['is_deleted'] = false;
             user = User.fromJson(json);
 
+            Utils.showProgressDialog(
+              context: context, 
+              message: 'Recovering your account...',
+            );
+
             await UserService.instance.recoverUser(user);
+
+            Navigator.of(context, rootNavigator: true).pop();
           }
 
           return user;

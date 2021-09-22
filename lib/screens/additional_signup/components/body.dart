@@ -23,6 +23,7 @@ import '../../../constants.dart';
 import '../../../models/result_model.dart';
 import '../../../models/user_model.dart';
 import '../../../services/user_services.dart';
+import '../../parent/parent_panel.dart';
 import '../../teacher/teacher_panel.dart';
 import 'background.dart';
 
@@ -52,6 +53,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
   String _message = '';
   bool _hasError = false;
   bool _isSigningUp = false;
+  bool _setupDone = false;
 
   int _accountIndex = 0;
   int _genderIndex = 0;
@@ -59,11 +61,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
 
   List<String>? _nameParts;
   File? _profileImg;
-  String? _profileSrc, _firstName, _lastName, _email, _password, _childName, _childAge, _schoolName, _schoolAddress;
-  bool _fNChanged = false, 
-       _lNChanged = false, 
-       _emailChanged = false,
-       _passChanged = false;
+  String? _profileSrc, _firstName, _lastName, _email, _password, _childName, _childAge, _schoolName, _schoolAddress; 
 
   @override
   void dispose() {
@@ -74,13 +72,18 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _nameParts = credential != null ? credential!.user!.displayName!.split(' ') : null;
-    _profileSrc = credential?.user?.photoURL;
+    print('Setup Done: $_setupDone');
+    if(!_setupDone) {
+      _nameParts = credential != null ? credential!.user!.displayName!.split(' ') : null;
+      _profileSrc = credential?.user?.photoURL;
 
-    _fNChanged = _nameParts != null || _firstName != null;
-    _lNChanged = _nameParts != null || _lastName != null;
-    _emailChanged = (data != null || credential != null || _email != null);
-    _passChanged = (_password != null && _password!.isNotEmpty);
+      _firstName = credential != null ? _nameParts![0] : '';
+      _lastName = credential != null ? _nameParts![1] : '';
+      _email = credential != null ? credential!.user!.email : data!['email'];
+      _password = data != null ? data!['password'] : '';
+
+      _setupDone = true;
+    }
 
     return WillPopScope(
       onWillPop: () async {
@@ -469,7 +472,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
   }
 
   Future<Result?> _signUp() async {
-    if (!_fNChanged || !_lNChanged || !_emailChanged || !_passChanged)
+    if (_firstName!.isEmpty || _lastName!.isEmpty || _email!.isEmpty || _password!.isEmpty)
       setState(() {
         _hasError = true;
         _message = MESSAGES['users']!['empty_field'] as String;
@@ -510,7 +513,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
           schoolAddress: _schoolAddress != null && _accountIndex == 1 ? _schoolAddress as String : '',
           schoolType: _accountIndex == 1 ? _types[_typeOfSchool] : '',
           childName: _childName != null && _accountIndex == 0 ? _childName as String : '',
-          childAge: _childAge != null && _accountIndex == 0 ? int.parse(_childAge as String) : 0,
+          childAge: _childAge != null && _accountIndex == 0 ? _childAge as String : '',
           photo: _profileSrc as String,
           type: _accountIndex,
           isDeleted: false
@@ -519,7 +522,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
         await UserService.instance.setUser(user);
         print('User saved');
 
-        Map<String, dynamic> oldData = await Cache.load('user');
+        Map<String, dynamic> oldData = await Cache.load('user', <String, dynamic>{});
         Map<String, dynamic> newData = user.toJson();
         newData['isGoogle'] = oldData['isGoogle'];
         await Cache.write('user', newData);
@@ -529,7 +532,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
           MaterialPageRoute(
             builder: (_) => _accountIndex == 1 
             ? TeacherPanel() 
-            : Container(),
+            : ParentPanel(),
           ),
         );
 

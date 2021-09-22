@@ -10,6 +10,8 @@ import '../../../providers/temp_variables_provider.dart';
 import 'components/body.dart';
 
 class ClassroomPanel extends StatefulWidget {
+  static const String NAME = '/class_panel';
+  
   final void Function({bool refresh}) resetSelectedRoom;
   final void Function() reloadAndOpenRoom;
   final Classroom classroom;
@@ -25,6 +27,7 @@ class _ClassroomPanelState extends State<ClassroomPanel> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        widget.resetSelectedRoom();
         Navigator.of(context).pop();
 
         return true;
@@ -54,9 +57,9 @@ class _ClassroomPanelState extends State<ClassroomPanel> {
                 inactiveColor: Colors.black,
               ),
               BottomBarItem(
-                icon: Icon(Icons.home_outlined), 
+                icon: Icon(Icons.book_outlined), 
                 title: Text(
-                  'Home',
+                  'Stories',
                   style: GoogleFonts.poppins(),
                 ), 
                 activeColor: kPrimaryColor,

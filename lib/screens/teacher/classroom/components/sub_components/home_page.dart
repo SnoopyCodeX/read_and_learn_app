@@ -108,7 +108,7 @@ class _ClassroomHomePanelState extends State<ClassroomHomePanel> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => CreateStoryForm(),
+                            builder: (_) => CreateStoryForm(widget.classroom, () => setState(() {})),
                           ),
                         );
                       },

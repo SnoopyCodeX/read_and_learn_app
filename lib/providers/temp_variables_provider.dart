@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class TempVariables extends ChangeNotifier {
   void Function()? pageChanged;
-
-  TempVariables({this.pageChanged});
+  void Function()? storyIndexChanged;
+  void Function(String query)? onSearch;
 
   String? _tempFirstName;
   int _tempIndex = 1;
+  int _tempStoryIndex = 1;
 
   String? get tempFirstName => _tempFirstName;
   int get tempIndex => _tempIndex;
+  int get tempStoryIndex => _tempStoryIndex;
 
   void setTempFirstName(String name) {
     _tempFirstName = name;
@@ -22,5 +24,13 @@ class TempVariables extends ChangeNotifier {
 
     if(pageChanged != null)
       pageChanged!();
+  }
+
+  void setTempStoryIndex(int index) {
+    _tempStoryIndex = index;
+    notifyListeners();
+
+    if(storyIndexChanged != null)
+      storyIndexChanged!();
   }
 }

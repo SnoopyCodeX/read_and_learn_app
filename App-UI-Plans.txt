@@ -7,28 +7,28 @@ A. Main Screen
   [x] a.3.a Additional Sign up Screen
 
 B. Teacher Screen
-  b.1. Home Screen
+  [x] b.1. Home Screen
     [x] b.1.a. List of classrooms
 
-  b.2. Classroom Screen [With search for members and stories]
+  [x] b.2. Classroom Screen [With search for members and stories]
     [x] b.2.a. List of stories screen (in GridView)
-      [ ] b.2.a.1. Create story functionality
-      [ ] b.2.a.2. Edit story screen
-      [ ] b.2.a.3. Delete story screen
-    [ ] b.2.b. List of pending members screen (List)
-    [ ] b.2.c. List of members screen (List)
+      [x] b.2.a.1. Create story functionality
+      [x] b.2.a.2. Edit story screen
+      [x] b.2.a.3. Delete story screen
+    [x] b.2.b. List of pending members screen (List)
+    [x] b.2.c. List of members screen (List)
     [x] b.2.d. Classroom options
       [x] b.2.d.1. Delete class
       [x] b.2.d.2. Edit class
       [x] b.2.d.3. Copy class code
    
-  b.3. Story Screen [With search for members]
-    [ ] b.3.a. List of students that finished reading the book screen.
-    [ ] b.3.b. List of students that just started reading the book screen.
+  [x] b.3. Story Screen [With search for members]
+    [x] b.3.a. List of students that finished reading the book screen.
+    [x] b.3.b. List of students that just started reading the book screen.
 
-  b.4. Create Class Screen [x] 
+  [x] b.4. Create Class Screen [x] 
 
-  b.5. Account Settings Screen
+  [x] b.5. Account Settings Screen
     [x] b.5.a. Change profile picture
     [x] b.5.b. Change first name
     [x] b.5.c. Change last name
@@ -42,44 +42,46 @@ B. Teacher Screen
     [x] b.5.k. Logout Account
 
 C. Parent Screen
-  [ ] c.1. Home Screen
-    [ ] c.1.a. List of classrooms
+  [x] c.1. Home Screen
+    [x] c.1.a. List of classrooms
+    [x] c.2.a. Join a class dialog
 
-  [ ] c.2. Classroom Screen [With search for stories (maybe)]
-    [ ] c.2.a. List of stories screen (in GridView)
-    [ ] c.2.b. List of members screen (in ListView)
-    [ ] c.2.c. Leave classroom
+  [x] c.2. Classroom Screen
+    [x] c.2.a. List of stories screen (in GridView)
+    [x] c.2.b. List of members screen (in ListView)
+    [x] c.2.c. Leave classroom
 
-  [ ] c.3. Story Screen
-    [ ] c.3.a. Title and content of story
+  [x] c.3. Story Screen
+    [x] c.3.a. Title and content of story
     [ ] c.3.b. Accuracy and Length of time reading the story
     [ ] c.3.c. Record audio button and submit button (will only enable if accuracy is good)
-    [ ] c.3.d. Certificate Screen [Generate Programmatically]
+    [x] c.3.d. Certificate Screen [Generate Programmatically]
+    [x] c.3.e. Tapping a word from the story will play an audio on how to read it.
 
-  [ ] c.4. Account Settins Screen
-    [ ] c.4.a. Change profile picture
-    [ ] c.4.b. Change first name
-    [ ] c.4.c. Change last name
-    [ ] c.4.d. Change password
-    [ ] c.4.e. Change email
-    [ ] c.4.f. Change gender
-    [ ] c.4.g. Change child's name
-    [ ] c.4.h. Change child's age
-    [ ] c.4.i. Delete Account
-    [ ] c.4.j. Logout Account
+  [x] c.4. Account Settins Screen
+    [x] c.4.a. Change profile picture
+    [x] c.4.b. Change first name
+    [x] c.4.c. Change last name
+    [x] c.4.d. Change password
+    [x] c.4.e. Change email
+    [x] c.4.f. Change gender
+    [x] c.4.g. Change child's name
+    [x] c.4.h. Change child's age
+    [x] c.4.i. Delete Account
+    [x] c.4.j. Logout Account
 
 D. Admin Screen
-  [ ] d.1. Admins, Parents, Students and Teachers List Screen
-    [ ] d.1.a. View info of Admin, Parent or Student, Teacher
-    [ ] d.1.b. Edit info of Admin, Parent or Student, Teacher
-    [ ] d.1.c. Delete info of Admin, Parent or Student, Teacher
-    [ ] d.1.d. Add new admin
+  [x] d.1. Admins, Parents, Students and Teachers List Screen
+    [x] d.1.a. View info of Admin, Parent or Student, Teacher
+    [x] d.1.b. Edit info of Admin, Parent or Student, Teacher
+    [x] d.1.c. Delete info of Admin, Parent or Student, Teacher
+    [x] d.1.d. Add new admin, teacher and parent
   
   [ ] d.2. Stories Screen
     [ ] d.2.a. View, add, edit and delete story screen.
 
-  [ ] d.3. Certificate Holders Screen
-    [ ] d.2.a. Ranked based on their overall reading accuracy
+  [x] d.3. Certificate Holders Screen (Finished students)
+    [x] d.2.a. Ranked based on their overall reading accuracy
 
   [ ] d.4. Settings Screen
-    [ ] d.2.a. Change admin credentials such as username, email password and profile.
+    [ ] d.2.a. Change admin credentials such as firstname, lastname, email password and profile.

@@ -74,6 +74,7 @@ class _ClassroomListState extends State<ClassroomList> {
                       if(_selectedRoom != null)
                         Navigator.of(context).push(
                           MaterialPageRoute(
+                            settings: RouteSettings(name: ClassroomPanel.NAME),
                             builder: (context) => ClassroomPanel(
                               classroom, 
                               () => _reloadAndOpenRoom(classroom), 

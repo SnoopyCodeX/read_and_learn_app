@@ -57,6 +57,37 @@ class UserService {
       );
   }
 
+  Future<Result<List<User>>> getActiveUser(String key, dynamic value) async {
+    List<Map<String, dynamic>> data = await _firestoreService.findData(
+      USERS_TABLE, 
+      key: key, 
+      isEqualTo: value
+    );
+
+    if(data.length > 0)
+    {
+      List<User> users = data.map(
+        (json) => User.fromJson(json)
+      ).toList();
+      
+      List<User> temp = [...users];
+      temp.forEach((user) {
+        if(user.isDeleted)
+          users.remove(user);
+      });
+
+      return Result<List<User>>(
+        data: users,
+        hasError: users.length <= 0,
+      );
+    }
+    else 
+      return Result<List<User>>(
+        hasError: true,
+        message: MESSAGES['users']!['no_users']!
+      );
+  }
+
   Future<Result> setUser(User user) async {
     await _firestoreService.setData(
       USERS_TABLE, 

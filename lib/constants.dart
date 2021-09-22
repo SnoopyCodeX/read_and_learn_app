@@ -6,12 +6,19 @@ import 'package:flutter/material.dart';
 const String FB_CLIENT_ID = "568702960959014";
 const String FB_REDIRECT_URL = "https://online-reading-app.firebaseapp.com/__/auth/handler";
 
+// Default Story Thumbnail
+const String DEFAULT_STORY_THUMBNAIL = 'https://image.freepik.com/free-vector/cute-koala-reading-book-cartoon-illustration_138676-2988.jpg';
+
+// User Reading Status
+const String STATUS_FINISHED_READING = 'finished_reading';
+const String STATUS_STILL_READING = 'still_reading';
+
 // Development 
 const kIsProduction = true;
 
 // App Colors
-const Color kPrimaryColor = Color(0xFF6F35A5);
-const Color kPrimaryLightColor = Color(0xFFF1E6FF);
+const Color kPrimaryColor = const Color(0xFF6F35A5);
+const Color kPrimaryLightColor = const Color(0xFFF1E6FF);
 const Color kBaseColor = const Color(0xFFF4F4F4);
 const Color kHighlightColor = const Color(0xFFDADADA);
 
@@ -21,7 +28,7 @@ const String AUDIOS_FOLDER = 'audios';
 
 // Collection names in Firebase Firestore DB
 const String USERS_TABLE = 'users';
-const String USER_PROGRESS_TABLE = 'user_progress_table';
+const String USER_PROGRESS_TABLE = 'user_progresses';
 const String STORIES_TABLE = 'stories';
 const String CLASSROOMS_TABLE = 'classrooms';
 const String CLASS_MEMBERS_TABLE = 'class_members';
@@ -44,7 +51,7 @@ const List<String> CLASSROOM_PANEL_OPTIONS = [
 ];
 
 // Outside story options
-const List<String> STORY_OPTIONS = [
+const List<String> STORY_PANEL_OPTIONS = [
   'Edit',
   'Delete',
 ];
