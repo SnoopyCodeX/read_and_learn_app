@@ -20,6 +20,7 @@
 - :white_check_mark: Compute reader's WPM programmatically using Speech to Text
 - :white_check_mark: Generate certificate programmatically
 - :white_check_mark: Analyze reader's accuracy of pronounciation programmatically
+- :white_check_mark: Demonstration of the word's pronounciation when the word is clicked
 
 ---
 
