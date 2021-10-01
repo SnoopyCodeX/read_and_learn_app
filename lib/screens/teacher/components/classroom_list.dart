@@ -321,7 +321,7 @@ class _ClassroomListState extends State<ClassroomList> {
   }
 
   Future<void> _getNumOfStudents(String id) async {
-    _numOfStudents = await ClassMemberService.instance.countStudentsFromClass(id);
+    _numOfStudents = (await ClassMemberService.instance.countStudentsFromClass(id)) - 1;
   }
 
   Future<void> _deleteClass(String id) async {

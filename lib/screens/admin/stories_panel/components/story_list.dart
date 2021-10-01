@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:read_and_learn/providers/temp_variables_provider.dart';
 
 import '../../../../../../constants.dart';
 import '../../../../../../models/result_model.dart';
@@ -17,6 +19,19 @@ class StoryListView extends StatefulWidget {
 }
 
 class _StoryListViewState extends State<StoryListView> {
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    Provider.of<TempVariables>(context, listen: false).onSearch = (query) {
+      setState(() {
+        _searchQuery = query;
+      });
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -27,6 +42,37 @@ class _StoryListViewState extends State<StoryListView> {
 
           if(!data.hasError) {
             List<Story> stories = data.data as List<Story>;
+            List<Story> _searchList = [];
+
+            for(Story story in stories)
+              if(story.title.toLowerCase().contains(_searchQuery.toLowerCase()))
+                _searchList.add(story);
+
+            if(_searchList.isEmpty && _searchQuery.isNotEmpty)
+              return Expanded(
+                child: Center(
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: 300,
+                          child: SvgPicture.asset("images/illustrations/empty.svg"),
+                        ),
+                        Text(
+                          'No stories found',
+                          style: GoogleFonts.poppins(
+                            color: kPrimaryColor,
+                            letterSpacing: 2,
+                            wordSpacing: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
 
             return Expanded(
               child: SingleChildScrollView(
@@ -41,9 +87,15 @@ class _StoryListViewState extends State<StoryListView> {
                         crossAxisCount: 4, 
                         mainAxisSpacing: 2,
                         crossAxisSpacing: 1,
-                        itemCount: stories.length,
+                        itemCount:  _searchList.isNotEmpty && _searchQuery.isNotEmpty
+                          ? _searchList.length
+                          : stories.length,
                         staggeredTileBuilder: (index) => StaggeredTile.fit(2),
-                        itemBuilder: (context, index) => _buildStoryCard(stories[index]),
+                        itemBuilder: (context, index) => _buildStoryCard(
+                          _searchList.isNotEmpty && _searchQuery.isNotEmpty
+                           ? _searchList[index]
+                           : stories[index],
+                        ),
                       ),
                     ),
                   ],

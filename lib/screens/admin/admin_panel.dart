@@ -7,6 +7,7 @@ import 'certificates_panel/certificate_screen.dart';
 import 'components/menu_items.dart';
 import 'components/menu_screen.dart';
 import 'parent_panel/parent_screen.dart';
+import 'settings_panel/settings_screen.dart';
 import 'stories_panel/story_screen.dart';
 import 'teacher_panel/teacher_screen.dart';
 
@@ -72,7 +73,7 @@ class _AdminPanelState extends State<AdminPanel> {
         return CertificateScreen();
 
       case MenuItems.settings:
-        return Container();
+        return SettingsScreen();
 
       default:
         return AdminScreen();

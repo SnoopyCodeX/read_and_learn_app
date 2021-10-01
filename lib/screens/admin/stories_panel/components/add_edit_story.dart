@@ -35,9 +35,9 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
                          _thumbnailController,
                          _contentController;
   List<Classroom>? classes = [];
+  Classroom? _selectedRoom; 
   String hintClass = 'Classroom: {Choose classroom...}';
   String? selectedClass;
-  String? _classId;
   File? _thumbnailImg;
   int _numLines = 0;
 
@@ -73,7 +73,7 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
         if(widget.story != null)
           for(Classroom _class in _classes)
             if(_class.id == widget.story!.classroom) {
-              className = _class.name;
+              className = _class.name + '_' + _class.section;
               break;
             }
 
@@ -186,43 +186,54 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.black87, width: 2),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton(
-                                value: selectedClass,
-                                hint: Text(
-                                  hintClass,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                items: classes != null && classes!.isNotEmpty ?
-                                  classes!.map((_class) => DropdownMenuItem<String>(
-                                    value: _class.id,
-                                    child: Text(
-                                      '${_class.name}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.black87,
-                                      ),
+                          if(classes != null || classes!.isEmpty) ... [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black87, width: 2),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isDense: true,
+                                  elevation: 14,
+                                  icon: Icon(Icons.arrow_drop_down, color: Colors.black87),
+                                  value: selectedClass,
+                                  hint: Text(
+                                    hintClass,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black87,
                                     ),
-                                    onTap: () {
-                                      setState(() {
-                                        _classId = _class.id;
-                                        hintClass = 'Classroom: ${_class.name}';
-                                      });
-                                    },
                                   ),
-                                ).toList() : null,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedClass = value!;
+                                    });
+                                  },
+                                  items: classes != null && classes!.isNotEmpty
+                                  ? [
+                                    // ignore: non_constant_identifier_names
+                                    ...classes!.map((Classroom _class_) {
+                                      return DropdownMenuItem(
+                                        value: _class_.name + '_' + _class_.section,
+                                        child: Text(
+                                          _class_.name + '\n' + _class_.section,
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          print('<Selected class: ${_class_.name}>');
+                                          _selectedRoom = _class_;
+                                        },
+                                      );
+                                    }).toList(),
+                                  ] : null,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                           SizedBox(height: 10),
                           Container(
                             height: _numLines < 7 ? 30 * 16 : _numLines.toDouble() * 30,
@@ -500,8 +511,8 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
       Utils.showProgressDialog(
         context: context, 
         message: widget.story != null 
-          ? 'Updating parent...' 
-          : 'Creating parent...',
+          ? 'Updating story...' 
+          : 'Creating story...',
       );
 
       String? _thumnailUrl;
@@ -509,12 +520,24 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
       if(_thumbnailImg != null)
         _thumnailUrl = (await StoryService.instance.uploadThumbnail(uid, _thumbnailImg!)).data;
 
+      Story story = Story(
+        id: uid,
+        classroom: _selectedRoom!.id,
+        title: _title,
+        content: _content,
+        thumbnail: _thumnailUrl!
+      );
       
-      // TODO: Story model here
-      
+      await StoryService.instance.setStory(story);
 
       Navigator.of(context, rootNavigator: true).pop();
       widget.refreshList!();
+
+      Utils.showSnackbar(
+        context: context, 
+        message: 'Story has been saved successfully!',
+      );
+
       Navigator.of(context).pop();
     }
   }

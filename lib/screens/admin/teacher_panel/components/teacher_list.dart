@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constants.dart';
+import '../../../../enums/role_enum.dart';
 import '../../../../models/result_model.dart';
 import '../../../../models/user_model.dart';
 import '../../../../providers/temp_variables_provider.dart';
@@ -41,7 +42,7 @@ class _TeacherListViewState extends State<TeacherListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: UserService.instance.getActiveUser("type", 1),
+      future: UserService.instance.getActiveUser("type", Role.TEACHER.accessLevel),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData)
         {
@@ -60,10 +61,8 @@ class _TeacherListViewState extends State<TeacherListView> {
 
             List<User> _searchList = [];
             for(User user in teachers)
-              if('${user.firstName} ${user.lastName}'.toLowerCase().contains(_searchQuery.toLowerCase())) {
+              if('${user.firstName} ${user.lastName}'.toLowerCase().contains(_searchQuery.toLowerCase()))
                 _searchList.add(user);
-                break;
-              }
 
             if(_searchList.isEmpty && _searchQuery.isNotEmpty)
               return Expanded(

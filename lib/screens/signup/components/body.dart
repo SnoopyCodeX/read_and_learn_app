@@ -16,7 +16,6 @@ import '../../additional_signup/additional_signup_screen.dart';
 import '../../login/login_screen.dart';
 import 'background.dart';
 import 'or_divider.dart';
-import 'social_icon.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -167,7 +166,8 @@ class _BodyState extends State<Body> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SocialIcon(
+            // REMOVED FACEBOOK SUPPORT (FOR NOW)
+            /* SocialIcon(
               iconSrc: "images/icons/facebook.svg",
               press: () async {
                 Result<dynamic> result = await Auth.instance.signUpWithFacebookFromWebView(context);
@@ -189,15 +189,48 @@ class _BodyState extends State<Body> {
                     _message = result.message;
                   });
               },
-            ),
-            SocialIcon(
-              iconSrc: "images/icons/google-plus.svg",
-              press: () {
-                setState(() {
-                  _signingUp = true;
-                  _method = 1;
-                });
-              },
+            ), */
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: MaterialButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                color: Colors.red.shade700,
+                elevation: 0,
+                focusElevation: 0,
+                hoverElevation: 0,
+                highlightElevation: 0,
+                disabledElevation: 0,
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      "images/icons/google-plus.svg",
+                      width: 30,
+                      height: 30,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Continue with Google',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  setState(() {
+                    _signingUp = true;
+                    _method = 1;
+                  });
+                },
+              ),
             ),
           ],
         )

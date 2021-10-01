@@ -2,6 +2,7 @@ import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 
+import '../../enums/role_enum.dart';
 import '../admin/admin_panel.dart';
 import '../parent/parent_panel.dart';
 import '../teacher/teacher_panel.dart';
@@ -29,9 +30,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) {
-            if(data['type'] == 0)
+            if(data['type'] == Role.PARENT.accessLevel)
               return ParentPanel();
-            else if(data['type'] == 1)
+            else if(data['type'] == Role.TEACHER.accessLevel)
               return TeacherPanel();
 
             return AdminPanel();

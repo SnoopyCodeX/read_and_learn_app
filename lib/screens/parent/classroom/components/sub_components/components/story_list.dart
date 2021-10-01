@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_learn/utils/utils.dart';
 
 import '../../../../../../constants.dart';
 import '../../../../../../models/result_model.dart';
@@ -122,7 +123,30 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
               ),
             ),
           );
-        }
+        } 
+        else if(snapshot.connectionState == ConnectionState.done && !snapshot.hasData)
+          return Center(
+            child: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: 300,
+                    child: SvgPicture.asset("images/illustrations/empty.svg"),
+                  ),
+                  Text(
+                    'No stories found',
+                    style: GoogleFonts.poppins(
+                      color: kPrimaryColor,
+                      letterSpacing: 2,
+                      wordSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
 
         return Flexible(
           fit: FlexFit.loose,
@@ -154,12 +178,19 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
                 ),
               ),
             );
+          else
+            Utils.showSnackbar(
+              context: context, 
+              message: 'Finish the other story first to unlock the next story.',
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+            );
         },
         borderRadius: BorderRadius.circular(10),
         child: Opacity(
           opacity: isUnlocked ? 1.0 : 0.6,
           child: Card(
-            elevation: 5,
+            elevation: isUnlocked ? 5 : 1.8,
             clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -226,6 +257,7 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
           for(Story story in stories.data!) 
             unlockedStories.add(progress.storyId == story.id);
       else {
+        // ignore: unused_local_variable
         for(Story story in stories.data!)
           unlockedStories.add(false);
 
@@ -234,6 +266,7 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
           unlockedStories[0] = true;
       }
     } else {
+      // ignore: unused_local_variable
       for(Story story in stories.data!)
         unlockedStories.add(false);
 

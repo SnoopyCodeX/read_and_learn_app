@@ -87,6 +87,20 @@ class _CustomNavBarState extends State<CustomNavBar> {
                   ],
                 ),
               ),
+              PopupMenuItem<String>(
+                value: 'Reset all progress',
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.restore_outlined),
+                    SizedBox(width: 10),
+                    Text(
+                      'Reset all progress',
+                      style: GoogleFonts.poppins(),
+                    ),
+                  ],
+                ),
+              ),
             ],
             onSelected: widget.onOptionSelected,
           ),

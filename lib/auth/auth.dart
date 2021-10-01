@@ -1,12 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
+import 'package:google_sign_in/google_sign_in.dart';
 
-import '../components/custom_webview.dart';
 import '../constants.dart';
 import '../models/result_model.dart';
 import '../models/user_model.dart';
@@ -36,6 +32,7 @@ class Auth {
       
       Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
       data['token'] = auth.accessToken;
+      data['isGoogle'] = true;
       await Cache.write('user', data);
 
       UserCredential credential = await _auth.signInWithCredential(credentials);
@@ -49,7 +46,7 @@ class Auth {
     return result;
   }
 
-  @Deprecated("Starting from August 22, 2021. Facebook dropped the support on logging in using Embedded Webviews.")
+  /* REMOVED BECAUSE OF LOGGING IN ISSUES
   Future<Result<dynamic>> signUpWithFacebook() async {
     Result<dynamic> _result = Result();
 
@@ -72,7 +69,9 @@ class Auth {
 
     return _result;
   }
+  */
 
+  /* REMOVED BECAUSE OF FACEBOOK'S STRICT REQUIREMENTS
   Future<Result<dynamic>> signUpWithFacebookFromWebView(BuildContext context) async {
     Result<dynamic> _result = Result();
 
@@ -102,6 +101,7 @@ class Auth {
 
     return _result;
   }
+  */
 
   Future<Result<Map<String, dynamic>>> signUpWithEmailAndPassword(String email, String password) async {
     Result<List<User>> result = await UserService.instance.getUser('email', email);

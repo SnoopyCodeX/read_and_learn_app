@@ -20,6 +20,7 @@ import '../../../components/rounded_button.dart';
 import '../../../components/rounded_input_field.dart';
 import '../../../components/rounded_password_field.dart';
 import '../../../constants.dart';
+import '../../../enums/role_enum.dart';
 import '../../../models/result_model.dart';
 import '../../../models/user_model.dart';
 import '../../../services/user_services.dart';
@@ -519,22 +520,24 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
           isDeleted: false
         );
 
-        await UserService.instance.setUser(user);
-        print('User saved');
+        UserService.instance.setUser(user).then((_) async {
+          print('User saved');
 
-        Map<String, dynamic> oldData = await Cache.load('user', <String, dynamic>{});
-        Map<String, dynamic> newData = user.toJson();
-        newData['isGoogle'] = oldData['isGoogle'];
-        await Cache.write('user', newData);
+          Map<String, dynamic> oldData = await Cache.load('user', <String, dynamic>{});
+          Map<String, dynamic> newData = user.toJson();
+          newData['isGoogle'] = oldData['isGoogle'];
+          await Cache.write('user', newData);
+          
+          Navigator.of(context).pop();
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => _accountIndex == Role.TEACHER.accessLevel 
+              ? TeacherPanel() 
+              : ParentPanel(),
+            ),
+          );
+        });
         
-        Navigator.of(context).pop();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => _accountIndex == 1 
-            ? TeacherPanel() 
-            : ParentPanel(),
-          ),
-        );
 
         return Result();
       } else

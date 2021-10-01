@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../constants.dart';
+import '../../../../enums/role_enum.dart';
 import '../../../../models/user_model.dart';
 import '../../../../services/user_services.dart';
 import '../../../../utils/utils.dart';
@@ -473,7 +474,7 @@ class _AddEditTeacherScreenState extends State<AddEditTeacherScreen> {
         photo: widget.user != null 
           ? _photoUrl ?? widget.user!.photo
           : _photoUrl ?? 'https://www.stevefarber.com/wp-content/uploads/2019/01/man-avatar-placeholder.png',
-        type: 0,
+        type: Role.TEACHER.accessLevel,
         schoolName: _schoolName,
         schoolAddress: _schoolAddress,
       );

@@ -129,14 +129,19 @@ class Utils {
   static void showSnackbar({
     required BuildContext context, 
     required String message, 
-    String? actionLabel, 
+    String? actionLabel,
+    Color? backgroundColor,
+    Color? textColor,
     void Function()? onPressed
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        backgroundColor: backgroundColor,
         content: Text(
           message,
-          style: GoogleFonts.poppins(),
+          style: GoogleFonts.poppins(
+            color: textColor,
+          ),
         ),
         action: actionLabel != null 
           ? SnackBarAction(

@@ -200,8 +200,15 @@ class _CertificateScreenState extends State<CertificateScreen> {
   }
 
   Future<void> _saveCertificate() async {
-    if(locked)
+    if(locked) {
+      Utils.showSnackbar(
+        context: context, 
+        message: 'Finish reading all the stories first to unlock your certificate.',
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
       return;
+    }
 
     Uint8List pngBytes = (await Utils.capture(certificateKey))!;
     var status = await Permission.storage.request();

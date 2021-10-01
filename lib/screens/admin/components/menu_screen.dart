@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 import '../../../models/menu_item_model.dart';
 import '../../../models/user_model.dart';
+import '../../../providers/temp_variables_provider.dart';
 import '../../../utils/utils.dart';
 import '../../welcome/welcome_screen.dart';
 import 'menu_items.dart';
@@ -29,6 +31,12 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
   @override
   void initState() {
     super.initState();
+
+    Provider.of<TempVariables>(context, listen: false).onSettingsUpdated = () {
+      setState(() {
+        _loadUserData();
+      });
+    };
 
     _loadUserData();
   }

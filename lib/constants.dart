@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 // Facebook Login API Configs
-const String FB_CLIENT_ID = "568702960959014";
-const String FB_REDIRECT_URL = "https://online-reading-app.firebaseapp.com/__/auth/handler";
+// const String FB_CLIENT_ID = "568702960959014";
+// const String FB_REDIRECT_URL = "https://online-reading-app.firebaseapp.com/__/auth/handler";
 
 // Default Story Thumbnail
 const String DEFAULT_STORY_THUMBNAIL = 'https://image.freepik.com/free-vector/cute-koala-reading-book-cartoon-illustration_138676-2988.jpg';
@@ -32,10 +32,6 @@ const String USER_PROGRESS_TABLE = 'user_progresses';
 const String STORIES_TABLE = 'stories';
 const String CLASSROOMS_TABLE = 'classrooms';
 const String CLASS_MEMBERS_TABLE = 'class_members';
-
-// Width and Height of Certificate
-const int CERT_WIDTH = 1358;
-const int CERT_HEIGHT = 960;
 
 // Outside classroom options
 const List<String> CLASSROOM_OPTIONS = [

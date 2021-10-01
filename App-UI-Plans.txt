@@ -53,8 +53,8 @@ C. Parent Screen
 
   [x] c.3. Story Screen
     [x] c.3.a. Title and content of story
-    [ ] c.3.b. Accuracy and Length of time reading the story
-    [ ] c.3.c. Record audio button and submit button (will only enable if accuracy is good)
+    [x] c.3.b. Accuracy and Length of time reading the story
+    [x] c.3.c. Record audio button and submit button (will only enable if accuracy is good)
     [x] c.3.d. Certificate Screen [Generate Programmatically]
     [x] c.3.e. Tapping a word from the story will play an audio on how to read it.
 
@@ -77,11 +77,11 @@ D. Admin Screen
     [x] d.1.c. Delete info of Admin, Parent or Student, Teacher
     [x] d.1.d. Add new admin, teacher and parent
   
-  [ ] d.2. Stories Screen
-    [ ] d.2.a. View, add, edit and delete story screen.
+  [x] d.2. Stories Screen
+    [x] d.2.a. View, add, edit and delete story screen.
 
   [x] d.3. Certificate Holders Screen (Finished students)
     [x] d.2.a. Ranked based on their overall reading accuracy
 
-  [ ] d.4. Settings Screen
-    [ ] d.2.a. Change admin credentials such as firstname, lastname, email password and profile.
+  [x] d.4. Settings Screen
+    [x] d.2.a. Change admin credentials such as firstname, lastname, email password and profile.

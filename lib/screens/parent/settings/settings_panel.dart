@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:getwidget/getwidget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -685,7 +686,18 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
         actions: [
           TextButton(
             onPressed: () async {
-              await Auth.instance.signOutUsingFirebaseAuth();
+              Auth auth = Auth.instance;
+              Map<String, dynamic> userData = await Cache.load('user', <String, dynamic>{});
+              bool isGoogle = userData['isGoogle'] as bool;
+              print('isGoogle: $isGoogle');
+
+              if(isGoogle) {
+                await auth.reauthenticateUser(isGoogle);
+                await GoogleSignIn().signOut();
+              }
+
+              await auth.signOutUsingFirebaseAuth();
+
               Navigator.of(context, rootNavigator: true).pop(); // Close Dialog
               Navigator.of(context).pop(); // Close Settings
               Navigator.of(context).pop(); // Close Main UI

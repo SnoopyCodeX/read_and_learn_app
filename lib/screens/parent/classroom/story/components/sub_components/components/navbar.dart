@@ -29,7 +29,20 @@ class _CustomNavBarState extends State<CustomNavBar> {
   DateTime? _start, _end;
   IconData _micIcon = Icons.mic_outlined;
   bool _isListening = false;
+  double _wordsPerMinute = 0;
   double _accuracy = 0;
+  double _lengthOfStory = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Get the number of words in the story
+    _lengthOfStory = widget.story.content
+      .replaceAll("\n", "")
+      .split(" ").length
+      .toDouble();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,23 +97,12 @@ class _CustomNavBarState extends State<CustomNavBar> {
                   endRadius: 40,
                   child: IconButton(
                     icon: Icon(_micIcon),
-                    onPressed: () => !_isListening
-                      ? _showStartRecordingDialog()
-                      : () {
-                        setState(() {
-                          _isListening = !_isListening;
-                          _micIcon = _isListening
-                            ? Icons.mic_off_outlined
-                            : Icons.mic_outlined;
-
-                          _start = _end = null;
-                          _accuracy = 0;
-                          _accuracies = <double>[];
-                        });
-
-                        stt!.stop();
-                        stt = null;
-                      },
+                    onPressed: () {
+                      if(!_isListening)
+                        _showStartRecordingDialog();
+                      else
+                        _stopListening();
+                    },
                   ),
                 ),
                 PopupMenuButton<String>(
@@ -141,10 +143,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
           onPressed: () {
             Navigator.of(context, rootNavigator: true).pop();
             setState(() {
-              _isListening = !_isListening;
-              _micIcon = _isListening
-                ? Icons.mic_off_outlined
-                : Icons.mic_outlined;
+              _isListening = true;
+              _micIcon = Icons.mic_off_outlined;
 
               if(_isListening) {
                 _accuracies = <double>[];
@@ -176,16 +176,56 @@ class _CustomNavBarState extends State<CustomNavBar> {
     );
   }
 
+  void _stopListening() {
+    _end = DateTime.now();
+
+    // Compute speed of reader
+    _wordsPerMinute = _accuracies.length / (_end!.difference(_start!).inMinutes);
+
+    // Compute reader's accuracy
+    _accuracies.forEach((accuracy) => _accuracy += accuracy);
+    _accuracy /= _lengthOfStory;
+    _accuracy *= 100;
+
+    String conclusion = (_wordsPerMinute >= 107 && _accuracy >= 70) 
+      ? "Congratulations, you passed! Thank you for taking your time in learning to read." 
+      : "Sorry, you failed. Practice more, you'll get it right next time!";
+
+    // Display accuracy and speed of reader
+    Utils.showAlertDialog(
+      context: context, 
+      title: "Result", 
+      message: "Words Per Minute (WPM): $_wordsPerMinute\nAccuracy: ${_accuracy.toStringAsFixed(2)}%\n\n\n$conclusion", 
+      actions: [],
+    );
+
+     setState(() {
+      _isListening = false;
+      _micIcon = Icons.mic_outlined;
+
+      _start = _end = null;
+      _wordsPerMinute = 0;
+      _accuracies = <double>[];
+    });
+
+    stt!.stop();
+    stt = null;
+  }
+
   Future<void> _startListening() async {
     PermissionStatus status = await Permission.speech.request();
-    // TODO: Fix Speech to Text
 
-    if(status != PermissionStatus.granted){
+    if(status != PermissionStatus.granted) {
+      Utils.showSnackbar(
+        context: context,
+        message: 'Record audio permission was revoked!',
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+
       setState(() {
-        _isListening = !_isListening;
-        _micIcon = _isListening
-          ? Icons.mic_off_outlined
-          : Icons.mic_outlined;
+        _isListening = false;
+        _micIcon = Icons.mic_outlined;
 
         stt = _start = null;
       });
@@ -208,15 +248,13 @@ class _CustomNavBarState extends State<CustomNavBar> {
         onResult: (result) {                                                               
           if(result.hasConfidenceRating && result.confidence > 0)
             _accuracies.add(result.confidence);
-          print(result.toString());
+          print(result.recognizedWords);
         }
       );
     else {
       setState(() {
-        _isListening = !_isListening;
-        _micIcon = _isListening
-          ? Icons.mic_off_outlined
-          : Icons.mic_outlined;
+        _isListening = false;
+        _micIcon = Icons.mic_outlined;
 
         stt = _start = null;
       });

@@ -4,6 +4,7 @@ class TempVariables extends ChangeNotifier {
   void Function()? pageChanged;
   void Function()? storyIndexChanged;
   void Function(String query)? onSearch;
+  void Function()? onSettingsUpdated;
 
   String? _tempFirstName;
   int _tempIndex = 1;

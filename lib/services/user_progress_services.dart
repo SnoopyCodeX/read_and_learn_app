@@ -38,6 +38,36 @@ class UserProgressService {
     );
   }
 
+  Future<Result> resetUserProgress(String userId, String classId, String storyId) async {
+    List<Map<String, dynamic>> data = await _firestoreService.findData(
+      USER_PROGRESS_TABLE, 
+      key: 'class_id',
+      isEqualTo: classId,
+    );
+
+    if(data.isNotEmpty)
+      for(Map<String, dynamic> json in data)
+      {
+        UserProgress progress = UserProgress.fromJson(json);
+
+        if(progress.userId == userId && progress.storyId == storyId){
+          await _firestoreService.deleteData(
+            USER_PROGRESS_TABLE, 
+            progress.id,
+          );
+
+          break;
+        }
+      }
+
+    return Result(
+      message: data.isNotEmpty 
+        ? 'Your progress has been successfully reset' 
+        : 'You do not have progresses to reset',
+      hasError: data.isEmpty,
+    );
+  }
+
   Future<Result<List<UserProgress>?>> getUserProgress(String userId, String classId) async {
     List<Map<String, dynamic>> data = await _firestoreService.findData(
       USER_PROGRESS_TABLE, 

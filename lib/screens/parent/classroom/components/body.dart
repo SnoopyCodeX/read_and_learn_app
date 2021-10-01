@@ -5,8 +5,11 @@ import 'package:provider/provider.dart';
 
 import '../../../../constants.dart';
 import '../../../../models/classroom_model.dart';
+import '../../../../models/result_model.dart';
+import '../../../../models/user_model.dart';
 import '../../../../providers/temp_variables_provider.dart';
 import '../../../../services/classroom_services.dart';
+import '../../../../services/user_progress_services.dart';
 import '../../../../utils/utils.dart';
 import '../certificate/certificate_screen.dart';
 import 'navbar.dart';
@@ -27,6 +30,8 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   int _index = 1;
 
+  User? _user;
+
    @override
   void initState() {
     super.initState();
@@ -36,6 +41,13 @@ class _BodyState extends State<Body> {
         _index = Provider.of<TempVariables>(context, listen: false).tempIndex;
       });
     };
+
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    Map<String, dynamic> json = await Cache.load('user', <String, dynamic>{});
+    _user = User.fromJson(json);
   }
 
   @override
@@ -46,7 +58,15 @@ class _BodyState extends State<Body> {
           resetSelectedRoom: widget.resetSelectedRoom,
           classroom: widget.classroom, 
           onOptionSelected: (option) async {
-            _showLeaveDialog(widget.classroom.id);
+            switch(option.toLowerCase()) {
+              case 'leave class':
+                _showLeaveDialog(widget.classroom.id);
+              break;
+
+              case 'reset all progress':
+                _showResetDialog();
+              break;
+            }
           },
         ),
 
@@ -107,5 +127,55 @@ class _BodyState extends State<Body> {
 
     // Close this panel
     Navigator.of(context).pop();
+  }
+
+  void _showResetDialog() {
+    Utils.showAlertDialog(
+      context: context,
+      title: "Confirm Action",
+      message: "Do you really want to reset your progress?",
+      actions: [
+        TextButton(
+          onPressed: () async {
+            Navigator.of(context, rootNavigator: true).pop();
+
+            Utils.showProgressDialog(
+              context: context,
+              message: "Resetting progress...",
+            );
+
+            Result<dynamic> result = await UserProgressService.instance.resetAllUserProgress(_user!.id, widget.classroom.id);
+            Navigator.of(context, rootNavigator: true).pop();
+
+            Utils.showSnackbar(
+              context: context,
+              message: result.message,
+              backgroundColor: result.hasError ? Colors.red : Colors.green,
+              textColor: Colors.white,
+            );
+
+            if(!result.hasError)
+              setState(() {});
+          },
+          child: Text(
+            'Yes',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+          child: Text(
+            'No',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

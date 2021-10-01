@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constants.dart';
+import '../../../../enums/role_enum.dart';
 import '../../../../models/result_model.dart';
 import '../../../../models/user_model.dart';
 import '../../../../providers/temp_variables_provider.dart';
@@ -41,7 +42,7 @@ class _ParentListViewState extends State<ParentListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: UserService.instance.getActiveUser("type", 0),
+      future: UserService.instance.getActiveUser("type", Role.PARENT.accessLevel),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData)
         {
