@@ -26,12 +26,12 @@
 
 ### :camera: Screenshots
 
-#### :door: Welcome Panel
+### :door: Welcome Panel
 | **Home Panel** | **Login Panel** | **Register Panel** |
 |----------------|-----------------|--------------------|
 | ![s1](./screenshots/welcome/1.png) | ![s5](./screenshots/welcome/2.png) | ![s6](./screenshots/welcome/3.png) |
 
-#### :door: Admin Panel
+### :door: Admin Panel
 
 | **Admins List** | **Teachers List** | **Parents List** |
 |-------------|-----------------|---------------|
@@ -41,7 +41,7 @@
 | **Logout Screen** |
 | ![s8](./screenshots/admin/8.png)
 
-#### :door: Teacher Panel
+### :door: Teacher Panel
 
 | **Classes** | **Create Class** | **Classes** |
 |-------------|------------------|-------------|
