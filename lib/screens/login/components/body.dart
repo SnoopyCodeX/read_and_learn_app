@@ -78,6 +78,7 @@ class _BodyState extends State<Body> {
 
                         WidgetsBinding.instance!.addPostFrameCallback((_) async {
                           Navigator.of(context).pop();
+                          Navigator.of(context).pop();
 
                           Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
                           Map<String, dynamic> userData = user.toJson();

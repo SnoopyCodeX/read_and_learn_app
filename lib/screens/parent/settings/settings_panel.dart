@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:getwidget/getwidget.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -687,6 +686,8 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
           TextButton(
             onPressed: () async {
               Auth auth = Auth.instance;
+               
+              /* REMOVED FOR NOW
               Map<String, dynamic> userData = await Cache.load('user', <String, dynamic>{});
               bool isGoogle = userData['isGoogle'] as bool;
               print('isGoogle: $isGoogle');
@@ -695,6 +696,7 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                 await auth.reauthenticateUser(isGoogle);
                 await GoogleSignIn().signOut();
               }
+              */
 
               await auth.signOutUsingFirebaseAuth();
 

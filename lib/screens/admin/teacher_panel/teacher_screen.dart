@@ -48,7 +48,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
           ),
         ),
         child: Icon(
-          Icons.add_moderator_outlined,
+          Icons.person_add_alt_1_outlined,
           color: Colors.white,
         ),
         backgroundColor: Colors.black87,

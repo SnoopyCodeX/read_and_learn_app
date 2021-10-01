@@ -48,7 +48,7 @@ class _StoryScreenState extends State<StoryScreen> {
           ),
         ),
         child: Icon(
-          Icons.add_moderator_outlined,
+          Icons.bookmark_add_outlined,
           color: Colors.white,
         ),
         backgroundColor: Colors.black87,
