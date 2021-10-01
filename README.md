@@ -129,4 +129,7 @@ flutter build apk
 
 ##### Database: Firebase DB
 ##### Application Framework: Flutter
+
 ---
+
+## Made with :heart: by SnoopyCodeX :computer:
