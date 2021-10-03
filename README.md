@@ -17,10 +17,18 @@
 ---
 
 ### :fire: Main Features
-- :white_check_mark: Compute reader's WPM programmatically using Speech to Text
-- :white_check_mark: Generate certificate programmatically
-- :white_check_mark: Analyze reader's accuracy of pronounciation programmatically
+- :white_check_mark: Compute reader's WPM using android's built-in Speech Recognizer
+- :white_check_mark: Generate certificate from the app
+- :white_check_mark: Analyze reader's accuracy of pronounciation using android's built-in Speech Recognizer
 - :white_check_mark: Demonstration of the word's pronounciation when the word is clicked
+
+---
+
+### :warning: Notice
+
+- :white_check_mark: This app heavily relies on android devices' built-in **Speech Recognizer** and is a very **crucial requirement** for this app to run properly.
+
+- :white_check_mark: This app currently does not support Offline Mode
 
 ---
 
