@@ -48,7 +48,10 @@ class _CustomNavBarState extends State<CustomNavBar> {
                 FadeInImage.memoryNetwork(
                   width: 50,
                   height: 50,
-                  placeholder: kTransparentImage, 
+                  placeholder: kTransparentImage,
+                  imageErrorBuilder: (context, object, stacktrace) {
+                    return Container();
+                  },
                   image: widget.user.photo,
                 ),
               ],

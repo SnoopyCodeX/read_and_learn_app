@@ -50,6 +50,9 @@ class _CustomNavBarState extends State<CustomNavBar> {
                   height: 50,
                   placeholder: kTransparentImage, 
                   image: widget.user.photo,
+                  imageErrorBuilder: (context, object, stacktrace) {
+                    return Container();
+                  },
                 ),
               ],
             ),

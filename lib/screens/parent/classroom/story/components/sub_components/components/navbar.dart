@@ -1,8 +1,15 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:read_and_learn/models/result_model.dart';
+import 'package:read_and_learn/models/user_model.dart';
+import 'package:read_and_learn/models/user_progress_model.dart';
+import 'package:read_and_learn/services/user_progress_services.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../../../../constants.dart';
 import '../../../../../../../models/story_model.dart';
@@ -137,7 +144,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
     Utils.showAlertDialog(
       context: context, 
       title: 'Heads Up!', 
-      message: 'Before proceeding, please make sure that no other sounds is heard other than your child\'s voice.', 
+      message: 'Before proceeding, please make sure that no other sounds is heard other than your child\'s voice. Please make your voice loud and clear for better result.', 
       actions: [
         TextButton(
           onPressed: () {
@@ -176,27 +183,128 @@ class _CustomNavBarState extends State<CustomNavBar> {
     );
   }
 
+  Future<void> _saveProgress({
+    required bool status,
+    required double accuracy,
+    required double wpm,
+  }) async {
+    Navigator.of(context).pop();
+
+    Utils.showProgressDialog(
+      context: context, 
+      message: 'Saving progress...',
+    );
+
+    Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
+    User userData = User.fromJson(data);
+    Result<List<UserProgress>?> result = await UserProgressService.instance.getUserProgress(
+      userData.id, 
+      widget.story.classroom,
+    );
+
+    UserProgress progress;
+    if(result.hasError) 
+      progress = UserProgress(
+        id: Uuid().v4(),
+        accuracy: accuracy.toStringAsFixed(2),
+        speed: wpm.toStringAsFixed(2),
+        classId: widget.story.classroom,
+        userId: userData.id,
+        storyId: widget.story.id,
+        status: status ? STATUS_FINISHED_READING : STATUS_STILL_READING,
+        photoUrl: userData.photo,
+        name: userData.childName,
+        dateFinished: status ? Jiffy(DateTime.now()).format("MMMM do yyyy h:mm:ss a") : "",
+        dateStarted: Jiffy(DateTime.now()).format("MMMM do yyyy h:mm:ss a"),
+      );
+    else 
+    {
+      Map<String, dynamic> oldProgress = <String, dynamic>{};
+      for(UserProgress oldData in (result.data as List<UserProgress>))
+        if(oldData.storyId == widget.story.id) {
+          oldProgress = oldData.toJson();
+          break;
+        }
+
+      // Progress for the story exists, just update the progress
+      if(oldProgress.isNotEmpty) {
+        oldProgress['accuracy'] = accuracy.toStringAsFixed(2);
+        oldProgress['speed'] = wpm.toStringAsFixed(2);
+        oldProgress['status'] = status ? STATUS_FINISHED_READING : STATUS_STILL_READING;
+        oldProgress['date_finished'] = status ? Jiffy(DateTime.now()).format("MMMM do yyyy h:mm:ss a") : "";
+        progress = UserProgress.fromJson(oldProgress);
+      } else 
+        progress = UserProgress(
+          id: Uuid().v4(),
+          accuracy: accuracy.toString(),
+          speed: wpm.toString(),
+          classId: widget.story.classroom,
+          userId: userData.id,
+          storyId: widget.story.id,
+          status: status ? STATUS_FINISHED_READING : STATUS_STILL_READING,
+          photoUrl: userData.photo,
+          name: userData.childName,
+          dateFinished: status ? Jiffy(DateTime.now()).format("MMMM do yyyy h:mm:ss a") : "",
+          dateStarted: Jiffy(DateTime.now()).format("MMMM do yyyy h:mm:ss a"),
+        );
+    }
+
+    await UserProgressService.instance.setUserProgress(progress);
+
+    Navigator.of(context).pop();
+
+    Utils.showSnackbar(
+      context: context, 
+      message: "Your progress has been saved!",
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+    );
+  }
+ 
   void _stopListening() {
     _end = DateTime.now();
 
     // Compute speed of reader
-    _wordsPerMinute = _accuracies.length / (_end!.difference(_start!).inMinutes);
+    double seconds = _end!.difference(_start!).inSeconds.toDouble();
+    double mins = seconds / 60.0;
+    _wordsPerMinute = (_accuracies.length.toDouble() / mins);
+    
+    print("Seconds: $seconds");
+    print("Minutes: $mins");
+    print("WPM: $_wordsPerMinute");
 
     // Compute reader's accuracy
     _accuracies.forEach((accuracy) => _accuracy += accuracy);
-    _accuracy /= _lengthOfStory;
+    _accuracy /= (_lengthOfStory / 100);
+
     _accuracy *= 100;
 
     String conclusion = (_wordsPerMinute >= 107 && _accuracy >= 70) 
       ? "Congratulations, you passed! Thank you for taking your time in learning to read." 
-      : "Sorry, you failed. Practice more, you'll get it right next time!";
+      : "Sorry, you failed, your WPM(Words per Minute) should be atleast 107 and your accuracy should be atleast 70%. Practice more, you'll get it right next time!";
 
     // Display accuracy and speed of reader
     Utils.showAlertDialog(
-      context: context, 
-      title: "Result", 
-      message: "Words Per Minute (WPM): $_wordsPerMinute\nAccuracy: ${_accuracy.toStringAsFixed(2)}%\n\n\n$conclusion", 
-      actions: [],
+      context: context,
+      dismissable: false,
+      title: "Analysis Result", 
+      message: "Words Per Minute (WPM): ${_wordsPerMinute.toStringAsFixed(2)}\nAccuracy: ${_accuracy.toStringAsFixed(2)}%\n\n\n$conclusion", 
+      actions: [
+        TextButton(
+          onPressed: () => _saveProgress(
+            status: (_wordsPerMinute >= 107 && _accuracy >= 60),
+            wpm: _wordsPerMinute,
+            accuracy: _accuracy,
+          ), 
+          child: Text(
+            'Okay',
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              color: Colors.green,
+            ),
+          ),
+        )
+      ],
     );
 
      setState(() {

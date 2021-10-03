@@ -13,6 +13,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:read_and_learn/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../auth/auth.dart';
@@ -51,8 +52,6 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
   List<String> _account = ['Parent', 'Teacher'];
   List<String> _types = ['Public', 'Private'];
 
-  String _message = '';
-  bool _hasError = false;
   bool _isSigningUp = false;
   bool _setupDone = false;
 
@@ -241,20 +240,9 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
               SizedBox(
                 height: 10,
               ),
-              _hasError
-                  ? _showError(_message)
-                  : Container(
-                      width: 0,
-                      height: 0,
-                    ),
-              _hasError
-                  ? SizedBox(height: 5)
-                  : Container(
-                      width: 0,
-                      height: 0,
-                    ),
               RoundedInputField(
                   defaultValue: _nameParts != null && _firstName == null ? _nameParts![0] : _firstName,
+                  enabled: !_isSigningUp,
                   icon: Icons.person_outline_outlined,
                   hintText: 'First name',
                   onChanged: (value) {
@@ -265,6 +253,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                       ? _nameParts![_nameParts!.length - 1]
                       : _lastName,
                   icon: Icons.person_outline_outlined,
+                  enabled: !_isSigningUp,
                   hintText: 'Last name',
                   onChanged: (value) {
                     _lastName = value;
@@ -276,6 +265,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                           ? data!['email']
                           : _email,
                   icon: Icons.mail_outline,
+                  enabled: !_isSigningUp,
                   hintText: 'Email address',
                   onChanged: (value) {
                     _email = value;
@@ -283,6 +273,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
               RoundedPasswordField(
                   defaultValue: data != null && _password == null ? data!['password'] : _password,
                   icon: Icons.vpn_key_outlined,
+                  enabled: !_isSigningUp,
                   onChanged: (value) {
                     _password = value;
                   }),
@@ -290,6 +281,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                 ? RoundedInputField(
                   defaultValue: _childName,
                   icon: Icons.child_friendly_outlined,
+                  enabled: !_isSigningUp,
                   hintText: 'Child\'s name',
                   onChanged: (value) {
                     _childName = value;
@@ -299,6 +291,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                 ? RoundedInputField(
                   defaultValue: _childAge,
                   icon: Icons.child_friendly_outlined,
+                  enabled: !_isSigningUp,
                   hintText: 'Child\'s age',
                   onChanged: (value) {
                     _childAge = value;
@@ -309,6 +302,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                   defaultValue: _schoolName,
                   icon: Icons.school_outlined,
                   hintText: 'Name of School',
+                  enabled: !_isSigningUp,
                   onChanged: (value) {
                     _schoolName = value;
                   })
@@ -318,6 +312,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                   defaultValue: _schoolAddress,
                   icon: Icons.my_location_outlined,
                   hintText: 'Address of school',
+                  enabled: !_isSigningUp,
                   onChanged: (value) {
                     _schoolAddress = value;
                   })
@@ -388,7 +383,13 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
                   },
                 ),
               ),
-              _actions()
+              _actions(),
+              /* RoundedButton(
+                text: 'CONTINUE',
+                press: () {
+                  _signUp();
+                },
+              ), */
             ],
           ),
         ),
@@ -431,35 +432,8 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
               setState(() {
                 _isSigningUp = true;
               });
-            });
-  }
-
-  Widget _showError(String message) {
-    _scrollController.animateTo(
-      0.0, 
-      duration: Duration(milliseconds: 800), 
-      curve: Curves.fastOutSlowIn,
-    );
-
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            message,
-            style: GoogleFonts.poppins(
-                fontWeight: FontWeight.bold, color: Colors.red),
-          ),
-          SizedBox(
-            height: 5,
-          )
-        ],
-      ),
-    );
+            },
+          );
   }
 
   Future _pickOrCaptureImage(ImageSource source) async {
@@ -473,20 +447,39 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
   }
 
   Future<Result?> _signUp() async {
-    if (_firstName!.isEmpty || _lastName!.isEmpty || _email!.isEmpty || _password!.isEmpty)
+    /* Utils.showProgressDialog(
+      context: context, 
+      message: "Signing up...",
+    ); */
+
+    if (_firstName!.isEmpty || _lastName!.isEmpty || _email!.isEmpty || _password!.isEmpty) {
       setState(() {
-        _hasError = true;
-        _message = MESSAGES['users']!['empty_field'] as String;
         _isSigningUp = false;
-        print('Empty fields');
       });
-    else if(_email != null && !EmailValidator.validate(_email as String))
+
+      // Navigator.of(context, rootNavigator: true).pop();
+
+      Utils.showSnackbar(
+        context: context, 
+        message: MESSAGES['users']!['empty_field']!,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
+    else if(_email != null && !EmailValidator.validate(_email as String)) {
       setState(() {
-        _hasError = true;
-        _message = MESSAGES['email']!['invalid'] as String;
         _isSigningUp = false;
-        print('Invalid email address format');
       });
+
+      // Navigator.of(context, rootNavigator: true).pop();
+
+      Utils.showSnackbar(
+        context: context, 
+        message: MESSAGES['email']!['invalid']!,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
     else {
       Result<List<User>> users = await UserService.instance.getUser('email', _email);
       print('Check for existing email, done!');
@@ -505,21 +498,58 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
 
         User user = User(
           id: _id,
-          firstName: _firstName as String,
-          lastName: (_lastName != null && _nameParts == null) ? _lastName as String : _nameParts![_nameParts!.length-1],
-          email: (_email != null && (data != null || credential != null)) ? _email as String : (data != null) ? data!['email'] : credential!.user!.email,
+          firstName: _firstName!,
+          lastName: (_lastName != null && _nameParts == null) ? _lastName! : _nameParts![_nameParts!.length-1],
+          email: (_email != null && (data != null || credential != null)) ? _email! : (data != null) ? data!['email'] : credential!.user!.email,
           gender: _genders[_genderIndex],
-          password: _password as String,
-          schoolName: _schoolName != null && _accountIndex == 1 ? _schoolName as String : '',
-          schoolAddress: _schoolAddress != null && _accountIndex == 1 ? _schoolAddress as String : '',
+          password: _password!,
+          schoolName: _schoolName != null && _accountIndex == 1 ? _schoolName! : '',
+          schoolAddress: _schoolAddress != null && _accountIndex == 1 ? _schoolAddress! : '',
           schoolType: _accountIndex == 1 ? _types[_typeOfSchool] : '',
-          childName: _childName != null && _accountIndex == 0 ? _childName as String : '',
-          childAge: _childAge != null && _accountIndex == 0 ? _childAge as String : '',
-          photo: _profileSrc as String,
+          childName: _childName != null && _accountIndex == 0 ? _childName! : '',
+          childAge: _childAge != null && _accountIndex == 0 ? _childAge! : '',
+          photo: _profileSrc ?? "",
           type: _accountIndex,
           isDeleted: false
         );
 
+        Result<dynamic> result = await UserService.instance.setUser(user);
+
+        if(result.hasError) {
+          setState(() {
+            _isSigningUp = false;
+          });
+
+          Utils.showSnackbar(
+            context: context, 
+            message: result.message,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+          );
+
+          return null;
+        }
+
+        Map<String, dynamic> oldData = await Cache.load('user', <String, dynamic>{});
+        Map<String, dynamic> newData = user.toJson();
+        newData['isGoogle'] = oldData['isGoogle'];
+        await Cache.write('user', newData);
+
+        setState(() {
+          _isSigningUp = false;
+        });
+
+        /* Navigator.of(context, rootNavigator: true).pop();
+
+        Navigator.of(context).pop();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => _accountIndex == Role.TEACHER.accessLevel 
+              ? TeacherPanel() 
+              : ParentPanel(),
+          ),
+        ); */
+         
         UserService.instance.setUser(user).then((_) async {
           print('User saved');
 
@@ -527,6 +557,12 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
           Map<String, dynamic> newData = user.toJson();
           newData['isGoogle'] = oldData['isGoogle'];
           await Cache.write('user', newData);
+
+          setState(() {
+            _isSigningUp = false;
+          });
+
+          // Navigator.of(context, rootNavigator: true).pop();
           
           Navigator.of(context).pop();
           Navigator.of(context).push(
@@ -536,17 +572,31 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
               : ParentPanel(),
             ),
           );
+
+        }).catchError((_) {
+          Utils.showAlertDialog(
+            context: context, 
+            title: "Sign Up Failed", 
+            message: "Cause: ${_.toString()}", 
+            actions: [],
+          );
         });
-        
 
         return Result();
-      } else
+      } else {
         setState(() {
           _isSigningUp = false;
-          _hasError = true;
-          _message = MESSAGES['email']!['exist'] as String;
-          print('Email address already exist');
         });
+
+        // Navigator.of(context, rootNavigator: true).pop();
+
+        Utils.showSnackbar(
+          context: context, 
+          message: "Email address already exists!",
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      }
 
       return null;
     }

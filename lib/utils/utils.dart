@@ -51,10 +51,12 @@ class Utils {
     required BuildContext context,
     required String title, 
     required String message, 
-    required List<Widget> actions
+    required List<Widget> actions,
+    bool dismissable = true,
   }) {
     showDialog(
       context: context, 
+      barrierDismissible: dismissable,
       builder: (context) => AlertDialog(
         title: Text(
           title,

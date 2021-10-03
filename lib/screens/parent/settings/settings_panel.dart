@@ -170,6 +170,9 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                   ),
                                   _profileImg == null
                                     ? FadeInImage.memoryNetwork(
+                                      imageErrorBuilder: (context, object, stacktrace) {
+                                        return Container();
+                                      },
                                       placeholder: kTransparentImage, 
                                       image: widget.user.photo,
                                       width: 88,
@@ -177,6 +180,9 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                       fit: BoxFit.cover,
                                     )
                                     : FadeInImage(
+                                      imageErrorBuilder: (context, object, stacktrace) {
+                                        return Container();
+                                      },
                                       placeholder: MemoryImage(kTransparentImage), 
                                       image: FileImage(_profileImg!),
                                       width: 88,

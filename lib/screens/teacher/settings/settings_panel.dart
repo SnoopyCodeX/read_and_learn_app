@@ -170,19 +170,25 @@ class _SettingsPanelState extends State<SettingsPanel> with SingleTickerProvider
                                   ),
                                   _profileImg == null
                                     ? FadeInImage.memoryNetwork(
-                                      placeholder: kTransparentImage, 
-                                      image: widget.user.photo,
-                                      width: 88,
-                                      height: 88,
-                                      fit: BoxFit.cover,
-                                    )
+                                        imageErrorBuilder: (context, object, stacktrace) {
+                                          return Container();
+                                        },
+                                        placeholder: kTransparentImage, 
+                                        image: widget.user.photo,
+                                        width: 88,
+                                        height: 88,
+                                        fit: BoxFit.cover,
+                                      )
                                     : FadeInImage(
-                                      placeholder: MemoryImage(kTransparentImage), 
-                                      image: FileImage(_profileImg!),
-                                      width: 88,
-                                      height: 88,
-                                      fit: BoxFit.cover,
-                                    ),
+                                        imageErrorBuilder: (context, object, stacktrace) {
+                                          return Container();
+                                        },
+                                        placeholder: MemoryImage(kTransparentImage), 
+                                        image: FileImage(_profileImg!),
+                                        width: 88,
+                                        height: 88,
+                                        fit: BoxFit.cover,
+                                      ),
                                 ],
                               ),
                             ),

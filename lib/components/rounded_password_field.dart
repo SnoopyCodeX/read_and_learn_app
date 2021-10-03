@@ -7,10 +7,13 @@ class RoundedPasswordField extends StatelessWidget {
   final String? defaultValue;
   final ValueChanged<String> onChanged;
   final IconData icon;
+  final bool enabled;
+
   const RoundedPasswordField({
     this.defaultValue,
     required this.onChanged,
-    this.icon = Icons.lock
+    this.icon = Icons.lock,
+    this.enabled = true,
   });
 
   @override
@@ -18,6 +21,7 @@ class RoundedPasswordField extends StatelessWidget {
     return TextFieldContainer(
       child: TextField(
         controller: TextEditingController(text: defaultValue),
+        enabled: enabled,
         obscureText: true,
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
