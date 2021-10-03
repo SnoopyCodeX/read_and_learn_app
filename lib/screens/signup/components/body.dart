@@ -1,9 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_cache/flutter_cache.dart' as Cache;
 
 import '../../../../../components/already_have_an_account_check.dart';
 import '../../../../../components/rounded_button.dart';

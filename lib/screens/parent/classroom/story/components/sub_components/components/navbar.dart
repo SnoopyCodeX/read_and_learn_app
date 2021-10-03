@@ -4,15 +4,15 @@ import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:read_and_learn/models/result_model.dart';
-import 'package:read_and_learn/models/user_model.dart';
-import 'package:read_and_learn/models/user_progress_model.dart';
-import 'package:read_and_learn/services/user_progress_services.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../../constants.dart';
+import '../../../../../../../models/result_model.dart';
 import '../../../../../../../models/story_model.dart';
+import '../../../../../../../models/user_model.dart';
+import '../../../../../../../models/user_progress_model.dart';
+import '../../../../../../../services/user_progress_services.dart';
 import '../../../../../../../utils/utils.dart';
 
 class CustomNavBar extends StatefulWidget {

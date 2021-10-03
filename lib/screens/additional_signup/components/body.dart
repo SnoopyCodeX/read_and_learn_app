@@ -13,7 +13,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:read_and_learn/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../auth/auth.dart';
@@ -25,6 +24,7 @@ import '../../../enums/role_enum.dart';
 import '../../../models/result_model.dart';
 import '../../../models/user_model.dart';
 import '../../../services/user_services.dart';
+import '../../../utils/utils.dart';
 import '../../parent/parent_panel.dart';
 import '../../teacher/teacher_panel.dart';
 import 'background.dart';
