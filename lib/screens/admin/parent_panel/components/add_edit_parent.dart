@@ -415,7 +415,7 @@ class _AddEditParentScreenState extends State<AddEditParentScreen> {
                 ].request();
 
               if (status[Permission.storage] == PermissionStatus.granted && status[Permission.camera] == PermissionStatus.granted)
-                _pickOrCaptureImage(ImageSource.gallery);
+                _pickOrCaptureImage(ImageSource.camera);
             },
             icon: Icon(Icons.camera_alt_outlined, color: Colors.white),
             color: Colors.black87,
