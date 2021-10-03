@@ -129,21 +129,21 @@ class _PendingStudentScreenState extends State<PendingStudentScreen> {
                 ),
               ),
               Text(
-                'Finished on: N/A',
+                'Finished on: (Not finished yet)',
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                 ),
               ),
               Text(
-                'Accuracy: N/A',
+                'Accuracy: ${userProgress.accuracy}%',
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                 ),
               ),
               Text(
-                'Speed: N/A',
+                'Speed: ${userProgress.speed} wpm',
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.poppins(
                   fontSize: 16,

@@ -143,7 +143,7 @@ class _FinishedStudentScreenState extends State<FinishedStudentScreen> {
                 ),
               ),
               Text(
-                'Speed: ${userProgress.speed}',
+                'Speed: ${userProgress.speed} wpm',
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.poppins(
                   fontSize: 16,

@@ -214,8 +214,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
         status: status ? STATUS_FINISHED_READING : STATUS_STILL_READING,
         photoUrl: userData.photo,
         name: userData.childName,
-        dateFinished: status ? Jiffy(DateTime.now()).format("MMMM do yyyy h:mm:ss a") : "",
-        dateStarted: Jiffy(DateTime.now()).format("MMMM do yyyy h:mm:ss a"),
+        dateFinished: status ? Jiffy(DateTime.now()).format("MMMM do yyyy h:mm a") : "",
+        dateStarted: Jiffy(DateTime.now()).format("MMMM do yyyy h:mm a"),
       );
     else 
     {
