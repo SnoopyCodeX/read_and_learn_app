@@ -74,7 +74,7 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
         if(widget.story != null)
           for(Classroom _class in _classes)
             if(_class.id == widget.story!.classroom) {
-              className = _class.name + '_' + _class.section;
+              className = _class.name;
               break;
             }
 
@@ -213,7 +213,10 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
                                       MaterialPageRoute(
                                         builder: (_) => SelectClass(
                                           classes: classes!, 
-                                          onClassSelected: (selectedClassroom) => setState(() => selectedClass = selectedClassroom.name),
+                                          onClassSelected: (selectedClassroom) => setState(() {
+                                            selectedClass = selectedClassroom.name;
+                                            _selectedRoom = selectedClassroom;
+                                          }),
                                         ),
                                       ),
                                     ),
@@ -519,7 +522,7 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
         classroom: _selectedRoom!.id,
         title: _title,
         content: _content,
-        thumbnail: _thumnailUrl!
+        thumbnail: _thumnailUrl ?? (widget.story == null ? DEFAULT_STORY_THUMBNAIL : widget.story!.thumbnail),
       );
       
       await StoryService.instance.setStory(story);

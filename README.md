@@ -6,6 +6,13 @@
 ![License](https://img.shields.io/github/license/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)
 #### An online reading app for children.
 
+### :computer: Technologies Used
+![Flutter](https://img.icons8.com/color/30/flutter.png)
+![Firebase](https://img.icons8.com/color/30/4a90e2/firebase.png)
+![NodeJS](https://img.icons8.com/color/30/4a90e2/nodejs.png)
+![NPM](https://img.icons8.com/color/30/4a90e2/npm.png)
+![ExpressJS](https://img.icons8.com/color/30/4a90e2/express.png)
+
 ### :fire: Features
 
 | :zap: Admin Panel                             | :zap: Teacher Panel                  | :zap: Parent Panel                      |
@@ -21,17 +28,16 @@
 ---
 
 ### :fire: Main Features
-- :white_check_mark: Compute reader's WPM using android's built-in Speech Recognizer
+- :white_check_mark: Compute reader's WPM(Words per minute)
 - :white_check_mark: Generate certificate from the app
-- :white_check_mark: Analyze reader's accuracy of pronounciation using android's built-in Speech Recognizer
+- :white_check_mark: Analyze reader's accuracy
 - :white_check_mark: Demonstration of the word's pronounciation when the word is clicked
 
 ---
 
 ### :warning: Notice
 
-- :white_check_mark: This app heavily relies on android devices' built-in **Speech Recognizer** and is a very **crucial requirement** for this app to run properly.
-
+- :white_check_mark: This app heavily relies on android devices' **Microphone** to record the audio and is a very **crucial requirement** for this app to run properly.
 - :white_check_mark: This app currently does not support Offline Mode
 
 ---
@@ -132,15 +138,6 @@ flutter run --release
 # Generates an .apk file
 flutter build apk
 ```
-
----
-
-### :computer: Techs Used
-![Flutter](https://img.icons8.com/color/30/flutter.png)
-![Firebase](https://img.icons8.com/color/30/4a90e2/firebase.png)
-
-##### Database: Firebase DB
-##### Application Framework: Flutter
 
 ---
 

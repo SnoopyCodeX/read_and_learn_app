@@ -394,7 +394,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
       Permission.storage,
     ].request();
 
-    if(status[Permission.speech] != PermissionStatus.granted || status[Permission.storage] != PermissionStatus.granted) {
+    if(status[Permission.microphone] != PermissionStatus.granted || status[Permission.storage] != PermissionStatus.granted) {
       Utils.showSnackbar(
         context: context,
         message: 'Record Audio or Storage permission was revoked!',
@@ -440,6 +440,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
     String failureDetail = data['detail'];
 
     print("Transcript: $transcript \n Status: $status \n Type: $failType \n Details: $failureDetail");
+    print("T-Length: ${transcript.split(' ').length}");
+    print("Audio Duration: ${mp3info.duration.inSeconds} seconds");
 
     if(status == 'transcribed') {
       _wordsPerMinute = (transcript.split(" ").length / mp3info.duration.inSeconds).toDouble();
@@ -452,8 +454,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
           ? "\nCongratulations, you passed! Thank you for taking your time in learning to read."
           : "\nSorry, you failed, your WPM(Words per Minute) should be atleast 107 and your accuracy should be atleast 70%. Practice more, you'll get it right next time!";
 
-      String message = "Wpm(Words/min): ${_wordsPerMinute.toStringAsFixed(2)}\n";
-      message += "Accuracy: ${_accuracy.toStringAsFixed(2)}%\n";
+      String message = "Wpm(Words/min): ${transcript.length == 0 ? 0 : _wordsPerMinute.toStringAsFixed(2)}\n";
+      message += "Accuracy: ${transcript.length == 0 ? 0 : _accuracy.toStringAsFixed(2)}%\n";
       message += "Corrects: ${transcript.length}\n";
       message += "Total Words: $_lengthOfStory\n";
       message += conclusion;
@@ -467,11 +469,11 @@ class _CustomNavBarState extends State<CustomNavBar> {
           TextButton(
             onPressed: () => _saveProgress(
               status: (
-                (((transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100) >= 107 && 
-                (((transcript.split(" ").length / _lengthOfStory).toDouble()) * 100) >= 60
+                (transcript.length == 0 ? 0 : ((transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100) >= 107 && 
+                (transcript.length == 0 ? 0 : ((transcript.split(" ").length / _lengthOfStory).toDouble()) * 100) >= 60
               ),
-              wpm: ((transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100,
-              accuracy: ((transcript.split(" ").length / _lengthOfStory).toDouble()) * 100,
+              wpm: (transcript.length == 0 ? 0 : (transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100,
+              accuracy: (transcript.length == 0 ? 0 : (transcript.split(" ").length / _lengthOfStory).toDouble()) * 100,
             ),
             child: Text(
               'Okay',

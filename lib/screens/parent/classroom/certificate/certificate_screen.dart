@@ -108,7 +108,8 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                     Positioned(
                                       width: width,
                                       height: height,
-                                      top: height / 2,
+                                      top: (height / 3) + 10,
+                                      left: (width / 2) - (userData['child_name'] ?? '').length * 5,
                                       child: Text(
                                         userData['child_name'] ?? '',
                                         style: GoogleFonts.poppins(
@@ -121,6 +122,8 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                       height: height,
                                       // top: 128,
                                       // left: 113,
+                                      top: (height / 2) + 16,
+                                      left: (width/2) - fancyDay.length * 14,
                                       child: Text(
                                         fancyDay,
                                         style: GoogleFonts.poppins(
@@ -130,8 +133,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                       ),
                                     ),
                                     Positioned(
-                                      top: 128,
-                                      left: 164,
+                                      // top: 128,
+                                      // left: 164,
+                                      top: (height / 2) + 16,
+                                      left: (width/2) - fancyDay.length * 1.2,
                                       child: Text(
                                         Jiffy(DateTime.now()).format("MMM"),
                                         style: GoogleFonts.poppins(
@@ -141,8 +146,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                       ),
                                     ),
                                     Positioned(
-                                      top: 128,
-                                      left: 240,
+                                      // top: 128,
+                                      // left: 240,
+                                      top: (height / 2) + 16,
+                                      right: (width/2) - Jiffy(DateTime.now()).format("yyyy").length * 25,
                                       child: Text(
                                         Jiffy(DateTime.now()).format("yyyy"),
                                         style: GoogleFonts.poppins(
@@ -152,8 +159,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                       ),
                                     ),
                                     Positioned(
-                                      top: 148,
-                                      left: 178,
+                                      // top: 148,
+                                      // left: 178,
+                                      bottom: (height / 3) - 20,
+                                      right: (width / 8) + 16,
                                       child: Text(
                                         'Read and Learn',
                                         style: GoogleFonts.poppins(

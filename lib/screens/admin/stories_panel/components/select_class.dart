@@ -37,25 +37,27 @@ class _SelectClassState extends State<SelectClass> {
               ),
               SizedBox(height: 10),
               if(widget.classes.isNotEmpty) ...[
-                ListView.builder(
-                  itemCount: widget.classes.length,
-                  itemBuilder: (context, index) => ListTile(
-                    title: Text(
-                      widget.classes[index].name,
-                      style: GoogleFonts.poppins(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: widget.classes.length,
+                    itemBuilder: (context, index) => ListTile(
+                      title: Text(
+                        widget.classes[index].name,
+                        style: GoogleFonts.poppins(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
                       ),
-                    ),
-                    subtitle: Text(
-                      widget.classes[index].section,
-                      style: GoogleFonts.poppins(
-                        color: Colors.black87,
-                        fontSize: 18,
+                      subtitle: Text(
+                        widget.classes[index].section,
+                        style: GoogleFonts.poppins(
+                          color: Colors.black87,
+                          fontSize: 18,
+                        ),
                       ),
+                      onTap: () => _confirmSelectedClass(widget.classes[index]),
                     ),
-                    onTap: () => _confirmSelectedClass(widget.classes[index]),
                   ),
                 ),
               ] else ...[
