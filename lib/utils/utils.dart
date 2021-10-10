@@ -100,6 +100,7 @@ class Utils {
     required BuildContext context,
     required String message,
     bool barrierDismissable = false,
+    Color progressColor = kPrimaryColor,
   }) {
     showDialog(
       context: context,
@@ -111,7 +112,7 @@ class Utils {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(
-                color: kPrimaryColor,
+                color: progressColor,
                 strokeWidth: 4,
               ),
               SizedBox(width: 10),

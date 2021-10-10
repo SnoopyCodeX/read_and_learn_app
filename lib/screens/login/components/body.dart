@@ -243,7 +243,7 @@ class _BodyState extends State<Body> {
         _email
       );
 
-      if(data.data != null && data.data!.length > 0)
+      if(!data.hasError)
       {
         User user = data.data![0];
 

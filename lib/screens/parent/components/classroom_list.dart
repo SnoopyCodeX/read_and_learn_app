@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../constants.dart';
 import '../../../models/classroom_model.dart';
 import '../../../models/result_model.dart';
 import '../../../models/user_model.dart';
-import '../../../providers/temp_variables_provider.dart';
-import '../../../services/classroom_member_services.dart';
 import '../../../services/classroom_services.dart';
-import '../../../utils/utils.dart';
-import '../classroom/classroom_panel.dart';
+import 'classroom_list_item.dart';
 
 class ClassroomList extends StatefulWidget {
   final void Function() refreshListener;
@@ -25,9 +21,6 @@ class ClassroomList extends StatefulWidget {
 }
 
 class _ClassroomListState extends State<ClassroomList> {
-  Classroom? _selectedRoom;
-  int _numOfStudents = 0;
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -48,96 +41,11 @@ class _ClassroomListState extends State<ClassroomList> {
                   shrinkWrap: true,
                   itemCount: classrooms.length,
                   physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    Classroom classroom = classrooms[index];
-                    _getNumOfStudents(classroom.id);
-
-                    WidgetsBinding.instance!.addPostFrameCallback((_) {
-                      if(_selectedRoom != null)
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            settings: RouteSettings(name: ClassroomPanel.NAME),
-                            builder: (context) => ClassroomPanel(
-                              classroom, 
-                              () => _reloadAndOpenRoom(classroom), 
-                              ({bool refresh = false}) => _resetSelectedRoom(refresh: refresh),
-                            ),
-                          ),
-                        );
-                    });
-
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      width: 300,
-                      height: 160,
-                      child: InkWell(
-                        onTap: () {
-                          _selectedRoom = classroom;
-
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ClassroomPanel(
-                                classroom, 
-                                () => _reloadAndOpenRoom(classroom), 
-                                ({bool refresh = false}) => _resetSelectedRoom(refresh: refresh),
-                              ),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(10),
-                        child: Card(
-                          color: Colors.white,
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          classroom.name,
-                                          style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            height: 1,
-                                          ),
-                                        ),
-                                        Text(
-                                          classroom.section,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    IconButton(
-                                      icon: Icon(Icons.exit_to_app_outlined),
-                                      onPressed: () => _showLeaveDialog(classroom.id),
-                                    ),
-                                  ],
-                                ),
-                                Spacer(),
-                                Text(
-                                  '$_numOfStudents Student(s)',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 15,
-                                  )
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                  itemBuilder: (context, index) => ClassroomListItem(
+                    classroom: classrooms[index],
+                    user: widget.user,
+                    refreshListener: () => widget.refreshListener(),
+                  ),
                 ),
               ],
             );
@@ -260,74 +168,5 @@ class _ClassroomListState extends State<ClassroomList> {
         );
       },
     );
-  }
-
-  void _resetSelectedRoom({bool refresh = false}) {
-    _selectedRoom = null;
-
-    if(refresh)
-      widget.refreshListener();
-    else 
-      Provider.of<TempVariables>(context, listen: false).setTempIndex(1);
-  }
-
-  Future<void> _reloadAndOpenRoom(Classroom classroom) async {
-    Result<List<Classroom>> result = await ClassroomService.instance.getClassroom('id', classroom.id);
-    _selectedRoom = result.data![0];
-
-    // Refresh UI
-    setState(() {});
-  }
-
-  Future<void> _getNumOfStudents(String id) async {
-    _numOfStudents = (await ClassMemberService.instance.countStudentsFromClass(id)) - 1;
-  }
-
-  void _showLeaveDialog(String classId) {
-    Utils.showAlertDialog(
-      context: context, 
-      title: 'Confirm Leave', 
-      message: 'Do you really want to leave this class?', 
-      actions: [
-        TextButton(
-          onPressed: () => _leaveClassroom(classId),
-          child: Text(
-            'Yes',
-            style: GoogleFonts.poppins(
-              color: kPrimaryColor,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-          child: Text(
-            'No',
-            style: GoogleFonts.poppins(
-              color: kPrimaryColor,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _leaveClassroom(String classId) async {
-    // Dismiss previous dialog
-    Navigator.of(context, rootNavigator: true).pop();
-
-    Utils.showProgressDialog(
-      context: context, 
-      message: 'Leaving classroom...',
-    );
-
-    await ClassroomService.instance.leaveClassroom(widget.user.id, classId);
-
-    // Dismiss progress dialog
-    Navigator.of(context, rootNavigator: true).pop();
-
-    // Refresh list
-    widget.refreshListener();
   }
 }

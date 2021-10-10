@@ -1,26 +1,37 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as Http;
 import 'package:jiffy/jiffy.dart';
+import 'package:mp3_info/mp3_info.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:speech_to_text/speech_to_text.dart';
+import 'package:pusher_client/pusher_client.dart';
+import 'package:record_mp3/record_mp3.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../../constants.dart';
+import '../../../../../../../http/http_handler.dart' as HttpHandler;
 import '../../../../../../../models/result_model.dart';
 import '../../../../../../../models/story_model.dart';
 import '../../../../../../../models/user_model.dart';
 import '../../../../../../../models/user_progress_model.dart';
 import '../../../../../../../services/user_progress_services.dart';
+import '../../../../../../../services/user_services.dart';
 import '../../../../../../../utils/utils.dart';
 
 class CustomNavBar extends StatefulWidget {
   final Story story;
+  final User? user;
   final void Function(String option) onOptionSelected;
   final void Function() resetSelectedStory;
 
   const CustomNavBar({
+    required this.user,
     required this.story,
     required this.onOptionSelected,
     required this.resetSelectedStory,
@@ -31,14 +42,13 @@ class CustomNavBar extends StatefulWidget {
 }
 
 class _CustomNavBarState extends State<CustomNavBar> {
-  SpeechToText? stt;
-  List<double> _accuracies = [];
-  DateTime? _start, _end;
+  RecordMp3 _recordMp3 = RecordMp3.instance;
   IconData _micIcon = Icons.mic_outlined;
+  String _audioPath = "";
   bool _isListening = false;
   double _wordsPerMinute = 0;
   double _accuracy = 0;
-  double _lengthOfStory = 0;
+  int _lengthOfStory = 0;
 
   @override
   void initState() {
@@ -47,8 +57,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
     // Get the number of words in the story
     _lengthOfStory = widget.story.content
       .replaceAll("\n", "")
-      .split(" ").length
-      .toDouble();
+      .split(" ").length;
   }
 
   @override
@@ -56,7 +65,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
     print('Started: $_isListening');
 
     return Container(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.all(20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -100,7 +109,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                   repeat: true,
                   showTwoGlows: true,
                   animate: _isListening,
-                  glowColor: kPrimaryColor,
+                  glowColor: Colors.red,
                   endRadius: 40,
                   child: IconButton(
                     icon: Icon(_micIcon),
@@ -108,7 +117,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                       if(!_isListening)
                         _showStartRecordingDialog();
                       else
-                        _stopListening();
+                        _showStopRecordingDialog();
                     },
                   ),
                 ),
@@ -152,11 +161,6 @@ class _CustomNavBarState extends State<CustomNavBar> {
             setState(() {
               _isListening = true;
               _micIcon = Icons.mic_off_outlined;
-
-              if(_isListening) {
-                _accuracies = <double>[];
-                _start = DateTime.now();
-              }
             });
 
             _startListening();
@@ -173,6 +177,81 @@ class _CustomNavBarState extends State<CustomNavBar> {
           onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
           child: Text(
             'Cancel',
+            style: GoogleFonts.poppins(
+              color: Colors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showStopRecordingDialog() {
+    _recordMp3.pause();
+
+    Utils.showAlertDialog(
+      context: context, 
+      title: 'Recording Paused', 
+      message: 'What would you like to do?', 
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+
+            Utils.showSnackbar(
+              context: context, 
+              message: "Recording resumed",
+              backgroundColor: Colors.amber,
+              textColor: Colors.white,
+            );
+
+            _recordMp3.resume();
+          },
+          child: Text(
+            'Resume',
+            style: GoogleFonts.poppins(
+              color: Colors.amber,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () => _stopListening(),
+          child: Text(
+            'Save',
+            style: GoogleFonts.poppins(
+              color: Colors.green,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+
+            Utils.showSnackbar(
+              context: context, 
+              message: "Recording stopped",
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+            );
+
+            _recordMp3.stop();
+
+            File audioFile = File(_audioPath);
+            audioFile.delete();
+
+            setState(() {
+              _isListening = false;
+              _micIcon = Icons.mic_outlined;
+
+              _accuracy = 0;
+              _wordsPerMinute = 0;
+            });
+          }, 
+          child: Text(
+            'Stop',
             style: GoogleFonts.poppins(
               color: Colors.red,
               fontWeight: FontWeight.bold,
@@ -261,72 +340,64 @@ class _CustomNavBarState extends State<CustomNavBar> {
     );
   }
  
-  void _stopListening() {
-    _end = DateTime.now();
+  Future<void> _stopListening() async {
+    Navigator.of(context, rootNavigator: true).pop();
+    _recordMp3.stop();
 
-    // Compute speed of reader
-    double seconds = _end!.difference(_start!).inSeconds.toDouble();
-    double mins = seconds / 60.0;
-    _wordsPerMinute = (_accuracies.length.toDouble() / mins);
-    
-    print("Seconds: $seconds");
-    print("Minutes: $mins");
-    print("WPM: $_wordsPerMinute");
+    Utils.showProgressDialog(context: context, message: "Analyzing audio...");
 
-    // Compute reader's accuracy
-    _accuracies.forEach((accuracy) => _accuracy += accuracy);
-    _accuracy /= (_lengthOfStory / 100);
-
-    _accuracy *= 100;
-
-    String conclusion = (_wordsPerMinute >= 107 && _accuracy >= 70) 
-      ? "Congratulations, you passed! Thank you for taking your time in learning to read." 
-      : "Sorry, you failed, your WPM(Words per Minute) should be atleast 107 and your accuracy should be atleast 70%. Practice more, you'll get it right next time!";
-
-    // Display accuracy and speed of reader
-    Utils.showAlertDialog(
-      context: context,
-      dismissable: false,
-      title: "Analysis Result", 
-      message: "Words Per Minute (WPM): ${_wordsPerMinute.toStringAsFixed(2)}\nAccuracy: ${_accuracy.toStringAsFixed(2)}%\n\n\n$conclusion", 
-      actions: [
-        TextButton(
-          onPressed: () => _saveProgress(
-            status: (_wordsPerMinute >= 107 && _accuracy >= 60),
-            wpm: _wordsPerMinute,
-            accuracy: _accuracy,
-          ), 
-          child: Text(
-            'Okay',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              color: Colors.green,
-            ),
-          ),
-        )
-      ],
+    File audioFile = File(_audioPath);
+    String audioUrl = (await UserService.instance.uploadAudio(widget.user!.id, audioFile)).data!;
+    Http.Response response = await HttpHandler.postData(
+      TRANSCRIBE_REST_API, 
+      jsonEncode({"audioUrl": audioUrl, "userId": widget.user!.id}),
     );
 
-     setState(() {
+    print('Response: ${response.body}');
+
+    if(response.statusCode == HttpStatus.ok) {
+      PusherClient pusher = PusherClient(PUSHER_APP_ID, PusherOptions(cluster: PUSHER_CLUSTER));
+      Channel channel = pusher.subscribe(widget.user!.id);
+
+      channel.bind(widget.user!.id, (event) {
+        if(event != null) {
+          Map<String, dynamic> data = (jsonDecode(event.data!) as Map<String, dynamic>);
+          _showConclusion(data, audioFile);
+
+          print("Data: ${event.data}");
+          print("Json: ${event.toJson()}");
+
+          pusher.unsubscribe(widget.user!.id);
+          pusher.disconnect();
+        }
+      });
+    } else {
+      Navigator.of(context, rootNavigator: true).pop();
+
+      Utils.showAlertDialog(
+        context: context, 
+        title: "Analyze Failed", 
+        message: "Failed to analyze the audio, please check your internet connection and try again.", 
+        actions: [],
+      );
+    }
+
+    setState(() {
       _isListening = false;
       _micIcon = Icons.mic_outlined;
-
-      _start = _end = null;
-      _wordsPerMinute = 0;
-      _accuracies = <double>[];
     });
-
-    stt!.stop();
-    stt = null;
   }
 
   Future<void> _startListening() async {
-    PermissionStatus status = await Permission.speech.request();
+    Map<Permission, PermissionStatus> status = await [
+      Permission.microphone, 
+      Permission.storage,
+    ].request();
 
-    if(status != PermissionStatus.granted) {
+    if(status[Permission.speech] != PermissionStatus.granted || status[Permission.storage] != PermissionStatus.granted) {
       Utils.showSnackbar(
         context: context,
-        message: 'Record audio permission was revoked!',
+        message: 'Record Audio or Storage permission was revoked!',
         backgroundColor: Colors.red,
         textColor: Colors.white,
       );
@@ -334,56 +405,96 @@ class _CustomNavBarState extends State<CustomNavBar> {
       setState(() {
         _isListening = false;
         _micIcon = Icons.mic_outlined;
-
-        stt = _start = null;
       });
 
       return;
     }
 
-    stt = SpeechToText();
+    Utils.showProgressDialog(context: context, message: "Starting up...");
 
-    bool isAvailable = await stt!.initialize(
-      onStatus: (status) => print('STT Status: $status'),
-      onError: (error) => print('STT Error: $error'),
-      finalTimeout: Duration(minutes: 30),
+    _audioPath = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+    _audioPath += "/${widget.user!.id}.mp3";
+    _recordMp3.start(_audioPath, (type) => Utils.showSnackbar(
+      context: context, 
+      message: "Error Type: ${type.toString()}",
+      textColor: Colors.white,
+      backgroundColor: Colors.red,
+    ));
+
+    Navigator.of(context, rootNavigator: true).pop();
+    Utils.showSnackbar(
+      context: context, 
+      message: "Recording started",
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
     );
+  }
 
-    if(isAvailable) 
-      stt!.listen(
-        listenFor: Duration(minutes: 30),
-        pauseFor: Duration(minutes: 1),
-        onResult: (result) {                                                               
-          if(result.hasConfidenceRating && result.confidence > 0)
-            _accuracies.add(result.confidence);
-          print(result.recognizedWords);
-        }
-      );
-    else {
-      setState(() {
-        _isListening = false;
-        _micIcon = Icons.mic_outlined;
+  Future<void> _showConclusion(Map<String, dynamic> data, File audioFile) async {
+    Navigator.of(context, rootNavigator: true).pop();
 
-        stt = _start = null;
-      });
+    MP3Info mp3info = MP3Processor.fromFile(audioFile);
+    String transcript = data['transcript'];
+    String status = data['status'];
+    String failType = data['fail_type'];
+    String failureDetail = data['detail'];
+
+    print("Transcript: $transcript \n Status: $status \n Type: $failType \n Details: $failureDetail");
+
+    if(status == 'transcribed') {
+      _wordsPerMinute = (transcript.split(" ").length / mp3info.duration.inSeconds).toDouble();
+      _wordsPerMinute *= 100;
+
+      _accuracy = (transcript.split(" ").length / _lengthOfStory).toDouble();
+      _accuracy *= 100;
+
+      String conclusion = (_wordsPerMinute >= 107 && _accuracy >= 70)
+          ? "\nCongratulations, you passed! Thank you for taking your time in learning to read."
+          : "\nSorry, you failed, your WPM(Words per Minute) should be atleast 107 and your accuracy should be atleast 70%. Practice more, you'll get it right next time!";
+
+      String message = "Wpm(Words/min): ${_wordsPerMinute.toStringAsFixed(2)}\n";
+      message += "Accuracy: ${_accuracy.toStringAsFixed(2)}%\n";
+      message += "Corrects: ${transcript.length}\n";
+      message += "Total Words: $_lengthOfStory\n";
+      message += conclusion;
 
       Utils.showAlertDialog(
-        context: context, 
-        title: 'Unsupported STTR!', 
-        message: 'Sorry, Speech to Text Recognition is not supported on your device. This is a crucial requirement for this app because this is what determines the accuracy of the pronounced words.', 
+        context: context,
+        dismissable: false,
+        title: "Analysis Result",
+        message: message,
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+            onPressed: () => _saveProgress(
+              status: (
+                (((transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100) >= 107 && 
+                (((transcript.split(" ").length / _lengthOfStory).toDouble()) * 100) >= 60
+              ),
+              wpm: ((transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100,
+              accuracy: ((transcript.split(" ").length / _lengthOfStory).toDouble()) * 100,
+            ),
             child: Text(
               'Okay',
               style: GoogleFonts.poppins(
-                color: Colors.deepOrange,
-                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.green,
               ),
             ),
-          ),
+          )
         ],
       );
-    }
+    } else 
+      Utils.showAlertDialog(
+        context: context, 
+        title: "Analysis Failed",
+        message: "$failureDetail \n\n Type: $failType", 
+        actions: [],
+      );
+
+    audioFile.delete();
+    setState(() {
+      _accuracy = 0;
+      _wordsPerMinute = 0;
+    });
   }
 }

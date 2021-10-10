@@ -110,7 +110,7 @@ class ClassroomService {
   }
 
   Future<void> leaveClassroom(String userId, String classId) async {
-    await ClassMemberService.instance.denyOrRemoveMember(classId, userId);
+    await ClassMemberService.instance.denyOrRemoveMember(classId, userId, leaveRoom: true);
   }
 
   Future<Result<void>> setClassroom(Classroom classroom) async {

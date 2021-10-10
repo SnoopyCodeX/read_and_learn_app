@@ -331,6 +331,8 @@ class _BodyState extends State<Body> {
           message: success ? 'Join request has been sent, please wait for the teacher\'s approval.' : 'Failed to send your join request, try again later.', 
           actionLabel: 'OK', 
           onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+          backgroundColor: success ? Colors.green : Colors.red,
+          textColor: Colors.white,
         );
 
         // Reload UI

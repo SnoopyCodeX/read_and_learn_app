@@ -36,7 +36,12 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
 
   Future<void> _loadUserData() async {
     Map<String, dynamic> json = await Cache.load('user', <String, dynamic>{});
-    _user = User.fromJson(json);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      setState(() {
+        _user = User.fromJson(json);
+      });
+      print('user not null anymore');
+    });
   }
 
   @override
@@ -44,6 +49,7 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
     return Column(
       children: [
         CustomNavBar(
+          user: _user,
           story: widget.story,
           resetSelectedStory: () => widget.resetOpenedStory(),
           onOptionSelected: (option) {
@@ -94,7 +100,7 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
           },
         ),
         Container(
-          width: MediaQuery.of(context).size.width * 0.86,
+          width: MediaQuery.of(context).size.width * 0.9,
           child: RichText(
             text: TextSpan(
               children: _buildTextSpans(widget.story.content),
@@ -139,7 +145,7 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
 
                 Utils.showAlertDialog(
                   context: context, 
-                  title: 'Pronounciation Demo', 
+                  title: 'Word Demonstration', 
                   message: 'Word: "$_complete"', 
                   actions: [
                     TextButton(

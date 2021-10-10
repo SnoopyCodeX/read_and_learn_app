@@ -307,7 +307,7 @@ class _BodyState extends State<Body> {
         setState(() {
           _signingUp = false;
           _hasError = true;
-          _message = data.message;
+          _message = "Email address already exists!";
         });
       else
         return data.data as Map<String, dynamic>;

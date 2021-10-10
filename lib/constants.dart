@@ -9,6 +9,13 @@ import 'package:flutter/material.dart';
 // Default Story Thumbnail
 const String DEFAULT_STORY_THUMBNAIL = 'https://image.freepik.com/free-vector/cute-koala-reading-book-cartoon-illustration_138676-2988.jpg';
 
+// REST API FOR TRANSCRIBING AUDIO USING REV.AI
+const String TRANSCRIBE_REST_API = 'https://read-and-learn-api.herokuapp.com/audio/transcribe';
+
+// Pusher Constants (For push notifications)
+const String PUSHER_APP_ID = "0aed2d8628b773a1191a";
+const String PUSHER_CLUSTER = "ap3";
+
 // User Reading Status
 const String STATUS_FINISHED_READING = 'finished_reading';
 const String STATUS_STILL_READING = 'still_reading';

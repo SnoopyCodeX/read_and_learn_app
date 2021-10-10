@@ -15,6 +15,7 @@ import '../../../../models/story_model.dart';
 import '../../../../services/classroom_services.dart';
 import '../../../../services/story_services.dart';
 import '../../../../utils/utils.dart';
+import 'select_class.dart';
 
 class AddEditStoryScreen extends StatefulWidget {
   final void Function()? refreshList;
@@ -37,7 +38,7 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
   List<Classroom>? classes = [];
   Classroom? _selectedRoom; 
   String hintClass = 'Classroom: {Choose classroom...}';
-  String? selectedClass;
+  String selectedClass = 'No selected class...';
   File? _thumbnailImg;
   int _numLines = 0;
 
@@ -81,7 +82,7 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
           classes = _classes;
           selectedClass = widget.story != null 
             ? '$className'
-            : null;
+            : 'No selected class...';
           print("<Selected class: $selectedClass>\n<Classes: ${_classes.length}>");
         });
       }
@@ -194,43 +195,36 @@ class _AddEditStoryScreenState extends State<AddEditStoryScreen> {
                                 border: Border.all(color: Colors.black87, width: 2),
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  isDense: true,
-                                  elevation: 14,
-                                  icon: Icon(Icons.arrow_drop_down, color: Colors.black87),
-                                  value: selectedClass,
-                                  hint: Text(
-                                    hintClass,
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.black87,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      selectedClass,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.black87,
+                                      ),
                                     ),
                                   ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedClass = value!;
-                                    });
-                                  },
-                                  items: classes != null && classes!.isNotEmpty
-                                  ? [
-                                    // ignore: non_constant_identifier_names
-                                    ...classes!.map((Classroom _class_) {
-                                      return DropdownMenuItem(
-                                        value: _class_.name + '_' + _class_.section,
-                                        child: Text(
-                                          _class_.name + '\n' + _class_.section,
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.black87,
-                                          ),
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => SelectClass(
+                                          classes: classes!, 
+                                          onClassSelected: (selectedClassroom) => setState(() => selectedClass = selectedClassroom.name),
                                         ),
-                                        onTap: () {
-                                          print('<Selected class: ${_class_.name}>');
-                                          _selectedRoom = _class_;
-                                        },
-                                      );
-                                    }).toList(),
-                                  ] : null,
-                                ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Select',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

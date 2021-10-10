@@ -57,7 +57,7 @@ class _ClassroomPanelState extends State<ClassroomPanel> {
                 inactiveColor: Colors.black,
               ),
               BottomBarItem(
-                icon: Icon(Icons.book_outlined), 
+                icon: Icon(Icons.menu_book_outlined), 
                 title: Text(
                   'Stories',
                   style: GoogleFonts.poppins(),

@@ -3,12 +3,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_learn/providers/temp_variables_provider.dart';
 
 import '../../../../../../constants.dart';
 import '../../../../../../models/result_model.dart';
 import '../../../../../../models/story_model.dart';
 import '../../../../../../services/story_services.dart';
+import '../../../../providers/temp_variables_provider.dart';
 import 'add_edit_story.dart';
 
 class StoryListView extends StatefulWidget {

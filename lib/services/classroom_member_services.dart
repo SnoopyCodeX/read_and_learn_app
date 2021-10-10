@@ -96,7 +96,7 @@ class ClassMemberService {
     return accepted;
   }
 
-  Future<bool> denyOrRemoveMember(String classId, String memberId) async {
+  Future<bool> denyOrRemoveMember(String classId, String memberId, {bool leaveRoom = false}) async {
     bool deleted = false;
     List<Map<String, dynamic>> data = await _firestoreService.findData(
       CLASS_MEMBERS_TABLE,
@@ -111,7 +111,7 @@ class ClassMemberService {
         .toList();
 
       for(ClassMember member in members) {
-        if(member.isPending && member.memberId == memberId) {
+        if((member.isPending || leaveRoom) && member.memberId == memberId) {
           await _firestoreService.deleteData(
             CLASS_MEMBERS_TABLE,
             member.id,

@@ -84,6 +84,9 @@ class _CertificateScreenState extends State<CertificateScreen> {
                         children: [
                           WidgetToImage(
                             builder: (key) {
+                              double width = MediaQuery.of(context).size.width * 0.86;
+                              double height = 220;
+
                               this.certificateKey = key;
           
                               return Opacity(
@@ -92,8 +95,8 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                   alignment: Alignment.center,
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.86,
-                                      height: 220,
+                                      width: width,
+                                      height: height,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                           alignment: Alignment.center,
@@ -103,7 +106,9 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                       ),
                                     ),
                                     Positioned(
-                                      top: 80,
+                                      width: width,
+                                      height: height,
+                                      top: height / 2,
                                       child: Text(
                                         userData['child_name'] ?? '',
                                         style: GoogleFonts.poppins(
@@ -112,8 +117,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
                                       ),
                                     ),
                                     Positioned(
-                                      top: 128,
-                                      left: 113,
+                                      width: width,
+                                      height: height,
+                                      // top: 128,
+                                      // left: 113,
                                       child: Text(
                                         fancyDay,
                                         style: GoogleFonts.poppins(

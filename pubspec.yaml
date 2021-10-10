@@ -57,9 +57,14 @@ dependencies:
   flutter_tts: ^3.2.2
   jiffy: ^4.1.0
   image_gallery_saver: ^1.6.9
-  speech_to_text: ^5.1.0
   avatar_glow: ^2.0.1
   flutter_zoom_drawer: ^2.1.1
+  url_launcher: ^6.0.10
+  http: ^0.13.3
+  mp3_info: ^0.2.0
+  record_mp3: ^3.0.0
+  external_path: ^1.0.1
+  pusher_client: ^2.0.0
 
 dev_dependencies:
   flutter_test:

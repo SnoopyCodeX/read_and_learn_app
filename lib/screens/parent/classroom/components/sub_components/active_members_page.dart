@@ -101,9 +101,9 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
 
   Widget _buildListTile(User user) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 1),
       child: Card(
-        elevation: 4,
+        elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
