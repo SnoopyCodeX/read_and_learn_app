@@ -4,7 +4,8 @@
 [![Github Star](https://img.shields.io/github/stars/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app) 
 [![Github Fork](https://img.shields.io/github/forks/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app) 
 ![License](https://img.shields.io/github/license/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)
-#### An online reading app for children.
+
+A mobile app made with flutter, this app is made to teach and guide children on how to read. This app can compute their wpm(words per minute) and the accuracy of their reading.
 
 ### :computer: Technologies Used
 ![Flutter](https://img.icons8.com/color/30/flutter.png)
