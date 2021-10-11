@@ -456,7 +456,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
       String message = "Wpm(Words/min): ${transcript.length == 0 ? 0 : _wordsPerMinute.toStringAsFixed(2)}\n";
       message += "Accuracy: ${transcript.length == 0 ? 0 : _accuracy.toStringAsFixed(2)}%\n";
-      message += "Corrects: ${transcript.length}\n";
+      message += "Corrects: ${transcript.length > 0 ? transcript.split(' ').length : 0}\n";
       message += "Total Words: $_lengthOfStory\n";
       message += conclusion;
 

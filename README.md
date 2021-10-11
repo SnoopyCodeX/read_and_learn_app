@@ -13,6 +13,17 @@ A mobile app made with flutter, this app is made to teach and guide children on 
 ![NodeJS](https://img.icons8.com/color/30/4a90e2/nodejs.png)
 ![NPM](https://img.icons8.com/color/30/4a90e2/npm.png)
 ![ExpressJS](https://img.icons8.com/color/30/4a90e2/express.png)
+![Heroku](https://img.icons8.com/color/30/4a90e2/heroku.png)
+
+- Firebase Database
+- Flutter
+- NodeJS
+- NPM
+- Express
+- Heroku
+- Rev AI
+
+This app uses a third-party API(Application Programming Interface) named, [Rev.ai](https://rev.ai) to transcribe an audio file, link to the repo is this: [NodeJs + Express REST API](https://github.com/read_and_learn_rest_api).
 
 ### :fire: Features
 
@@ -38,8 +49,8 @@ A mobile app made with flutter, this app is made to teach and guide children on 
 
 ### :warning: Notice
 
-- :white_check_mark: This app heavily relies on android devices' **Microphone** to record the audio and is a very **crucial requirement** for this app to run properly.
-- :white_check_mark: This app currently does not support Offline Mode
+- :white_check_mark: This app heavily relies on android devices' **Microphone** to record the audio and is a very **crucial requirement** for this app to **run properly**.
+- :white_check_mark: This app currently **does not** support **Offline Mode**.
 
 ---
 
@@ -104,11 +115,11 @@ A mobile app made with flutter, this app is made to teach and guide children on 
 - [x] Go to **Project Settings**.
 - [x] Scroll down to **App Settings** and select your **Support Account**
 ![Support Account](./screenshots/support_email.png)
-- [x] Scroll down and add your **sha-1** and **sha-256** hashes.
+- [x] Scroll down and add your app's **sha-1** and **sha-256** hashes.
 ![App Hashes](./screenshots/app_hashes.png)
 
 #### :lock: Firestore Database
-- [x] Go to Firestore Database tab of your firebase.
+- [x] Go to **Firestore Database** tab of your firebase.
 - [x] Go to **Rules** tab
 - [x] Add the following rules into your own.
 ![Rules](./screenshots/database_rules.png)
