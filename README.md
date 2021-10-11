@@ -3,7 +3,7 @@
 [![Github Release](https://img.shields.io/github/release/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app/releases) 
 [![Github Star](https://img.shields.io/github/stars/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app) 
 [![Github Fork](https://img.shields.io/github/forks/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app) 
-![License](https://img.shields.io/github/license/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)
+[![License](https://img.shields.io/github/license/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](./LICENSE)
 
 A mobile app made with flutter, this app is made to teach and guide children on how to read. This app can compute their wpm(words per minute) and the accuracy of their reading.
 
@@ -149,6 +149,25 @@ flutter run --release
 ```bash
 # Generates an .apk file
 flutter build apk
+```
+
+---
+
+### :clipboard: License
+```
+   Copyright 2021 SnoopyCodeX
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 ```
 
 ---
