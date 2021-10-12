@@ -389,45 +389,54 @@ class _CustomNavBarState extends State<CustomNavBar> {
   }
 
   Future<void> _startListening() async {
-    Map<Permission, PermissionStatus> status = await [
-      Permission.microphone, 
-      Permission.storage,
-    ].request();
-
-    if(status[Permission.microphone] != PermissionStatus.granted || status[Permission.storage] != PermissionStatus.granted) {
-      Utils.showSnackbar(
-        context: context,
-        message: 'Record Audio or Storage permission was revoked!',
+    try {
+      Map<Permission, PermissionStatus> status = await [
+        Permission.microphone, 
+        Permission.storage,
+      ].request();
+      
+      if(status[Permission.microphone] != PermissionStatus.granted || status[Permission.storage] != PermissionStatus.granted) {
+        Utils.showSnackbar(
+          context: context,
+          message: 'Record Audio or Storage permission was revoked!',
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      
+        setState(() {
+          _isListening = false;
+          _micIcon = Icons.mic_outlined;
+        });
+      
+        return;
+      }
+      
+      Utils.showProgressDialog(context: context, message: "Starting up...");
+      
+      _audioPath = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+      _audioPath += "/${widget.user!.id}.mp3";
+      _recordMp3.start(_audioPath, (type) => Utils.showSnackbar(
+        context: context, 
+        message: "Error Type: ${type.toString()}",
+        textColor: Colors.white,
         backgroundColor: Colors.red,
+      ));
+      
+      Navigator.of(context, rootNavigator: true).pop();
+      Utils.showSnackbar(
+        context: context, 
+        message: "Recording started",
+        backgroundColor: Colors.green,
         textColor: Colors.white,
       );
-
-      setState(() {
-        _isListening = false;
-        _micIcon = Icons.mic_outlined;
-      });
-
-      return;
+    } on Exception catch (e) {
+      Utils.showAlertDialog(
+        context: context, 
+        title: "Recording Failed", 
+        message: "Recording audio in Android 10+ versions of android is currently not supported in this app.\n\nError: ${e.toString()}.",
+        actions: [],
+      );
     }
-
-    Utils.showProgressDialog(context: context, message: "Starting up...");
-
-    _audioPath = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-    _audioPath += "/${widget.user!.id}.mp3";
-    _recordMp3.start(_audioPath, (type) => Utils.showSnackbar(
-      context: context, 
-      message: "Error Type: ${type.toString()}",
-      textColor: Colors.white,
-      backgroundColor: Colors.red,
-    ));
-
-    Navigator.of(context, rootNavigator: true).pop();
-    Utils.showSnackbar(
-      context: context, 
-      message: "Recording started",
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-    );
   }
 
   Future<void> _showConclusion(Map<String, dynamic> data, File audioFile) async {

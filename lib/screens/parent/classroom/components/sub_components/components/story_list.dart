@@ -250,6 +250,7 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
     Map<String, dynamic> userData = await Cache.load('user', <String, dynamic>{});
     Result<List<Story>> stories = await StoryService.instance.getStory('classroom', widget.classId);
     Result<List<UserProgress>?> progresses = await UserProgressService.instance.getAllFinishedProgress(widget.classId, userData['id']);
+    unlockedStories = [];
 
     if(!stories.hasError) {
       if(!progresses.hasError) {
