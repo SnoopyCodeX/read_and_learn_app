@@ -123,7 +123,7 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
     String _word = '';
     for(String part in _parts)
     {
-      if(part == '\n' || part == ' ') {
+      if(part == '\n' || part == ' ' || part == '.') {
         String _complete = _word + part;
         
         _spans.add(

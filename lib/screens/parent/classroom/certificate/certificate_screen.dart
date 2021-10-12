@@ -270,7 +270,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
 
       Navigator.of(context, rootNavigator: true).pop();
 
-      if(userProgressResult.hasError)
+      if(userProgressResult.hasError || storyResult.hasError)
         setState(() {
           locked = true;
         });
@@ -279,7 +279,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
         List<Story> stories = storyResult.data as List<Story>;
 
         setState(() {
-          locked = (userProgress.length == stories.length);
+          locked = !(userProgress.length == stories.length);
         });
       }
     });

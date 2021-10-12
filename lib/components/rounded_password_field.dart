@@ -21,13 +21,28 @@ class RoundedPasswordField extends StatefulWidget {
 }
 
 class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
+  TextEditingController? controller;
   bool _obscured = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = TextEditingController(text: widget.defaultValue);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    controller!.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextField(
-        controller: TextEditingController(text: widget.defaultValue),
+        controller: controller,
         enabled: widget.enabled,
         obscureText: _obscured,
         onChanged: widget.onChanged,
@@ -44,12 +59,13 @@ class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
             color: kPrimaryColor,
           ),
           border: InputBorder.none,
-          suffix: TextButton(
-            onPressed: () => setState(() => _obscured = !_obscured),
+          suffix: InkWell(
+            onTap: () => setState(() => _obscured = !_obscured),
             child: Text(
               _obscured ? 'Show' : 'Hide',
               style: GoogleFonts.poppins(
                 color: kPrimaryColor,
+                fontSize: 14,
               ),
             ),
           ),
