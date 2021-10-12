@@ -33,9 +33,7 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
     super.initState();
 
     Provider.of<TempVariables>(context, listen: false).onSettingsUpdated = () {
-      setState(() {
-        _loadUserData();
-      });
+      _loadUserData();
     };
 
     _loadUserData();

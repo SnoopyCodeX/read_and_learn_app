@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 
 import '../../../../constants.dart';
 import '../../../../models/result_model.dart';
-import '../../../../models/user_progress_model.dart';
+import '../../../../models/user_model.dart';
 import '../../../../providers/temp_variables_provider.dart';
-import '../../../../services/user_progress_services.dart';
+import '../../../../services/user_services.dart';
 
 class CertificateListView extends StatefulWidget {
   const CertificateListView({Key? key}) : super(key: key);
@@ -35,19 +35,19 @@ class _CertificateListViewState extends State<CertificateListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: UserProgressService.instance.getProgress("status", STATUS_FINISHED_READING),
+      future: UserService.instance.getUser("is_certificate_holder", true),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData)
         {
-          Result<List<UserProgress>?> data = snapshot.data as Result<List<UserProgress>?>;
+          Result<List<User>?> data = snapshot.data as Result<List<User>?>;
 
           if(!data.hasError)
           {
-            List<UserProgress> certHolders = data.data as List<UserProgress>;
+            List<User> certHolders = data.data as List<User>;
 
-            List<UserProgress> _searchList = [];
-            for(UserProgress certHolder in certHolders)
-              if('${certHolder.name}'.toLowerCase().contains(_searchQuery.toLowerCase())) {
+            List<User> _searchList = [];
+            for(User certHolder in certHolders)
+              if('${certHolder.firstName} ${certHolder.lastName}'.toLowerCase().contains(_searchQuery.toLowerCase())) {
                 _searchList.add(certHolder);
                 break;
               }
@@ -158,8 +158,12 @@ class _CertificateListViewState extends State<CertificateListView> {
     );
   }
 
-  Widget _buildCertificateCard(UserProgress user, int count) {
-    List<String> _user = user.name.split(" ");
+  Widget _buildCertificateCard(User user, int count) {
+    String _childName = user.childName;
+    if(!_childName.contains(' '))
+      _childName += ' ${user.lastName}';
+
+    List<String> _user = _childName.split(" ");
 
     return Container(
       decoration: BoxDecoration(
@@ -175,7 +179,7 @@ class _CertificateListViewState extends State<CertificateListView> {
         children: [
           CircleAvatar(
             backgroundColor: Colors.white.withAlpha(0x80),
-            backgroundImage: NetworkImage("https://magfellow.com/assets/theme/images/team/emily.png"),
+            backgroundImage: NetworkImage("http://clipart-library.com/images_k/graduate-silhouette-vector/graduate-silhouette-vector-19.png"),
             radius: 40,
           ),
           SizedBox(height: 8),
@@ -190,7 +194,7 @@ class _CertificateListViewState extends State<CertificateListView> {
             ),
           ),
           Text(
-            "Accuracy: ${user.accuracy}%",
+            "Age: ${user.childAge} years old",
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w500,

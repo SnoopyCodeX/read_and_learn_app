@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 import 'package:provider/provider.dart';
-import 'package:read_and_learn/providers/temp_variables_provider.dart';
 
 import '../../../models/user_model.dart';
+import '../../../providers/temp_variables_provider.dart';
 import 'components/navbar.dart';
 import 'components/settings_body.dart';
 
@@ -59,9 +59,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               SizedBox(height: 20),
               Expanded(
-                child: SettingsBody(
-                  user: _user,
-                ),
+                child: _user == null 
+                  ? Container()
+                  : SettingsBody(
+                      user: _user,
+                    ),
               ),
             ],
           ),

@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:read_and_learn/models/user_model.dart';
+import 'package:read_and_learn/services/user_services.dart';
 
 import '../../../../models/classroom_model.dart';
 import '../../../../models/result_model.dart';
@@ -231,10 +233,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
 
     if(status == PermissionStatus.granted)
     {
-      Utils.showProgressDialog(
-        context: context, 
-        message: 'Saving certificate...',
-      );
+      Utils.showProgressDialog(context: context, message: 'Saving certificate...');
+
+      userData['is_certificate_holder'] = true;
+      await UserService.instance.setUser(User.fromJson(userData));
 
       await ImageGallerySaver.saveImage(
         pngBytes,
