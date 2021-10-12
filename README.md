@@ -23,7 +23,7 @@ A mobile app made with flutter, this app is made to teach and guide children on 
 - Heroku
 - Rev AI
 
-This app uses a third-party API(Application Programming Interface) named, [Rev.ai](https://rev.ai) to transcribe an audio file, link to the repo is this: [NodeJs + Express REST API](https://github.com/read_and_learn_rest_api).
+This app uses a third-party API(Application Programming Interface) named, [Rev.ai](https://rev.ai) to transcribe an audio file, link to the repo is this: [NodeJs + Express REST API](https://github.com/SnoopyCodeX/read_and_learn_rest_api).
 
 ### :fire: Features
 
