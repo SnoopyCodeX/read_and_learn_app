@@ -249,13 +249,34 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
   Future<Result<List<Story>>> _getStories() async {
     Map<String, dynamic> userData = await Cache.load('user', <String, dynamic>{});
     Result<List<Story>> stories = await StoryService.instance.getStory('classroom', widget.classId);
-    Result<List<UserProgress>?> progresses = await UserProgressService.instance.getUserProgress(userData['id'], widget.classId);
+    Result<List<UserProgress>?> progresses = await UserProgressService.instance.getAllFinishedProgress(widget.classId, userData['id']);
 
     if(!stories.hasError) {
-      if(!progresses.hasError) 
+      if(!progresses.hasError) {
+        // Records all locked and unlocked stories
         for(UserProgress progress in progresses.data!) 
           for(Story story in stories.data!) 
-            unlockedStories.add(progress.storyId == story.id);
+            if(progress.storyId == story.id)
+              unlockedStories.add(true);
+            else
+              unlockedStories.add(false);
+
+        // Unlock next story if user already has other finished stories
+        if(unlockedStories.contains(true)) {
+          bool calledBreak = false;
+          for(int i = 0; i < unlockedStories.length; i++) {
+            if(calledBreak)
+              break;
+
+            for(int j = i + 1; j < unlockedStories.length; j++)
+              if(unlockedStories[i] && !unlockedStories[j]) {
+                unlockedStories[j] = true;
+                calledBreak = true;
+                break;
+              }
+          }
+        }
+      }
       else {
         // ignore: unused_local_variable
         for(Story story in stories.data!)
