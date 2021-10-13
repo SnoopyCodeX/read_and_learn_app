@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:device_info/device_info.dart';
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
@@ -410,11 +411,37 @@ class _CustomNavBarState extends State<CustomNavBar> {
       
         return;
       }
+
+      Utils.showProgressDialog(context: context, message: "Setting up...");
+      AndroidDeviceInfo info = await DeviceInfoPlugin().androidInfo;
       
+      if(info.version.sdkInt >= 30) {
+        PermissionStatus _status = await Permission.manageExternalStorage.request();
+
+        if(_status != PermissionStatus.granted) {
+           Utils.showSnackbar(
+            context: context,
+            message: 'Storage permission was revoked!',
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+          );
+
+          setState(() {
+            _isListening = false;
+            _micIcon = Icons.mic_outlined;
+          });
+        
+          return;
+        }
+      }
+
+      Navigator.of(context, rootNavigator: true).pop();
       Utils.showProgressDialog(context: context, message: "Starting up...");
-      
-      _audioPath = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+      _audioPath = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_MUSIC);
       _audioPath += "/${widget.user!.id}.mp3";
+
+      await File(_audioPath).create();
+
       _recordMp3.start(_audioPath, (type) => Utils.showSnackbar(
         context: context, 
         message: "Error Type: ${type.toString()}",
@@ -430,10 +457,12 @@ class _CustomNavBarState extends State<CustomNavBar> {
         textColor: Colors.white,
       );
     } on Exception catch (e) {
+      Navigator.of(context, rootNavigator: true).pop();
+
       Utils.showAlertDialog(
         context: context, 
         title: "Recording Failed", 
-        message: "Recording audio in Android 10+ versions of android is currently not supported in this app.\n\nError: ${e.toString()}.",
+        message: "An error occured, this is usually because of Android 10+'s strict file permissions.\n\nError: ${e.toString()}.",
         actions: [],
       );
     }

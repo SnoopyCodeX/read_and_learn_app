@@ -65,6 +65,7 @@ dependencies:
   record_mp3: ^3.0.0
   external_path: ^1.0.1
   pusher_client: ^2.0.0
+  device_info: ^2.0.2
 
 dev_dependencies:
   flutter_test:
