@@ -4,7 +4,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_learn/utils/utils.dart';
 
 import '../../../../../../constants.dart';
 import '../../../../../../models/result_model.dart';
@@ -13,6 +12,7 @@ import '../../../../../../models/user_progress_model.dart';
 import '../../../../../../providers/temp_variables_provider.dart';
 import '../../../../../../services/story_services.dart';
 import '../../../../../../services/user_progress_services.dart';
+import '../../../../../../utils/utils.dart';
 import '../../../story/story_screen.dart';
 
 class ClassroomStoryListPanel extends StatefulWidget {
@@ -254,25 +254,35 @@ class _ClassroomStoryListPanelState extends State<ClassroomStoryListPanel> {
 
     if(!stories.hasError) {
       if(!progresses.hasError) {
-        // Records all locked and unlocked stories
-        for(UserProgress progress in progresses.data!) 
-          for(Story story in stories.data!) 
-            if(progress.storyId == story.id)
-              unlockedStories.add(true);
-            else
-              unlockedStories.add(false);
+        print('Progress Count: ${(progresses.data as List<UserProgress>).length}');
 
-        // Unlock next story if user already has other finished stories
+        // Lock all stories by default
+        // ignore: unused_local_variable
+        for(Story story in stories.data!)
+          unlockedStories.add(false);
+
+        // Records all locked and unlocked stories
+        int _unlockedIndex = 0;
+        for(int i = 0; i < progresses.data!.length; i++) {
+          for(int j = 0; j < stories.data!.length; j++)
+            if(progresses.data![i].storyId == stories.data![j].id)
+              unlockedStories[_unlockedIndex++] = true;
+        }
+
+        // Unlock next story
         if(unlockedStories.contains(true)) {
-          bool calledBreak = false;
-          for(int i = 0; i < unlockedStories.length; i++) {
-            if(calledBreak)
+          // Find the index of the last unlocked story
+          bool stop = false;
+          for(int prev = 0; prev < unlockedStories.length; prev++) {
+            // Stop whole loop
+            if(stop)
               break;
 
-            for(int j = i + 1; j < unlockedStories.length; j++)
-              if(unlockedStories[i] && !unlockedStories[j]) {
-                unlockedStories[j] = true;
-                calledBreak = true;
+            // Unlock the next story if the previous story is already unlocked
+            for(int next = prev + 1; next < unlockedStories.length; next++)
+              if(unlockedStories[prev] && !unlockedStories[next]) {
+                unlockedStories[next] = true;
+                stop = true;
                 break;
               }
           }
