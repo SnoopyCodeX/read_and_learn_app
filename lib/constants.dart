@@ -22,6 +22,12 @@ const String PUSHER_CLUSTER = "ap3";
 const String STATUS_FINISHED_READING = 'finished_reading';
 const String STATUS_STILL_READING = 'still_reading';
 
+// Default Admin Credentials
+const String DEFAULT_ADMIN_EMAIL = "admin123@gmail.com";
+const String DEFAULT_ADMIN_PASSWORD = "admin123";
+const String DEFAULT_ADMIN_FIRST_NAME = "Admin";
+const String DEFAULT_ADMIN_LAST_NAME = "Admin";
+ 
 // Development 
 const kIsProduction = true;
 

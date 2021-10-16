@@ -32,8 +32,10 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
   void initState() {
     super.initState();
 
+    print('Menu Screen: initState() called');
     Provider.of<TempVariables>(context, listen: false).onSettingsUpdated = () {
       _loadUserData();
+      print('update called');
     };
 
     _loadUserData();
@@ -44,6 +46,7 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
     WidgetsBinding.instance!.addPostFrameCallback((_) { 
       setState(() {
         _user = User.fromJson(userData);
+        print('updated');
       });
     });
   }

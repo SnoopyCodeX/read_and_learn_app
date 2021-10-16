@@ -34,4 +34,10 @@ class TempVariables extends ChangeNotifier {
     if(storyIndexChanged != null)
       storyIndexChanged!();
   }
+
+  void settingsUpdated() {
+    print(onSettingsUpdated != null);
+    if(onSettingsUpdated != null)
+      onSettingsUpdated!();
+  }
 }

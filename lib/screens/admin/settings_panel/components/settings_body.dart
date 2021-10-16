@@ -156,7 +156,7 @@ class _SettingsBodyState extends State<SettingsBody> {
                         SizedBox(height: 10),
                         _buildTextInput(
                           controller: _passwordController!, 
-                          icon: Icons.password_outlined,
+                          icon: Icons.lock_outlined,
                           obscured: true,
                           hint: 'Password', 
                           onChanged: (value) {
@@ -397,8 +397,9 @@ class _SettingsBodyState extends State<SettingsBody> {
       await UserService.instance.setUser(user);
       await Cache.write('user', user.toJson());
 
+      print('cache saved');
+      Provider.of<TempVariables>(context, listen: false).settingsUpdated();
       Navigator.of(context, rootNavigator: true).pop();
-      Provider.of<TempVariables>(context, listen: false).onSettingsUpdated!();
 
       Utils.showSnackbar(
         context: context, 

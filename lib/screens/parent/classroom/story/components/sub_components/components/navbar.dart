@@ -24,6 +24,7 @@ import '../../../../../../../models/user_progress_model.dart';
 import '../../../../../../../services/user_progress_services.dart';
 import '../../../../../../../services/user_services.dart';
 import '../../../../../../../utils/utils.dart';
+import 'result.dart';
 
 class CustomNavBar extends StatefulWidget {
   final Story story;
@@ -268,7 +269,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
     required double accuracy,
     required double wpm,
   }) async {
-    Navigator.of(context).pop();
+    Navigator.of(context, rootNavigator: true).pop();
 
     Utils.showProgressDialog(
       context: context, 
@@ -472,56 +473,74 @@ class _CustomNavBarState extends State<CustomNavBar> {
     Navigator.of(context, rootNavigator: true).pop();
 
     MP3Info mp3info = MP3Processor.fromFile(audioFile);
-    String transcript = data['transcript'];
+    String transcriptResult = data['transcript'];
     String status = data['status'];
     String failType = data['fail_type'];
     String failureDetail = data['detail'];
+    String transcript = "";
 
-    print("Transcript: $transcript \n Status: $status \n Type: $failType \n Details: $failureDetail");
-    print("T-Length: ${transcript.split(' ').length}");
-    print("Audio Duration: ${mp3info.duration.inSeconds} seconds");
+    if(transcriptResult.isNotEmpty) {
+      for(String str in transcriptResult.split(' ')) {
+        List<String> _data = str.split(':');
+        String _word = _data[0];
+        double _confidence = double.parse(_data[1]);
+
+        if(_confidence >= 0.75)
+          transcript += '$_word ';
+      }
+
+      transcript = transcript.substring(0, transcript.length - 1);
+    }
+
+    /**
+     *  A = document.frmOne.txtMinutesNumber.value
+        B = document.frmOne.txtSecondsNumber.value
+        W = document.frmOne.txtWordsNumber.value
+        A = Number(A) // minutes
+        B = Number(B) // seconds
+        W = Number(W) // total words read
+        C = (W / ((A * 60) + B)) * 60
+
+        document.frmOne.txtFourthNumber.value = C
+     */
 
     if(status == 'transcribed') {
-      _wordsPerMinute = (transcript.split(" ").length / mp3info.duration.inSeconds).toDouble();
-      _wordsPerMinute *= 100;
+      int minutes = mp3info.duration.inMinutes;
+      int seconds = mp3info.duration.inSeconds % 60;
+      int words = transcript.split(" ").length;
 
-      _accuracy = (transcript.split(" ").length / _lengthOfStory).toDouble();
-      _accuracy *= 100;
+      _accuracy = 0;
+      _wordsPerMinute = 0;
 
-      String conclusion = (_wordsPerMinute >= 107 && _accuracy >= 70)
-          ? "\nCongratulations, you passed! Thank you for taking your time in learning to read."
-          : "\nSorry, you failed, your WPM(Words per Minute) should be atleast 107 and your accuracy should be atleast 70%. Practice more, you'll get it right next time!";
+      // wpm = (totalWords / ((minutes x 60) + seconds)) x 60
+      _wordsPerMinute = (_lengthOfStory / ((minutes * 60) + seconds)) * 60;
 
-      String message = "Wpm(Words/min): ${transcript.length == 0 ? 0 : _wordsPerMinute.toStringAsFixed(2)}\n";
-      message += "Accuracy: ${transcript.length == 0 ? 0 : _accuracy.toStringAsFixed(2)}%\n";
-      message += "Corrects: ${transcript.length > 0 ? transcript.split(' ').length : 0}\n";
-      message += "Total Words: $_lengthOfStory\n";
-      message += conclusion;
+      // accuracy = (correctWords / totalWords) x 100
+      _accuracy = ((words / _lengthOfStory).toDouble()) * 100;
 
-      Utils.showAlertDialog(
-        context: context,
-        dismissable: false,
-        title: "Analysis Result",
-        message: message,
-        actions: [
-          TextButton(
-            onPressed: () => _saveProgress(
-              status: (
-                (transcript.length == 0 ? 0 : ((transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100) >= 107 && 
-                (transcript.length == 0 ? 0 : ((transcript.split(" ").length / _lengthOfStory).toDouble()) * 100) >= 60
-              ),
-              wpm: (transcript.length == 0 ? 0 : (transcript.split(" ").length / mp3info.duration.inSeconds).toDouble()) * 100,
-              accuracy: (transcript.length == 0 ? 0 : (transcript.split(" ").length / _lengthOfStory).toDouble()) * 100,
+      // WPM is atleast 107 and Accuracy is atleast 70%?
+      bool status = ((transcript.length > 0 ? _accuracy : 0) >= 70) && 
+                    ((transcript.length > 0 ? _wordsPerMinute : 0) > 107);
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => AnalysisResultView(
+            duration: "${minutes < 10 ? '0' : ''}$minutes:${seconds < 10 ? '0' : ''}$seconds",
+            transcript: transcript,
+            transcriptResult: transcriptResult,
+            accuracy: _accuracy,
+            wpm: _wordsPerMinute,
+            correctWords: transcript.split(' ').length,
+            originalStory: widget.story.content,
+            totalWords: _lengthOfStory,
+            status: status,
+            onSaveProgress: () => _saveProgress(
+              status: status, 
+              accuracy: _accuracy, 
+              wpm: _wordsPerMinute,
             ),
-            child: Text(
-              'Okay',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                color: Colors.green,
-              ),
-            ),
-          )
-        ],
+          ),
+        ),
       );
     } else 
       Utils.showAlertDialog(
@@ -532,9 +551,5 @@ class _CustomNavBarState extends State<CustomNavBar> {
       );
 
     audioFile.delete();
-    setState(() {
-      _accuracy = 0;
-      _wordsPerMinute = 0;
-    });
   }
 }
