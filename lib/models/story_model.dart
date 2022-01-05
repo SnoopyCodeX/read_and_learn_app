@@ -4,6 +4,9 @@ class Story {
   final String content;
   final String thumbnail;
   final String classroom;
+  final String classroomName;
+  final String authorName;
+  final String dateCreated;
   final bool isDeleted;
 
   const Story({
@@ -12,7 +15,10 @@ class Story {
     required this.content,
     required this.thumbnail,
     required this.classroom,
-    this.isDeleted = false
+    required this.classroomName,
+    required this.authorName,
+    required this.dateCreated,
+    this.isDeleted = false,
   });
 
   static Story fromJson(Map<String, dynamic> json) {
@@ -22,7 +28,10 @@ class Story {
       content: json['content'],
       thumbnail: json['thumbnail'],
       classroom: json['classroom'],
-      isDeleted: json['is_deleted']
+      classroomName: json['classroom_name'],
+      authorName: json['author_name'],
+      dateCreated: json['date_created'],
+      isDeleted: json['is_deleted'],
     );
   }
 
@@ -33,7 +42,10 @@ class Story {
       'content': this.content,
       'thumbnail': this.thumbnail,
       'classroom': this.classroom,
-      'is_deleted': this.isDeleted
+      'classroom_name': this.classroomName,
+      'author_name': this.authorName,
+      'date_created': this.dateCreated,
+      'is_deleted': this.isDeleted,
     };
   }
 }

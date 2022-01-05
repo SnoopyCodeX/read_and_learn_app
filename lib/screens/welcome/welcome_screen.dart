@@ -1,4 +1,4 @@
-import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+//import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache/flutter_cache.dart' as Cache;
 
@@ -13,8 +13,8 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
-
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -25,19 +25,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
   Future<void> _isLoggedIn() async {
     Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
 
-    if(data.isNotEmpty) {
+    if (data.isNotEmpty) {
       Navigator.of(context).pop();
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) {
-            if(data['type'] == Role.PARENT.accessLevel)
-              return ParentPanel();
-            else if(data['type'] == Role.TEACHER.accessLevel)
-              return TeacherPanel();
+        MaterialPageRoute(builder: (_) {
+          if (data['type'] == Role.PARENT.accessLevel)
+            return ParentPanel();
+          else if (data['type'] == Role.TEACHER.accessLevel)
+            return TeacherPanel();
+          else if (data['type'] == Role.ADMIN.accessLevel) return AdminPanel();
 
-            return AdminPanel();
-          }
-        ),
+          return SafeArea(
+            child: Scaffold(
+              body: Body(),
+            ),
+          );
+        }),
       );
     }
   }
@@ -46,11 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: ConnectivityWidgetWrapper(
-          alignment: Alignment.topCenter,
-          disableInteraction: true,
-          child: Body()
-        ),
+        body: Body(),
       ),
     );
   }

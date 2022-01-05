@@ -34,12 +34,15 @@ class _FinishedStudentScreenState extends State<FinishedStudentScreen> {
           ),
           SizedBox(height: 15),
           FutureBuilder(
-            future: UserProgressService.instance.getAllFinished(widget.story.classroom, widget.story.id),
+            future: UserProgressService.instance
+                .getAllFinished(widget.story.classroom, widget.story.id),
             builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                Result<List<UserProgress>?> data = snapshot.data as Result<List<UserProgress>?>;
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                Result<List<UserProgress>?> data =
+                    snapshot.data as Result<List<UserProgress>?>;
 
-                if(!data.hasError) {
+                if (!data.hasError) {
                   List<UserProgress> userProgresses = data.data!;
 
                   return Flexible(
@@ -48,11 +51,12 @@ class _FinishedStudentScreenState extends State<FinishedStudentScreen> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: userProgresses.length,
-                      itemBuilder: (context, index) => _buildListTile(userProgresses[index]),
+                      itemBuilder: (context, index) =>
+                          _buildListTile(userProgresses[index]),
                     ),
                   );
                 }
-                  
+
                 return Flexible(
                   fit: FlexFit.loose,
                   child: Center(
@@ -63,7 +67,8 @@ class _FinishedStudentScreenState extends State<FinishedStudentScreen> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.7,
                             height: 300,
-                            child: SvgPicture.asset("images/illustrations/empty.svg"),
+                            child: SvgPicture.asset(
+                                "images/illustrations/empty.svg"),
                           ),
                           Text(
                             'No students found',
@@ -101,56 +106,62 @@ class _FinishedStudentScreenState extends State<FinishedStudentScreen> {
   Widget _buildListTile(UserProgress userProgress) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Color(0xFFD4EDDA),
           borderRadius: BorderRadius.circular(10),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                userProgress.name,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Started on: ${userProgress.dateStarted}',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Finished on: ${userProgress.dateFinished}',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Accuracy: ${userProgress.accuracy}%',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Speed: ${userProgress.speed} wpm',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-            ],
+          border: Border.all(
+            color: Color(0xFFC3E6CB),
           ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              userProgress.name,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF155724),
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Started on: ${userProgress.dateStarted}',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF155724),
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              'Finished on: ${userProgress.dateFinished}',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF155724),
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              'Accuracy: ${userProgress.accuracy}%',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF155724),
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              'Speed: ${userProgress.speed} wpm',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF155724),
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );

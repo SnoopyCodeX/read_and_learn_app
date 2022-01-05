@@ -40,10 +40,13 @@ class _BodyState extends State<Body> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Text(
               "Create an Account",
-              style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 24), 
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold, fontSize: 24),
             ),
             SizedBox(height: size.height * 0.03),
             SvgPicture.asset(
@@ -61,37 +64,38 @@ class _BodyState extends State<Body> {
                 _password = value;
               },
             ),
-            _hasError 
-                ? _showError(_message) 
-                : Container(),
+            _hasError ? _showError(_message) : Container(),
             !_signingUp
                 ? _actions(size)
                 : FutureBuilder(
                     future: _method == 2
-                        ? _signUpUsingEmailAndPassword() 
+                        ? _signUpUsingEmailAndPassword()
                         : _signUpUsingSocialMedia(),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.hasData) {
                         final Object data = snapshot.data!;
-                        
-                        WidgetsBinding.instance!.addPostFrameCallback((_) async {
 
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
+                        WidgetsBinding.instance!
+                            .addPostFrameCallback((_) async {
+                          await Navigator.of(context).push(MaterialPageRoute(
                               builder: (_) => AdditionalSignUpScreen(
-                                data is UserCredential && _method != 2 ? data : null, 
-                                data is Map<String, dynamic> && _method == 2 ? data : null, 
-                                _method != 2
-                              )
-                            )
-                          );
+                                  data is UserCredential && _method != 2
+                                      ? data
+                                      : null,
+                                  data is Map<String, dynamic> && _method == 2
+                                      ? data
+                                      : null,
+                                  _method != 2)));
 
                           _signingUp = false;
-                          _method = 0; 
+                          _method = 0;
                         });
 
                         return _actions(size);
-                      } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
+                      } else if (snapshot.connectionState ==
+                              ConnectionState.done &&
+                          !snapshot.hasData) {
                         return _actions(size);
                       } else {
                         return Column(
@@ -114,7 +118,9 @@ class _BodyState extends State<Body> {
                       }
                     },
                   ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
@@ -128,13 +134,16 @@ class _BodyState extends State<Body> {
         RoundedButton(
           text: "SIGN UP",
           press: () {
-            if(_email == null || _password == null || _email!.isEmpty || _password!.isEmpty)
+            if (_email == null ||
+                _password == null ||
+                _email!.isEmpty ||
+                _password!.isEmpty)
               setState(() {
                 _signingUp = false;
                 _hasError = true;
                 _message = MESSAGES['users']!['empty_field']!;
               });
-            else if(_email != null && !EmailValidator.validate(_email!))
+            else if (_email != null && !EmailValidator.validate(_email!))
               setState(() {
                 _signingUp = false;
                 _hasError = true;
@@ -196,7 +205,8 @@ class _BodyState extends State<Body> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 color: Colors.red.shade700,
                 elevation: 0,
                 focusElevation: 0,
@@ -240,8 +250,8 @@ class _BodyState extends State<Body> {
 
   Widget _showError(String message) {
     _scrollController.animateTo(
-      0.0, 
-      duration: Duration(microseconds: 800), 
+      0.0,
+      duration: Duration(microseconds: 800),
       curve: Curves.fastOutSlowIn,
     );
 
@@ -250,16 +260,20 @@ class _BodyState extends State<Body> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 5,),
+          SizedBox(
+            height: 5,
+          ),
           Text(
-            message, 
+            message,
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold, 
+              fontWeight: FontWeight.bold,
               color: Colors.red,
             ),
           ),
-          SizedBox(height: 5,)
+          SizedBox(
+            height: 5,
+          )
         ],
       ),
     );
@@ -267,11 +281,28 @@ class _BodyState extends State<Body> {
 
   Future<UserCredential?> _signUpUsingSocialMedia() async {
     Result<dynamic> result = await Auth.instance.signUpWithGoogle();
+
+    if (!result.hasError) {
+      UserCredential credential = result.data as UserCredential;
+      Result<Map<String, dynamic>> data = await Auth.instance
+          .signUpWithEmailAndPassword(credential.user!.email!, '');
+
+      if (data.hasError) {
+        setState(() {
+          _signingUp = false;
+          _hasError = true;
+          _message = data.message;
+        });
+
+        return null;
+      }
+    }
+
     Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
     data['isGoogle'] = true;
     await Cache.write('user', data);
 
-    if(result.hasError) 
+    if (result.hasError)
       setState(() {
         _signingUp = false;
         _hasError = true;
@@ -279,35 +310,35 @@ class _BodyState extends State<Body> {
       });
     else
       return result.data as UserCredential;
-    
+
     return null;
   }
 
   Future<Map<String, dynamic>?> _signUpUsingEmailAndPassword() async {
-    if(_email == null || _password == null || _email!.isEmpty || _password!.isEmpty)
+    if (_email == null ||
+        _password == null ||
+        _email!.isEmpty ||
+        _password!.isEmpty)
       setState(() {
         _signingUp = false;
         _hasError = true;
         _message = MESSAGES['users']!['empty_field']!;
       });
-    else if(_email != null && !EmailValidator.validate(_email!))
+    else if (_email != null && !EmailValidator.validate(_email!))
       setState(() {
         _signingUp = false;
         _hasError = true;
         _message = MESSAGES['email']!['invalid']!;
       });
-    else
-    {
-      Result<Map<String, dynamic>> data = await Auth.instance.signUpWithEmailAndPassword(
-        _email!, 
-        _password!
-      );
+    else {
+      Result<Map<String, dynamic>> data =
+          await Auth.instance.signUpWithEmailAndPassword(_email!, _password!);
 
-      if(data.hasError)
+      if (data.hasError)
         setState(() {
           _signingUp = false;
           _hasError = true;
-          _message = "Email address already exists!";
+          _message = data.message;
         });
       else
         return data.data as Map<String, dynamic>;

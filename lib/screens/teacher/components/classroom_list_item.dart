@@ -17,7 +17,12 @@ class ClassroomListItem extends StatefulWidget {
   final void Function() refreshListener;
   final Classroom classroom;
   final User user;
-  const ClassroomListItem({ Key? key, required this.classroom, required this.user, required this.refreshListener }) : super(key: key);
+  const ClassroomListItem({
+    Key? key,
+    required this.classroom,
+    required this.user,
+    required this.refreshListener,
+  }) : super(key: key);
 
   @override
   _ClassroomListItemState createState() => _ClassroomListItemState();
@@ -47,7 +52,6 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
 
   @override
   Widget build(BuildContext context) {
-
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (_selectedRoom != null)
         Navigator.of(context).push(
@@ -62,8 +66,7 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
         );
     });
 
-    if(_numOfStudents <= -1)
-      _getNumOfStudents(widget.classroom.id);
+    if (_numOfStudents == -1) _getNumOfStudents(widget.classroom.id);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -78,7 +81,8 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
               builder: (context) => ClassroomPanel(
                 widget.classroom,
                 () => _reloadAndOpenRoom(widget.classroom),
-                ({bool refresh = false}) => _resetSelectedRoom(refresh: refresh),
+                ({bool refresh = false}) =>
+                    _resetSelectedRoom(refresh: refresh),
               ),
             ),
           );
@@ -120,32 +124,32 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
                     PopupMenuButton<String>(
                       icon: Icon(Icons.menu_open_outlined),
                       itemBuilder: (builder) => CLASSROOM_OPTIONS
-                        .map((option) => PopupMenuItem<String>(
-                          value: option,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(option.toLowerCase() == 'edit'
-                                    ? Icons.edit_outlined
-                                    : Icons.delete_outlined),
-                                SizedBox(width: 10),
-                                Text(
-                                  option,
-                                  style: GoogleFonts.poppins(),
+                          .map((option) => PopupMenuItem<String>(
+                                value: option,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(option.toLowerCase() == 'edit'
+                                        ? Icons.edit_outlined
+                                        : Icons.delete_outlined),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      option,
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ))
-                      .toList(),
+                              ))
+                          .toList(),
                       onSelected: (option) {
                         switch (option) {
                           case 'Edit':
                             _showEditDialog(widget.classroom);
-                          break;
+                            break;
 
                           case 'Delete':
                             _showDeleteDialog(widget.classroom);
-                          break;
+                            break;
                         }
                       },
                     ),
@@ -169,14 +173,15 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
   void _resetSelectedRoom({bool refresh = false}) {
     _selectedRoom = null;
 
-    if(refresh)
+    if (refresh)
       widget.refreshListener();
-    else 
+    else
       Provider.of<TempVariables>(context, listen: false).setTempIndex(1);
   }
 
   Future<void> _reloadAndOpenRoom(Classroom classroom) async {
-    Result<List<Classroom>> result = await ClassroomService.instance.getClassroom('id', classroom.id);
+    Result<List<Classroom>> result =
+        await ClassroomService.instance.getClassroom('id', classroom.id);
     _selectedRoom = result.data![0];
 
     // Refresh UI
@@ -184,7 +189,9 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
   }
 
   Future<void> _getNumOfStudents(String id) async {
-    _numOfStudents = (await ClassMemberService.instance.countStudentsFromClass(id)) - 1;
+    _numOfStudents =
+        (await ClassMemberService.instance.countStudentsFromClass(id));
+    setState(() {});
   }
 
   Future<void> _deleteClass(String id) async {
@@ -193,7 +200,7 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
 
     // Show progress dialog
     Utils.showProgressDialog(
-      context: context, 
+      context: context,
       message: 'Deleting class...',
     );
 
@@ -206,8 +213,8 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
     // Show snackbar
     Utils.showSnackbar(
       context: context,
-      message: result.message, 
-      actionLabel: 'OK', 
+      message: result.message,
+      actionLabel: 'OK',
       onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
     );
 
@@ -217,9 +224,9 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
 
   void _showDeleteDialog(Classroom classroom) {
     Utils.showAlertDialog(
-      context: context, 
-      title: 'Confirm Delete', 
-      message: 'Do you really want to delete this class?', 
+      context: context,
+      title: 'Confirm Delete',
+      message: 'Do you really want to delete this class?',
       actions: [
         TextButton(
           onPressed: () => _deleteClass(classroom.id),
@@ -250,8 +257,8 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
     _section = classroom.section;
 
     Utils.showCustomAlertDialog(
-			context: context,
-			content: SingleChildScrollView(
+      context: context,
+      content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -266,51 +273,49 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
             ),
             SizedBox(height: 10),
             RoundedInputField(
-              icon: Icons.card_membership_outlined,
-              defaultValue: _name ?? classroom.name,
-							controller: _nameController,
-              hintText: 'Name', 
-              onChanged: (string) {
-                _name = string;
-              }
-            ),
+                icon: Icons.card_membership_outlined,
+                defaultValue: _name ?? classroom.name,
+                controller: _nameController,
+                hintText: 'Name',
+                onChanged: (string) {
+                  _name = string;
+                }),
             SizedBox(height: 10),
             RoundedInputField(
-              icon: Icons.cast_for_education_outlined,
-              defaultValue: _section ?? classroom.section,
-							controller: _sectionController,
-              hintText: 'Section', 
-              onChanged: (string) {
-                _section = string;
-              }
-            ),
+                icon: Icons.cast_for_education_outlined,
+                defaultValue: _section ?? classroom.section,
+                controller: _sectionController,
+                hintText: 'Section',
+                onChanged: (string) {
+                  _section = string;
+                }),
           ],
         ),
       ),
-			actions: [
-				TextButton(
+      actions: [
+        TextButton(
           onPressed: () => _saveEditedClass(classroom),
           child: Text(
             'Save',
             style: GoogleFonts.poppins(
-            	color: kPrimaryColor,
-            	fontWeight: FontWeight.w400,
+              color: kPrimaryColor,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
         TextButton(
           onPressed: () {
-						// Reset variables
-						_name = null;
-						_section = null;
+            // Reset variables
+            _name = null;
+            _section = null;
 
-						// Reset controllers
-						_nameController!.text = '';
-						_sectionController!.text = '';
+            // Reset controllers
+            _nameController!.text = '';
+            _sectionController!.text = '';
 
-						// Close dialog
-						Navigator.of(context, rootNavigator: true).pop();
-					},
+            // Close dialog
+            Navigator.of(context, rootNavigator: true).pop();
+          },
           child: Text(
             'Cancel',
             style: GoogleFonts.poppins(
@@ -319,8 +324,8 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
             ),
           ),
         ),
-			],
-		);
+      ],
+    );
   }
 
   Future<void> _saveEditedClass(Classroom classroom) async {
@@ -328,12 +333,14 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
     Navigator.of(context, rootNavigator: true).pop();
 
     // Check if fields are empty
-    if(_name == null || _section == null || _name!.isEmpty || _section!.isEmpty)
-    {
+    if (_name == null ||
+        _section == null ||
+        _name!.isEmpty ||
+        _section!.isEmpty) {
       Utils.showSnackbar(
         context: context,
-        message: 'Please fill in the required fields.', 
-        actionLabel: 'OK', 
+        message: 'Please fill in the required fields.',
+        actionLabel: 'OK',
         onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
       );
 
@@ -347,12 +354,13 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
 
     // Show progress dialog
     Utils.showProgressDialog(
-      context: context, 
+      context: context,
       message: 'Saving changes...',
     );
 
     // Save changes and wait for result
-    Result<void> result = await ClassroomService.instance.setClassroom(Classroom.fromJson(json));
+    Result<void> result =
+        await ClassroomService.instance.setClassroom(Classroom.fromJson(json));
 
     // Dismiss progress dialog
     Navigator.of(context, rootNavigator: true).pop();
@@ -360,8 +368,8 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
     // Show snackbar
     Utils.showSnackbar(
       context: context,
-      message: result.message, 
-      actionLabel: 'OK', 
+      message: result.message,
+      actionLabel: 'OK',
       onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
     );
 

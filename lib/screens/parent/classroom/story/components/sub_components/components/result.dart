@@ -11,16 +11,16 @@ class AnalysisResultView extends StatefulWidget {
   final int correctWords, totalWords;
   final bool status;
 
-  const AnalysisResultView({ 
-    Key? key, 
-    required this.duration, 
-    required this.transcript, 
-    required this.originalStory, 
-    required this.wpm, 
-    required this.accuracy, 
-    required this.correctWords, 
-    required this.totalWords, 
-    required this.transcriptResult, 
+  const AnalysisResultView({
+    Key? key,
+    required this.duration,
+    required this.transcript,
+    required this.originalStory,
+    required this.wpm,
+    required this.accuracy,
+    required this.correctWords,
+    required this.totalWords,
+    required this.transcriptResult,
     required this.onSaveProgress,
     required this.status,
   }) : super(key: key);
@@ -32,21 +32,25 @@ class AnalysisResultView extends StatefulWidget {
 class _AnalysisResultViewState extends State<AnalysisResultView> {
   @override
   Widget build(BuildContext context) {
-    String message = "WPM(Words/minute): ${widget.transcript.length == 0 ? 0 : widget.wpm.toStringAsFixed(2)}\n";
-    message += "Accuracy: ${widget.transcript.length == 0 ? 0 : widget.accuracy.toStringAsFixed(2)}%\n";
-    message += "Corrects: ${widget.transcript.length == 0 ? 0 : widget.correctWords}\n";
-    message += "Total Words: ${widget.originalStory.split(' ').length}\n";
+    String message =
+        "WPM(Words/minute): ${widget.transcript.length == 0 ? 0 : widget.wpm.toStringAsFixed(2)}\n";
+    message +=
+        "Accuracy: ${widget.transcript.length == 0 ? 0 : widget.accuracy.toStringAsFixed(2)}%\n";
+    message +=
+        "Corrects: ${widget.transcript.length == 0 ? 0 : widget.correctWords}\n";
+    message += "Total Words: ${widget.totalWords}\n";
     message += "Duration: ${widget.duration}\n\n";
-    message += widget.status 
-      ? "Congratulations, you passed! Thank you for taking your time in learning to read." 
-      : "Sorry, you failed. Your WPM should be atleast 107 and your accuracy should be atleast 70% to be able to pass.";
+    message += widget.status
+        ? "Congratulations, you passed! Thank you for taking your time in learning to read."
+        : "Sorry, you failed. Your accuracy should be atleast 70% to be able to pass.";
 
     return WillPopScope(
       onWillPop: () async {
         Utils.showAlertDialog(
-          context: context, 
-          title: 'Confirm Action', 
-          message: 'Do you really like to close this panel without saving your progress?', 
+          context: context,
+          title: 'Confirm Action',
+          message:
+              'Do you really like to close this panel without saving your progress?',
           actions: [
             TextButton(
               onPressed: () {
@@ -61,7 +65,11 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
               ),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
               child: Text(
                 'No',
                 style: GoogleFonts.poppins(
@@ -93,9 +101,9 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
               ),
               onPressed: () {
                 Utils.showAlertDialog(
-                  context: context, 
-                  title: 'Confirm Action', 
-                  message: 'Continue to save your progress?', 
+                  context: context,
+                  title: 'Confirm Action',
+                  message: 'Continue to save your progress?',
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -110,7 +118,8 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+                      onPressed: () =>
+                          Navigator.of(context, rootNavigator: true).pop(),
                       child: Text(
                         'No',
                         style: GoogleFonts.poppins(
@@ -153,13 +162,12 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: widget.status 
-                        ? Color(0xFFD4EDDA) 
-                        : Color(0xFFF8D7DA),
+                      color:
+                          widget.status ? Color(0xFFD4EDDA) : Color(0xFFF8D7DA),
                       border: Border.all(
-                        color: widget.status 
-                          ? Color(0xFFC3E6CB)
-                          : Color(0xFFF5C6C),
+                        color: widget.status
+                            ? Color(0xFFC3E6CB)
+                            : Color(0xFFF5C6C),
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -167,9 +175,9 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
                       message,
                       style: GoogleFonts.poppins(
                         fontSize: 18,
-                        color: widget.status 
-                          ? Color(0xFF155724)
-                          : Color(0xFF721C24),
+                        color: widget.status
+                            ? Color(0xFF155724)
+                            : Color(0xFF721C24),
                       ),
                     ),
                   ),
@@ -182,7 +190,7 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => TranscriptResultView(
-                              transcriptResult: widget.transcriptResult, 
+                              transcriptResult: widget.transcriptResult,
                               originalStory: widget.originalStory,
                               status: widget.status,
                             ),
@@ -192,22 +200,24 @@ class _AnalysisResultViewState extends State<AnalysisResultView> {
                       elevation: 0,
                       hoverElevation: 0,
                       highlightElevation: 0,
-                      color: widget.status ? Colors.blue :  Color(0xFFFFF3CD),
+                      color: widget.status ? Colors.blue : Color(0xFFFFF3CD),
                       minWidth: MediaQuery.of(context).size.width * 0.86,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
-                        side: widget.status 
-                          ? BorderSide.none 
-                          : BorderSide(
-                            color: Color(0xFFFFEEBA),
-                          ),
+                        side: widget.status
+                            ? BorderSide.none
+                            : BorderSide(
+                                color: Color(0xFFFFEEBA),
+                              ),
                       ),
                       child: Container(
                         child: Center(
                           child: Text(
                             'View transcript result',
                             style: GoogleFonts.poppins(
-                              color: widget.status ? Colors.white : Color(0xFF856404),
+                              color: widget.status
+                                  ? Colors.white
+                                  : Color(0xFF856404),
                               fontSize: 18,
                             ),
                           ),

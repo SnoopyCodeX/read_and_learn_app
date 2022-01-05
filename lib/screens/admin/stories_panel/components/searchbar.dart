@@ -6,10 +6,10 @@ class SearchBar extends StatefulWidget {
   final void Function(String query) onSearch;
   final String hint;
 
-  const SearchBar({ 
-    Key? key, 
-    required this.onQueryChanged, 
-    required this.hint, 
+  const SearchBar({
+    Key? key,
+    required this.onQueryChanged,
+    required this.hint,
     required this.onSearch,
   }) : super(key: key);
 
@@ -46,9 +46,9 @@ class _SearchBarState extends State<SearchBar> {
       ),
       padding: const EdgeInsets.only(
         left: 20,
-        right: 10, 
-        top: 3,
-        bottom: 3,
+        right: 10,
+        top: 1,
+        bottom: 1,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:read_and_learn/models/result_model.dart';
+import 'package:read_and_learn/models/user_model.dart';
+import 'package:read_and_learn/services/user_services.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../constants.dart';
@@ -26,8 +30,8 @@ class CreateStoryForm extends StatefulWidget {
 
 class _CreateStoryFormState extends State<CreateStoryForm> {
   TextEditingController? _titleController,
-                         _thumbNailController,
-                         _contentController;
+      _thumbNailController,
+      _contentController;
   File? _selectedThumbnail;
   String _hintText = 'Select thumbnail photo...';
   int _numLines = 0;
@@ -69,7 +73,7 @@ class _CreateStoryFormState extends State<CreateStoryForm> {
                   Text(
                     'Create a story',
                     style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, 
+                      fontWeight: FontWeight.bold,
                       fontSize: 24,
                     ),
                   ),
@@ -322,7 +326,7 @@ class _CreateStoryFormState extends State<CreateStoryForm> {
     ImagePicker _picker = ImagePicker();
     XFile? _xfile = await _picker.pickImage(source: source);
 
-    if(_xfile != null)
+    if (_xfile != null)
       setState(() {
         _selectedThumbnail = File(_xfile.path);
         _hintText = 'Thumbnail: ${_xfile.path}';
@@ -333,11 +337,11 @@ class _CreateStoryFormState extends State<CreateStoryForm> {
     // Close the previous dialog
     Navigator.of(context, rootNavigator: true).pop();
 
-    if(_titleController!.text.isEmpty || _contentController!.text.isEmpty)
+    if (_titleController!.text.isEmpty || _contentController!.text.isEmpty)
       Utils.showAlertDialog(
-        context: context, 
-        title: 'Create Failed', 
-        message: 'Please type in the title and the content of the story.', 
+        context: context,
+        title: 'Create Failed',
+        message: 'Please type in the title and the content of the story.',
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
@@ -354,24 +358,28 @@ class _CreateStoryFormState extends State<CreateStoryForm> {
     else {
       // Show progress dialog
       Utils.showProgressDialog(
-        context: context, 
+        context: context,
         message: 'Creating story...',
       );
 
       String _storyId = Uuid().v4();
       String? _thumbnailUrl;
-      if(_selectedThumbnail != null)
+      if (_selectedThumbnail != null)
         _thumbnailUrl = (await StoryService.instance.uploadThumbnail(
-          _storyId, 
+          _storyId,
           _selectedThumbnail!,
-        )).data;
+        ))
+            .data;
 
       Story story = new Story(
         id: _storyId,
         classroom: widget.classroom.id,
+        classroomName: widget.classroom.name,
+        authorName: await _getAuthorName(widget.classroom.teacher),
         title: _titleController!.text,
         content: _contentController!.text,
         thumbnail: _thumbnailUrl ?? DEFAULT_STORY_THUMBNAIL,
+        dateCreated: Jiffy(DateTime.now()).format("MMM dd yyyy hh:mm:ss a"),
       );
 
       await StoryService.instance.setStory(story);
@@ -388,7 +396,17 @@ class _CreateStoryFormState extends State<CreateStoryForm> {
       Utils.showSnackbar(
         context: context,
         message: 'Successfully created a new story.',
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
       );
     }
+  }
+
+  Future<String> _getAuthorName(String id) async {
+    Result<List<User>> result = await UserService.instance.getUser('id', id);
+
+    return result.hasError
+        ? 'Unknown'
+        : '${result.data![0].lastName}, ${result.data![0].firstName.substring(0, 1)}.';
   }
 }

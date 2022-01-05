@@ -13,7 +13,6 @@ class User {
   final String childAge;
   final int type;
   final bool isDeleted;
-  final bool isCertificateHolder;
 
   const User({
     required this.id,
@@ -30,7 +29,6 @@ class User {
     this.childName = '',
     this.type = 0,
     this.isDeleted = false,
-    this.isCertificateHolder = false,
   });
 
   static User fromJson(Map<String, dynamic> json) {
@@ -49,7 +47,6 @@ class User {
       photo: json['photo'],
       type: json['type'],
       isDeleted: json['is_deleted'],
-      isCertificateHolder: json['is_certificate_holder'],
     );
   }
 
@@ -69,7 +66,6 @@ class User {
       'photo': this.photo,
       'type': this.type,
       'is_deleted': this.isDeleted,
-      'is_certificate_holder': this.isCertificateHolder,
     };
   }
 }

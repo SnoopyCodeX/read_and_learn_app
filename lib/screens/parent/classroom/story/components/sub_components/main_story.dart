@@ -18,7 +18,8 @@ class MainStoryScreen extends StatefulWidget {
   final void Function() refreshStoryList;
   final Story story;
 
-  const MainStoryScreen(this.story, this.refreshStoryList, this.openStory, this.resetOpenedStory);
+  const MainStoryScreen(
+      this.story, this.refreshStoryList, this.openStory, this.resetOpenedStory);
 
   @override
   _MainStoryScreenState createState() => _MainStoryScreenState();
@@ -54,29 +55,35 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
           resetSelectedStory: () => widget.resetOpenedStory(),
           onOptionSelected: (option) {
             Utils.showAlertDialog(
-              context: context, 
-              title: "Confirm Action", 
-              message: "Do you really want to reset your progress?", 
+              context: context,
+              title: "Confirm Action",
+              message: "Do you really want to reset your progress?",
               actions: [
                 TextButton(
                   onPressed: () async {
                     Navigator.of(context, rootNavigator: true).pop();
 
                     Utils.showProgressDialog(
-                      context: context, 
+                      context: context,
                       message: "Resetting progress...",
                     );
 
-                    Result<dynamic> result = await UserProgressService.instance.resetUserProgress(_user!.id, widget.story.classroom, widget.story.id);
+                    Result<dynamic> result =
+                        await UserProgressService.instance.resetUserProgress(
+                      _user!.id,
+                      widget.story.classroom,
+                      widget.story.id,
+                    );
                     Navigator.of(context, rootNavigator: true).pop();
-                    
+
                     Utils.showSnackbar(
-                      context: context, 
+                      context: context,
                       message: result.message,
-                      backgroundColor: result.hasError ? Colors.red : Colors.green,
+                      backgroundColor:
+                          result.hasError ? Colors.red : Colors.green,
                       textColor: Colors.white,
                     );
-                  }, 
+                  },
                   child: Text(
                     'Yes',
                     style: GoogleFonts.poppins(
@@ -86,7 +93,8 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+                  onPressed: () =>
+                      Navigator.of(context, rootNavigator: true).pop(),
                   child: Text(
                     'No',
                     style: GoogleFonts.poppins(
@@ -118,14 +126,16 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
     List<TextSpan> _spans = [];
     List<String> _parts = [];
     String _story = '$story';
+
+    if (!_story.endsWith('.')) _story += '.';
+
     _parts = _story.split('');
 
     String _word = '';
-    for(String part in _parts)
-    {
-      if(part == '\n' || part == ' ' || part == '.') {
+    for (String part in _parts) {
+      if (part == '\n' || part == ' ' || part == '.') {
         String _complete = _word + part;
-        
+
         _spans.add(
           TextSpan(
             text: '$_complete',
@@ -136,22 +146,21 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
                 _complete = _complete.replaceAll('\n', '').replaceAll(' ', '');
-                
+
                 await tts.setLanguage('en-US');
                 _complete = _complete.replaceAll(".", "");
 
-                if(_complete.isEmpty)
-                  return;
+                if (_complete.isEmpty) return;
 
                 Utils.showAlertDialog(
-                  context: context, 
-                  title: 'Word Demonstration', 
-                  message: 'Word: "$_complete"', 
+                  context: context,
+                  title: 'Word Demonstration',
+                  message: 'Word: "$_complete"',
                   actions: [
                     TextButton(
                       onPressed: () async {
                         await tts.speak(_complete);
-                      }, 
+                      },
                       child: Text(
                         'Repeat',
                         style: GoogleFonts.poppins(
@@ -168,8 +177,7 @@ class _MainStoryScreenState extends State<MainStoryScreen> {
         );
 
         _word = '';
-      }
-      else
+      } else
         _word += part;
     }
 

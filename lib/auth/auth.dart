@@ -9,12 +9,14 @@ import '../models/user_model.dart';
 import '../services/user_services.dart';
 
 class Auth {
-
   static FirebaseAuth _auth = FirebaseAuth.instance;
 
   static Auth get instance {
-    if(!kIsProduction)
-      _auth.useAuthEmulator('localhost', 9099);
+    if (!kIsProduction)
+      _auth.useAuthEmulator(
+        FIREBASE_EMULATOR_HOST,
+        FIREBASE_AUTH_EMULATOR_PORT,
+      );
 
     return Auth();
   }
@@ -23,13 +25,13 @@ class Auth {
     Result<dynamic> result = Result();
 
     try {
-      final GoogleSignInAccount user = await GoogleSignIn().signIn() as GoogleSignInAccount;
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount user =
+          await googleSignIn.signIn() as GoogleSignInAccount;
       final GoogleSignInAuthentication auth = await user.authentication;
       final credentials = GoogleAuthProvider.credential(
-        accessToken: auth.accessToken,
-        idToken: auth.idToken
-      );
-      
+          accessToken: auth.accessToken, idToken: auth.idToken);
+
       Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
       data['token'] = auth.accessToken;
       data['isGoogle'] = true;
@@ -37,7 +39,9 @@ class Auth {
 
       UserCredential credential = await _auth.signInWithCredential(credentials);
       result = Result(data: credential);
-    } on PlatformException catch(e) {
+
+      googleSignIn.signOut();
+    } on PlatformException catch (e) {
       result = Result(message: e.message as String, hasError: true);
     } on FirebaseAuthException catch (e) {
       result = Result(message: e.message as String, hasError: true);
@@ -103,14 +107,15 @@ class Auth {
   }
   */
 
-  Future<Result<Map<String, dynamic>>> signUpWithEmailAndPassword(String email, String password) async {
-    Result<List<User>> result = await UserService.instance.getUser('email', email);
-    
+  Future<Result<Map<String, dynamic>>> signUpWithEmailAndPassword(
+      String email, String password) async {
+    Result<List<User>> result =
+        await UserService.instance.getUser('email', email);
+
     return Result<Map<String, dynamic>>(
-      data: {'email': email, 'password': password},
-      message: MESSAGES['email']?['exist'] as String,
-      hasError: result.data != null
-    );
+        data: {'email': email, 'password': password},
+        message: MESSAGES['email']?['exist'] as String,
+        hasError: result.data != null);
   }
 
   Future<void> signOutUsingFirebaseAuth() async {
@@ -124,13 +129,13 @@ class Auth {
   Future<UserCredential?> reauthenticateUser(bool isGoogle) async {
     dynamic user = _auth.currentUser!;
 
-    if(user != null) {
+    if (user != null) {
       Map<String, dynamic> data = await Cache.load('user', <String, dynamic>{});
       print(data);
 
       final credential = isGoogle
-        ? GoogleAuthProvider.credential(accessToken: data['token'])
-        : FacebookAuthProvider.credential(data['token']);
+          ? GoogleAuthProvider.credential(accessToken: data['token'])
+          : FacebookAuthProvider.credential(data['token']);
 
       UserCredential user = await _auth.signInWithCredential(credential);
       return user;

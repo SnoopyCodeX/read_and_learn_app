@@ -10,7 +10,7 @@ import 'components/navbar.dart';
 import 'components/searchbar.dart';
 
 class CertificateScreen extends StatefulWidget {
-  const CertificateScreen({ Key? key }) : super(key: key);
+  const CertificateScreen({Key? key}) : super(key: key);
 
   @override
   _CertificateScreenState createState() => _CertificateScreenState();
@@ -26,9 +26,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
     _loadUserData();
   }
 
-  Future<void> _loadUserData () async {
-    Map<String, dynamic> userData = await Cache.load('user', <String, dynamic>{});
-    WidgetsBinding.instance!.addPostFrameCallback((_) { 
+  Future<void> _loadUserData() async {
+    Map<String, dynamic> userData =
+        await Cache.load('user', <String, dynamic>{});
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       setState(() {
         _user = User.fromJson(userData);
       });
@@ -49,20 +50,22 @@ class _CertificateScreenState extends State<CertificateScreen> {
             children: [
               CustomNavBar(
                 _user == null
-                  ? "https://magfellow.com/assets/theme/images/team/emily.png"
-                  : _user!.photo,
+                    ? "https://magfellow.com/assets/theme/images/team/emily.png"
+                    : _user!.photo,
                 title: "Certificate Holders Panel",
               ),
               SizedBox(height: 40),
               SearchBar(
                 onQueryChanged: (query) {
-                  if(query.isEmpty)
-                    Provider.of<TempVariables>(context, listen: false).onSearch!('');
-                }, 
-                onSearch: (query) {
-                  Provider.of<TempVariables>(context, listen: false).onSearch!(query);
+                  if (query.isEmpty)
+                    Provider.of<TempVariables>(context, listen: false)
+                        .onSearch!('');
                 },
-                hint: "Search name...", 
+                onSearch: (query) {
+                  Provider.of<TempVariables>(context, listen: false)
+                      .onSearch!(query);
+                },
+                hint: "Search name...",
               ),
               SizedBox(height: 20),
               Row(
@@ -84,7 +87,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
                       child: Icon(Icons.refresh_outlined),
                       padding: EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(14)), 
+                        borderRadius: BorderRadius.all(Radius.circular(14)),
                         border: Border.all(
                           color: Colors.black87,
                           width: 1.6,

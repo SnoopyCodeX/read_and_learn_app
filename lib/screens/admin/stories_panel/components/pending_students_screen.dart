@@ -22,135 +22,148 @@ class _PendingStudentScreenState extends State<PendingStudentScreen> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Pending Students',
-            style: GoogleFonts.poppins(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Pending Students',
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          SizedBox(height: 15),
-          FutureBuilder(
-            future: UserProgressService.instance.getAllNotFinished(widget.story.classroom, widget.story.id),
-            builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                Result<List<UserProgress>?> data = snapshot.data as Result<List<UserProgress>?>;
+            SizedBox(height: 15),
+            FutureBuilder(
+              future: UserProgressService.instance
+                  .getAllNotFinished(widget.story.classroom, widget.story.id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.hasData) {
+                  Result<List<UserProgress>?> data =
+                      snapshot.data as Result<List<UserProgress>?>;
 
-                if(!data.hasError) {
-                  List<UserProgress> userProgresses = data.data!;
+                  if (!data.hasError) {
+                    List<UserProgress> userProgresses = data.data!;
+
+                    return Flexible(
+                      fit: FlexFit.loose,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: userProgresses.length,
+                        itemBuilder: (context, index) =>
+                            _buildListTile(userProgresses[index]),
+                      ),
+                    );
+                  }
 
                   return Flexible(
                     fit: FlexFit.loose,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: userProgresses.length,
-                      itemBuilder: (context, index) => _buildListTile(userProgresses[index]),
+                    child: Center(
+                      child: Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              height: 300,
+                              child: SvgPicture.asset(
+                                  "images/illustrations/empty.svg"),
+                            ),
+                            Text(
+                              'No students found',
+                              style: GoogleFonts.poppins(
+                                color: kPrimaryColor,
+                                letterSpacing: 2,
+                                wordSpacing: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 }
-                  
+
                 return Flexible(
                   fit: FlexFit.loose,
                   child: Center(
                     child: Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.7,
-                            height: 300,
-                            child: SvgPicture.asset("images/illustrations/empty.svg"),
-                          ),
-                          Text(
-                            'No students found',
-                            style: GoogleFonts.poppins(
-                              color: kPrimaryColor,
-                              letterSpacing: 2,
-                              wordSpacing: 2,
-                            ),
-                          ),
-                        ],
+                      child: CircularProgressIndicator(
+                        color: Colors.black87,
+                        strokeWidth: 4,
                       ),
                     ),
                   ),
                 );
-              }
-
-              return Flexible(
-                fit: FlexFit.loose,
-                child: Center(
-                  child: Container(
-                    child: CircularProgressIndicator(
-                      color: Colors.black87,
-                      strokeWidth: 4,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildListTile(UserProgress userProgress) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Color(0xFFFFF3CD),
           borderRadius: BorderRadius.circular(10),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                userProgress.name,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Started on: ${userProgress.dateStarted}',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Finished on: (Not finished yet)',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Accuracy: ${userProgress.accuracy}%',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                'Speed: ${userProgress.speed} wpm',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                ),
-              ),
-            ],
+          border: Border.all(
+            color: Color(0xFFFFEEBA),
           ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              userProgress.name,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF856404),
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Started on: ${userProgress.dateStarted}',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF856404),
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              'Finished on: (Not finished yet)',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF856404),
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              'Accuracy: ${userProgress.accuracy}%',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF856404),
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              'Speed: ${userProgress.speed} wpm',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                color: Color(0xFF856404),
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );

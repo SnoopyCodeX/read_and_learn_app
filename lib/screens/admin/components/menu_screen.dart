@@ -15,10 +15,10 @@ class AdminMenuScreen extends StatefulWidget {
   final MenuItem currentItem;
   final ValueChanged<MenuItem> onSelectedItem;
 
-  const AdminMenuScreen({ 
-    Key? key, 
-    required this.currentItem, 
-    required this.onSelectedItem, 
+  const AdminMenuScreen({
+    Key? key,
+    required this.currentItem,
+    required this.onSelectedItem,
   }) : super(key: key);
 
   @override
@@ -27,7 +27,7 @@ class AdminMenuScreen extends StatefulWidget {
 
 class _AdminMenuScreenState extends State<AdminMenuScreen> {
   User? _user;
-  
+
   @override
   void initState() {
     super.initState();
@@ -41,9 +41,10 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
     _loadUserData();
   }
 
-  Future<void> _loadUserData () async {
-    Map<String, dynamic> userData = await Cache.load('user', <String, dynamic>{});
-    WidgetsBinding.instance!.addPostFrameCallback((_) { 
+  Future<void> _loadUserData() async {
+    Map<String, dynamic> userData =
+        await Cache.load('user', <String, dynamic>{});
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       setState(() {
         _user = User.fromJson(userData);
         print('updated');
@@ -61,14 +62,13 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 105),
+              SizedBox(height: 65),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: CircleAvatar(
                   backgroundColor: Colors.purpleAccent,
-                  backgroundImage: _user != null
-                    ? NetworkImage(_user!.photo)
-                    : null,
+                  backgroundImage:
+                      _user != null ? NetworkImage(_user!.photo) : null,
                   radius: 40,
                 ),
               ),
@@ -76,9 +76,7 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  _user == null 
-                    ? ''
-                    : '${_user!.firstName} ${_user!.lastName}',
+                  _user == null ? '' : '${_user!.firstName} ${_user!.lastName}',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -103,7 +101,8 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 10),
                       child: Row(
                         children: [
                           Icon(
@@ -135,28 +134,28 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
   }
 
   Widget _buildMenuItem(MenuItem item) => ListTileTheme(
-    selectedColor: Colors.white,
-    child: ListTile(
-      selectedTileColor: Colors.black26,
-      selected: widget.currentItem == item,
-      minLeadingWidth: 20,
-      leading: Icon(item.icon),
-      title: Text(
-        item.title,
-        style: GoogleFonts.poppins(),
-      ),
-      onTap: () => widget.onSelectedItem(item),
-    ),
-  );
+        selectedColor: Colors.white,
+        child: ListTile(
+          selectedTileColor: Colors.black26,
+          selected: widget.currentItem == item,
+          minLeadingWidth: 20,
+          leading: Icon(item.icon),
+          title: Text(
+            item.title,
+            style: GoogleFonts.poppins(),
+          ),
+          onTap: () => widget.onSelectedItem(item),
+        ),
+      );
 
   void _showLogoutDialog() {
     Utils.showAlertDialog(
-      context: context, 
-      title: 'Confirm Logout', 
-      message: 'Do you really want to logout?', 
+      context: context,
+      title: 'Confirm Logout',
+      message: 'Do you really want to logout?',
       actions: [
         TextButton(
-          onPressed: () => _logoutAccount(), 
+          onPressed: () => _logoutAccount(),
           child: Text(
             'Yes',
             style: GoogleFonts.poppins(
@@ -166,7 +165,7 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
           ),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
           child: Text(
             'No',
             style: GoogleFonts.poppins(
@@ -183,7 +182,7 @@ class _AdminMenuScreenState extends State<AdminMenuScreen> {
     Navigator.of(context, rootNavigator: true).pop();
 
     Utils.showProgressDialog(
-      context: context, 
+      context: context,
       message: 'Logging out...',
     );
 

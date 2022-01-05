@@ -16,7 +16,12 @@ class ClassroomListItem extends StatefulWidget {
   final void Function() refreshListener;
   final Classroom classroom;
   final User user;
-  const ClassroomListItem({ Key? key, required this.classroom, required this.user, required this.refreshListener }) : super(key: key);
+  const ClassroomListItem(
+      {Key? key,
+      required this.classroom,
+      required this.user,
+      required this.refreshListener})
+      : super(key: key);
 
   @override
   _ClassroomListItemState createState() => _ClassroomListItemState();
@@ -28,7 +33,6 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
 
   @override
   Widget build(BuildContext context) {
-
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (_selectedRoom != null)
         Navigator.of(context).push(
@@ -43,8 +47,7 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
         );
     });
 
-    if(_numOfStudents <= -1)
-      _getNumOfStudents(widget.classroom.id);
+    if (_numOfStudents == -1) _getNumOfStudents(widget.classroom.id);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -59,7 +62,8 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
               builder: (context) => ClassroomPanel(
                 widget.classroom,
                 () => _reloadAndOpenRoom(widget.classroom),
-                ({bool refresh = false}) => _resetSelectedRoom(refresh: refresh),
+                ({bool refresh = false}) =>
+                    _resetSelectedRoom(refresh: refresh),
               ),
             ),
           );
@@ -122,14 +126,15 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
   void _resetSelectedRoom({bool refresh = false}) {
     _selectedRoom = null;
 
-    if(refresh)
+    if (refresh)
       widget.refreshListener();
-    else 
+    else
       Provider.of<TempVariables>(context, listen: false).setTempIndex(1);
   }
 
   Future<void> _reloadAndOpenRoom(Classroom classroom) async {
-    Result<List<Classroom>> result = await ClassroomService.instance.getClassroom('id', classroom.id);
+    Result<List<Classroom>> result =
+        await ClassroomService.instance.getClassroom('id', classroom.id);
     _selectedRoom = result.data![0];
 
     // Refresh UI
@@ -137,18 +142,17 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
   }
 
   Future<void> _getNumOfStudents(String id) async {
-    int num = (await ClassMemberService.instance.countStudentsFromClass(id)) - 1;
+    _numOfStudents =
+        (await ClassMemberService.instance.countStudentsFromClass(id));
 
-    setState(() {
-      _numOfStudents = num;
-    });
+    setState(() {});
   }
 
   void _showLeaveDialog(String classId) {
     Utils.showAlertDialog(
-      context: context, 
-      title: 'Confirm Leave', 
-      message: 'Do you really want to leave this class?', 
+      context: context,
+      title: 'Confirm Leave',
+      message: 'Do you really want to leave this class?',
       actions: [
         TextButton(
           onPressed: () => _leaveClassroom(classId),
@@ -179,7 +183,7 @@ class _ClassroomListItemState extends State<ClassroomListItem> {
     Navigator.of(context, rootNavigator: true).pop();
 
     Utils.showProgressDialog(
-      context: context, 
+      context: context,
       message: 'Leaving classroom...',
     );
 

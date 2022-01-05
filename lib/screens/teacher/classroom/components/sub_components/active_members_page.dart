@@ -15,10 +15,12 @@ class ClassroomActiveMembersPanel extends StatefulWidget {
   const ClassroomActiveMembersPanel(this.classroom);
 
   @override
-  _ClassroomActiveMembersPanelState createState() => _ClassroomActiveMembersPanelState();
+  _ClassroomActiveMembersPanelState createState() =>
+      _ClassroomActiveMembersPanelState();
 }
 
-class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPanel> {
+class _ClassroomActiveMembersPanelState
+    extends State<ClassroomActiveMembersPanel> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,10 +41,11 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
             pending: false,
           ),
           builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
               Result<List<User>?> data = snapshot.data as Result<List<User>?>;
 
-              if(!data.hasError) {
+              if (!data.hasError) {
                 List<User> users = data.data!;
 
                 return Flexible(
@@ -51,7 +54,8 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: users.length,
-                    itemBuilder: (context, index) => _buildListTile(users[index]),
+                    itemBuilder: (context, index) =>
+                        _buildListTile(users[index]),
                   ),
                 );
               }
@@ -66,7 +70,8 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           height: 300,
-                          child: SvgPicture.asset("images/illustrations/empty.svg"),
+                          child: SvgPicture.asset(
+                              "images/illustrations/empty.svg"),
                         ),
                         Text(
                           'No members found',
@@ -86,7 +91,7 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
             return Flexible(
               fit: FlexFit.loose,
               child: Center(
-                 child: Container(
+                child: Container(
                   child: CircularProgressIndicator(
                     color: kPrimaryColor,
                     strokeWidth: 4,
@@ -94,7 +99,7 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
                 ),
               ),
             );
-          }
+          },
         ),
       ],
     );
@@ -102,9 +107,9 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
 
   Widget _buildListTile(User user) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: Card(
-        elevation: 4,
+        elevation: 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -121,13 +126,26 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
               ),
               SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  user.childName,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.childName,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      "${user.childAge} years old",
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               IconButton(
@@ -135,7 +153,8 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
                   Icons.remove_from_queue_outlined,
                   color: Colors.red,
                 ),
-                onPressed: () => _showRemoveChildDialog(user), // Remove student from class
+                onPressed: () =>
+                    _showRemoveChildDialog(user), // Remove student from class
               ),
             ],
           ),
@@ -146,9 +165,9 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
 
   void _showRemoveChildDialog(User user) {
     Utils.showAlertDialog(
-      context: context, 
-      title: 'Confirm Action', 
-      message: 'Do you really want to remove this student from your class?', 
+      context: context,
+      title: 'Confirm Action',
+      message: 'Do you really want to remove this student from your class?',
       actions: [
         TextButton(
           child: Text(
@@ -178,19 +197,19 @@ class _ClassroomActiveMembersPanelState extends State<ClassroomActiveMembersPane
     // Dismiss dialog
     Navigator.of(context, rootNavigator: true).pop();
 
-    Utils.showProgressDialog(
-      context: context, 
-      message: 'Removing student...'
-    );
+    Utils.showProgressDialog(context: context, message: 'Removing student...');
 
-    await ClassMemberService.instance.denyOrRemoveMember(widget.classroom.id, user.id);
+    await ClassMemberService.instance
+        .denyOrRemoveMember(widget.classroom.id, user.id, leaveRoom: true);
 
     // Dismiss progress dialog
     Navigator.of(context, rootNavigator: true).pop();
 
     Utils.showSnackbar(
-      context: context, 
+      context: context,
       message: 'Student has been removed successfully!',
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
     );
 
     // Refresh list

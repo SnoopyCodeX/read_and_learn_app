@@ -25,9 +25,9 @@ class EditStoryScreen extends StatefulWidget {
 
 class _EditStoryScreenState extends State<EditStoryScreen> {
   TextEditingController? _titleController,
-                         _thumbNailController,
-                         _contentController;
-  
+      _thumbNailController,
+      _contentController;
+
   File? _selectedThumbnail;
   String _hintText = 'Select thumbnail photo...';
   int _numLines = 0;
@@ -37,7 +37,8 @@ class _EditStoryScreenState extends State<EditStoryScreen> {
     super.initState();
 
     _titleController = TextEditingController(text: widget.story.title);
-    _thumbNailController = TextEditingController(text: 'Thumbnail: ${widget.story.thumbnail}');
+    _thumbNailController =
+        TextEditingController(text: 'Thumbnail: ${widget.story.thumbnail}');
     _contentController = TextEditingController(text: widget.story.content);
   }
 
@@ -69,7 +70,7 @@ class _EditStoryScreenState extends State<EditStoryScreen> {
                   Text(
                     'Edit story',
                     style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, 
+                      fontWeight: FontWeight.bold,
                       fontSize: 24,
                     ),
                   ),
@@ -110,7 +111,8 @@ class _EditStoryScreenState extends State<EditStoryScreen> {
                   ),
                   SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
@@ -321,7 +323,7 @@ class _EditStoryScreenState extends State<EditStoryScreen> {
     ImagePicker _picker = ImagePicker();
     XFile? _xfile = await _picker.pickImage(source: source);
 
-    if(_xfile != null)
+    if (_xfile != null)
       setState(() {
         _selectedThumbnail = File(_xfile.path);
         _hintText = 'Thumbnail: ${_xfile.path}';
@@ -332,11 +334,11 @@ class _EditStoryScreenState extends State<EditStoryScreen> {
     // Close the previous dialog
     Navigator.of(context, rootNavigator: true).pop();
 
-    if(_titleController!.text.isEmpty || _contentController!.text.isEmpty)
+    if (_titleController!.text.isEmpty || _contentController!.text.isEmpty)
       Utils.showAlertDialog(
-        context: context, 
-        title: 'Create Failed', 
-        message: 'Please type in the title and the content of the story.', 
+        context: context,
+        title: 'Create Failed',
+        message: 'Please type in the title and the content of the story.',
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
@@ -353,24 +355,28 @@ class _EditStoryScreenState extends State<EditStoryScreen> {
     else {
       // Show progress dialog
       Utils.showProgressDialog(
-        context: context, 
+        context: context,
         message: 'Updating story...',
       );
 
       String _storyId = widget.story.id;
       String? _thumbnailUrl;
-      if(_selectedThumbnail != null)
+      if (_selectedThumbnail != null)
         _thumbnailUrl = (await StoryService.instance.uploadThumbnail(
-          _storyId, 
+          _storyId,
           _selectedThumbnail!,
-        )).data;
+        ))
+            .data;
 
       Story story = new Story(
         id: _storyId,
         classroom: widget.story.classroom,
+        classroomName: widget.story.classroomName,
+        authorName: widget.story.authorName,
         title: _titleController!.text,
         content: _contentController!.text,
         thumbnail: _thumbnailUrl ?? DEFAULT_STORY_THUMBNAIL,
+        dateCreated: widget.story.dateCreated,
       );
 
       await StoryService.instance.setStory(story);
@@ -382,6 +388,8 @@ class _EditStoryScreenState extends State<EditStoryScreen> {
       Utils.showSnackbar(
         context: context,
         message: 'Story has been successfully updated.',
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
       );
 
       // Open story

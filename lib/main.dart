@@ -1,6 +1,7 @@
-import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+//import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'constants.dart';
@@ -12,15 +13,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await Setup.instance.init();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => TempVariables()),
-    ],
-    child: ConnectivityAppWrapper(
-      app: MaterialApp(
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TempVariables()),
+      ],
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: WelcomeScreen(), 
+        home: WelcomeScreen(),
         title: "Read and Learn",
         theme: ThemeData(
           primaryColor: kPrimaryColor,
@@ -29,5 +31,5 @@ void main() async {
         ),
       ),
     ),
-  ));
+  );
 }

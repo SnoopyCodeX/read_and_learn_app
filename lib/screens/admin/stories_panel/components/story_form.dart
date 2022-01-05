@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -12,8 +13,10 @@ import '../../../../constants.dart';
 import '../../../../models/classroom_model.dart';
 import '../../../../models/result_model.dart';
 import '../../../../models/story_model.dart';
+import '../../../../models/user_model.dart';
 import '../../../../services/classroom_services.dart';
 import '../../../../services/story_services.dart';
+import '../../../../services/user_services.dart';
 import '../../../../utils/utils.dart';
 import 'select_class.dart';
 
@@ -32,10 +35,10 @@ class StoryForm extends StatefulWidget {
 
 class _StoryFormState extends State<StoryForm> {
   TextEditingController? _titleController,
-                         _thumbnailController,
-                         _contentController;
+      _thumbnailController,
+      _contentController;
   List<Classroom>? classes = [];
-  Classroom? _selectedRoom; 
+  Classroom? _selectedRoom;
   String hintClass = 'Classroom: {Choose classroom...}';
   String selectedClass = 'No selected class...';
   File? _thumbnailImg;
@@ -45,9 +48,12 @@ class _StoryFormState extends State<StoryForm> {
   void initState() {
     super.initState();
 
-    _titleController = TextEditingController(text: widget.story != null ? widget.story!.title : '');
-    _thumbnailController = TextEditingController(text: widget.story != null ? widget.story!.thumbnail : '');
-    _contentController = TextEditingController(text: widget.story != null ? widget.story!.content : '');
+    _titleController = TextEditingController(
+        text: widget.story != null ? widget.story!.title : '');
+    _thumbnailController = TextEditingController(
+        text: widget.story != null ? widget.story!.thumbnail : '');
+    _contentController = TextEditingController(
+        text: widget.story != null ? widget.story!.content : '');
 
     _loadClasses();
   }
@@ -62,27 +68,28 @@ class _StoryFormState extends State<StoryForm> {
   }
 
   Future<void> _loadClasses() async {
-    WidgetsBinding.instance!.addPostFrameCallback((_) async { 
-      Result<List<Classroom>?> data = await ClassroomService.instance.getAllActiveClassrooms();
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      Result<List<Classroom>?> data =
+          await ClassroomService.instance.getAllActiveClassrooms();
       print("<Classes: ${!data.hasError}>");
 
-      if(!data.hasError) {
+      if (!data.hasError) {
         List<Classroom> _classes = data.data as List<Classroom>;
         String className = '';
 
-        if(widget.story != null)
-          for(Classroom _class in _classes)
-            if(_class.id == widget.story!.classroom) {
+        if (widget.story != null)
+          for (Classroom _class in _classes)
+            if (_class.id == widget.story!.classroom) {
               className = _class.name;
               break;
             }
 
         setState(() {
           classes = _classes;
-          selectedClass = widget.story != null 
-            ? '$className'
-            : 'No selected class...';
-          print("<Selected class: $selectedClass>\n<Classes: ${_classes.length}>");
+          selectedClass =
+              widget.story != null ? '$className' : 'No selected class...';
+          print(
+              "<Selected class: $selectedClass>\n<Classes: ${_classes.length}>");
         });
       }
     });
@@ -382,12 +389,12 @@ class _StoryFormState extends State<StoryForm> {
 
   void _showCreateStoryDialog() {
     Utils.showAlertDialog(
-      context: context, 
+      context: context,
       title: 'Confirm Action',
-      message: 'Are you sure you want to create a new story?', 
+      message: 'Are you sure you want to create a new story?',
       actions: [
         TextButton(
-          onPressed: () => _createOrUpdateStory(), 
+          onPressed: () => _createOrUpdateStory(),
           child: Text(
             'Yes',
             style: GoogleFonts.poppins(
@@ -397,7 +404,7 @@ class _StoryFormState extends State<StoryForm> {
           ),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
           child: Text(
             'No',
             style: GoogleFonts.poppins(
@@ -412,12 +419,12 @@ class _StoryFormState extends State<StoryForm> {
 
   void _showUpdateStoryDialog() {
     Utils.showAlertDialog(
-      context: context, 
+      context: context,
       title: 'Confirm Action',
-      message: 'Are you sure you want to update this story?', 
+      message: 'Are you sure you want to update this story?',
       actions: [
         TextButton(
-          onPressed: () => _createOrUpdateStory(), 
+          onPressed: () => _createOrUpdateStory(),
           child: Text(
             'Yes',
             style: GoogleFonts.poppins(
@@ -427,7 +434,7 @@ class _StoryFormState extends State<StoryForm> {
           ),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(), 
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
           child: Text(
             'No',
             style: GoogleFonts.poppins(
@@ -471,12 +478,10 @@ class _StoryFormState extends State<StoryForm> {
             onPressed: () async {
               Navigator.of(context).pop();
               Map<Permission, PermissionStatus> status =
-                await [
-                  Permission.storage,
-                  Permission.camera
-                ].request();
+                  await [Permission.storage, Permission.camera].request();
 
-              if (status[Permission.storage] == PermissionStatus.granted && status[Permission.camera] == PermissionStatus.granted)
+              if (status[Permission.storage] == PermissionStatus.granted &&
+                  status[Permission.camera] == PermissionStatus.granted)
                 _pickOrCaptureImage(ImageSource.camera);
             },
             icon: Icon(Icons.camera_alt_outlined, color: Colors.white),
@@ -497,39 +502,50 @@ class _StoryFormState extends State<StoryForm> {
     String _thumbnail = _thumbnailController!.text;
     String _content = _contentController!.text;
 
-    if(_title.isEmpty || _thumbnail.isEmpty || _content.isEmpty)
+    if (_title.isEmpty || _thumbnail.isEmpty || _content.isEmpty)
       Utils.showSnackbar(
-        context: context, 
+        context: context,
         message: 'Please fill in all the required fields!',
       );
     else {
       Utils.showProgressDialog(
-        context: context, 
-        message: widget.story != null 
-          ? 'Updating story...' 
-          : 'Creating story...',
+        context: context,
+        message:
+            widget.story != null ? 'Updating story...' : 'Creating story...',
       );
 
       String? _thumnailUrl;
       String uid = widget.story != null ? widget.story!.id : Uuid().v4();
-      if(_thumbnailImg != null)
-        _thumnailUrl = (await StoryService.instance.uploadThumbnail(uid, _thumbnailImg!)).data;
+      if (_thumbnailImg != null)
+        _thumnailUrl =
+            (await StoryService.instance.uploadThumbnail(uid, _thumbnailImg!))
+                .data;
 
       Story story = Story(
         id: uid,
         classroom: _selectedRoom!.id,
+        classroomName: _selectedRoom!.name,
+        authorName: widget.story != null
+            ? widget.story!.authorName
+            : await _getAuthorName(_selectedRoom!.teacher),
         title: _title,
         content: _content,
-        thumbnail: _thumnailUrl ?? (widget.story == null ? DEFAULT_STORY_THUMBNAIL : widget.story!.thumbnail),
+        thumbnail: _thumnailUrl ??
+            (widget.story == null
+                ? DEFAULT_STORY_THUMBNAIL
+                : widget.story!.thumbnail),
+        dateCreated: widget.story != null
+            ? widget.story!.dateCreated
+            : Jiffy(DateTime.now()).format("MMM dd yyyy hh:mm a"),
       );
-      
+
       await StoryService.instance.setStory(story);
 
       Navigator.of(context, rootNavigator: true).pop();
       widget.refreshList!();
 
       Utils.showSnackbar(
-        context: context, 
+        context: context,
         message: 'Story has been saved successfully!',
       );
 
@@ -544,6 +560,15 @@ class _StoryFormState extends State<StoryForm> {
     if (_xfile != null)
       setState(() {
         _thumbnailImg = File(_xfile.path);
+        _thumbnailController!.text = 'Thumbnail: ${_thumbnailImg!.path}';
       });
+  }
+
+  Future<String> _getAuthorName(String id) async {
+    Result<List<User>> result = await UserService.instance.getUser('id', id);
+
+    return result.hasError
+        ? 'Unknown'
+        : '${result.data![0].lastName}, ${result.data![0].firstName.substring(0, 1)}.';
   }
 }

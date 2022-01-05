@@ -26,6 +26,41 @@ class Utils {
     return buffer.toString();
   }
 
+  ///
+  /// Add a [char] at a [position] with the given String [s].
+  ///
+  /// The boolean [repeat] defines whether to add the [char] at every [position].
+  /// If [position] is greater than the length of [s], it will return [s].
+  /// If [repeat] is true and [position] is 0, it will return [s].
+  ///
+  /// Example :
+  /// 1234567890 , '-', 3 => 123-4567890
+  /// 1234567890 , '-', 3, true => 123-456-789-0
+  ///
+  /// @source  https://github.com/Ephenodrom/Dart-Basic-Utils/blob/master/lib/src/StringUtils.dart
+  ///
+  static String addCharAtPosition(String s, String char, int position,
+      {bool repeat = false}) {
+    if (!repeat) {
+      if (s.length < position) return s;
+
+      String before = s.substring(0, position);
+      String after = s.substring(position, s.length);
+      return before + char + after;
+    }
+
+    if (position == 0) return s;
+
+    StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < s.length; i++) {
+      if (i != 0 && i % position == 0) buffer.write(char);
+
+      buffer.write(String.fromCharCode(s.runes.elementAt(i)));
+    }
+
+    return buffer.toString();
+  }
+
   static Uint8List stringToBytes(String source) {
     var list = <int>[];
     source.runes.forEach((rune) {
@@ -49,13 +84,13 @@ class Utils {
 
   static void showAlertDialog({
     required BuildContext context,
-    required String title, 
-    required String message, 
+    required String title,
+    required String message,
     required List<Widget> actions,
     bool dismissable = true,
   }) {
     showDialog(
-      context: context, 
+      context: context,
       barrierDismissible: dismissable,
       builder: (context) => AlertDialog(
         title: Text(
@@ -80,16 +115,16 @@ class Utils {
     String? title,
   }) {
     showDialog(
-      context: context, 
+      context: context,
       builder: (context) => AlertDialog(
-        title: title == null 
-          ? null
-          : Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w400,
+        title: title == null
+            ? null
+            : Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
         content: content,
         actions: actions,
       ),
@@ -129,14 +164,13 @@ class Utils {
     );
   }
 
-  static void showSnackbar({
-    required BuildContext context, 
-    required String message, 
-    String? actionLabel,
-    Color? backgroundColor,
-    Color? textColor,
-    void Function()? onPressed
-  }) {
+  static void showSnackbar(
+      {required BuildContext context,
+      required String message,
+      String? actionLabel,
+      Color? backgroundColor,
+      Color? textColor,
+      void Function()? onPressed}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: backgroundColor,
@@ -146,23 +180,24 @@ class Utils {
             color: textColor,
           ),
         ),
-        action: actionLabel != null 
-          ? SnackBarAction(
-              label: actionLabel,
-              onPressed: onPressed!,
-            )
-          : null,
+        action: actionLabel != null
+            ? SnackBarAction(
+                label: actionLabel,
+                onPressed: onPressed!,
+              )
+            : null,
       ),
     );
   }
 
   static Future<Uint8List?> capture(GlobalKey? key) async {
-    if(key == null) 
-      return null;
+    if (key == null) return null;
 
-    RenderRepaintBoundary renderObject = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    RenderRepaintBoundary renderObject =
+        key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
     ui.Image image = await renderObject.toImage(pixelRatio: 3);
-    final ByteData byteData = (await image.toByteData(format: ui.ImageByteFormat.png))!;
+    final ByteData byteData =
+        (await image.toByteData(format: ui.ImageByteFormat.png))!;
     final Uint8List pngByteData = byteData.buffer.asUint8List();
 
     return pngByteData;

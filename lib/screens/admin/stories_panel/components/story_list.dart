@@ -35,134 +35,142 @@ class _StoryListViewState extends State<StoryListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: StoryService.instance.getAllStories(),
-      builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-          Result<List<Story>> data = snapshot.data as Result<List<Story>>;
+        future: StoryService.instance.getAllStories(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            Result<List<Story>> data = snapshot.data as Result<List<Story>>;
 
-          if(!data.hasError) {
-            List<Story> stories = data.data as List<Story>;
-            List<Story> _searchList = [];
+            if (!data.hasError) {
+              List<Story> stories = data.data as List<Story>;
+              List<Story> _searchList = [];
 
-            for(Story story in stories)
-              if(story.title.toLowerCase().contains(_searchQuery.toLowerCase()))
-                _searchList.add(story);
+              for (Story story in stories)
+                if (story.title
+                        .toLowerCase()
+                        .contains(_searchQuery.toLowerCase()) ||
+                    story.authorName
+                        .toLowerCase()
+                        .contains(_searchQuery.toLowerCase()))
+                  _searchList.add(story);
 
-            if(_searchList.isEmpty && _searchQuery.isNotEmpty)
+              if (_searchList.isEmpty && _searchQuery.isNotEmpty)
+                return Expanded(
+                  child: Center(
+                    child: Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: 300,
+                            child: SvgPicture.asset(
+                                "images/illustrations/empty.svg"),
+                          ),
+                          Text(
+                            'No stories found',
+                            style: GoogleFonts.poppins(
+                              color: kPrimaryColor,
+                              letterSpacing: 2,
+                              wordSpacing: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+
               return Expanded(
-                child: Center(
-                  child: Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: 300,
-                          child: SvgPicture.asset("images/illustrations/empty.svg"),
-                        ),
-                        Text(
-                          'No stories found',
-                          style: GoogleFonts.poppins(
-                            color: kPrimaryColor,
-                            letterSpacing: 2,
-                            wordSpacing: 2,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: StaggeredGridView.countBuilder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 2,
+                          crossAxisSpacing: 1,
+                          itemCount:
+                              _searchList.isNotEmpty && _searchQuery.isNotEmpty
+                                  ? _searchList.length
+                                  : stories.length,
+                          staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+                          itemBuilder: (context, index) => _buildStoryCard(
+                            _searchList.isNotEmpty && _searchQuery.isNotEmpty
+                                ? _searchList[index]
+                                : stories[index],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               );
+            }
 
-            return Expanded(
-              child: SingleChildScrollView(
+            return Center(
+              child: Container(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: StaggeredGridView.countBuilder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        crossAxisCount: 4, 
-                        mainAxisSpacing: 2,
-                        crossAxisSpacing: 1,
-                        itemCount:  _searchList.isNotEmpty && _searchQuery.isNotEmpty
-                          ? _searchList.length
-                          : stories.length,
-                        staggeredTileBuilder: (index) => StaggeredTile.fit(2),
-                        itemBuilder: (context, index) => _buildStoryCard(
-                          _searchList.isNotEmpty && _searchQuery.isNotEmpty
-                           ? _searchList[index]
-                           : stories[index],
-                        ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: 300,
+                      child: SvgPicture.asset("images/illustrations/empty.svg"),
+                    ),
+                    Text(
+                      'No stories found',
+                      style: GoogleFonts.poppins(
+                        color: kPrimaryColor,
+                        letterSpacing: 2,
+                        wordSpacing: 2,
                       ),
                     ),
                   ],
                 ),
               ),
             );
-          }
+          } else if (snapshot.connectionState == ConnectionState.done &&
+              !snapshot.hasData)
+            return Center(
+              child: Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: 300,
+                      child: SvgPicture.asset("images/illustrations/empty.svg"),
+                    ),
+                    Text(
+                      'No stories found',
+                      style: GoogleFonts.poppins(
+                        color: kPrimaryColor,
+                        letterSpacing: 2,
+                        wordSpacing: 2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
 
-          return Center(
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: 300,
-                    child: SvgPicture.asset("images/illustrations/empty.svg"),
-                  ),
-                  Text(
-                    'No stories found',
-                    style: GoogleFonts.poppins(
-                      color: kPrimaryColor,
-                      letterSpacing: 2,
-                      wordSpacing: 2,
-                    ),
-                  ),
-                ],
+          return Flexible(
+            fit: FlexFit.loose,
+            child: Center(
+              child: Container(
+                child: CircularProgressIndicator(
+                  color: Colors.black87,
+                  strokeWidth: 4,
+                ),
               ),
             ),
           );
-        } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) 
-          return Center(
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: 300,
-                    child: SvgPicture.asset("images/illustrations/empty.svg"),
-                  ),
-                  Text(
-                    'No stories found',
-                    style: GoogleFonts.poppins(
-                      color: kPrimaryColor,
-                      letterSpacing: 2,
-                      wordSpacing: 2,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        
-        return Flexible(
-          fit: FlexFit.loose,
-          child: Center(
-            child: Container(
-              child: CircularProgressIndicator(
-                color: Colors.black87,
-                strokeWidth: 4,
-              ),
-            ),
-          ),
-        );
-      }
-    );
+        });
   }
 
   Widget _buildStoryCard(Story story) {
@@ -198,17 +206,68 @@ class _StoryListViewState extends State<StoryListView> {
                 ),
                 Container(
                   padding: const EdgeInsets.all(6),
-                  child: Row(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          story.title,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              story.title,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text(
+                            'Author: ',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Expanded(
+                            child: Text(
+                              story.authorName,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Class: ',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Expanded(
+                            child: Text(
+                              story.classroomName,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

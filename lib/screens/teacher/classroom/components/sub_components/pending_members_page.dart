@@ -15,10 +15,12 @@ class ClassroomPendingMembersPanel extends StatefulWidget {
   const ClassroomPendingMembersPanel(this.classroom);
 
   @override
-  _ClassroomPendingMembersPanelState createState() => _ClassroomPendingMembersPanelState();
+  _ClassroomPendingMembersPanelState createState() =>
+      _ClassroomPendingMembersPanelState();
 }
 
-class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPanel> {
+class _ClassroomPendingMembersPanelState
+    extends State<ClassroomPendingMembersPanel> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,24 +36,54 @@ class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPa
         ),
         SizedBox(height: 10),
         FutureBuilder(
-          future: ClassMemberService.instance.getAllMembers(
-            widget.classroom.id,
-            pending: true,
-          ),
-          builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-              Result<List<User>?> data = snapshot.data as Result<List<User>?>;
+            future: ClassMemberService.instance.getAllMembers(
+              widget.classroom.id,
+              pending: true,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                Result<List<User>?> data = snapshot.data as Result<List<User>?>;
 
-              if(!data.hasError) {
-                List<User> users = data.data!;
+                if (!data.hasError) {
+                  List<User> users = data.data!;
+
+                  return Flexible(
+                    fit: FlexFit.loose,
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: users.length,
+                      itemBuilder: (context, index) =>
+                          _buildListTile(users[index]),
+                    ),
+                  );
+                }
 
                 return Flexible(
                   fit: FlexFit.loose,
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: users.length,
-                    itemBuilder: (context, index) => _buildListTile(users[index]),
+                  child: Center(
+                    child: Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: 300,
+                            child: SvgPicture.asset(
+                                "images/illustrations/empty.svg"),
+                          ),
+                          Text(
+                            'No members found',
+                            style: GoogleFonts.poppins(
+                              color: kPrimaryColor,
+                              letterSpacing: 2,
+                              wordSpacing: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               }
@@ -60,51 +92,23 @@ class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPa
                 fit: FlexFit.loose,
                 child: Center(
                   child: Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: 300,
-                          child: SvgPicture.asset("images/illustrations/empty.svg"),
-                        ),
-                        Text(
-                          'No members found',
-                          style: GoogleFonts.poppins(
-                            color: kPrimaryColor,
-                            letterSpacing: 2,
-                            wordSpacing: 2,
-                          ),
-                        ),
-                      ],
+                    child: CircularProgressIndicator(
+                      color: kPrimaryColor,
+                      strokeWidth: 4,
                     ),
                   ),
                 ),
               );
-            }
-
-            return Flexible(
-              fit: FlexFit.loose,
-              child: Center(
-                 child: Container(
-                  child: CircularProgressIndicator(
-                    color: kPrimaryColor,
-                    strokeWidth: 4,
-                  ),
-                ),
-              ),
-            );
-          }
-        ),
+            }),
       ],
     );
   }
 
   Widget _buildListTile(User user) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: Card(
-        elevation: 4,
+        elevation: 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -121,13 +125,26 @@ class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPa
               ),
               SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  user.childName,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.childName,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      "${user.childAge} years old",
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               IconButton(
@@ -142,7 +159,8 @@ class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPa
                   Icons.remove_done_outlined,
                   color: Colors.red,
                 ),
-                onPressed: () => _showDeclineChildDialog(user), // Decline student
+                onPressed: () =>
+                    _showDeclineChildDialog(user), // Decline student
               ),
             ],
           ),
@@ -153,9 +171,9 @@ class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPa
 
   void _showAcceptChildDialog(User user) {
     Utils.showAlertDialog(
-      context: context, 
-      title: 'Confirm Action', 
-      message: 'Do you really want to accept this student to your class?', 
+      context: context,
+      title: 'Confirm Action',
+      message: 'Do you really want to accept this student to your class?',
       actions: [
         TextButton(
           child: Text(
@@ -183,9 +201,9 @@ class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPa
 
   void _showDeclineChildDialog(User user) {
     Utils.showAlertDialog(
-      context: context, 
-      title: 'Confirm Action', 
-      message: 'Do you really want to decline this student from your class?', 
+      context: context,
+      title: 'Confirm Action',
+      message: 'Do you really want to decline this student from your class?',
       actions: [
         TextButton(
           child: Text(
@@ -215,41 +233,42 @@ class _ClassroomPendingMembersPanelState extends State<ClassroomPendingMembersPa
     // Dismiss dialog
     Navigator.of(context, rootNavigator: true).pop();
 
-    Utils.showProgressDialog(
-      context: context, 
-      message: 'Accepting student...'
-    );
+    Utils.showProgressDialog(context: context, message: 'Accepting student...');
 
-    await ClassMemberService.instance.acceptMember(widget.classroom.id, user.id);
+    await ClassMemberService.instance
+        .acceptMember(widget.classroom.id, user.id);
 
     // Dismiss progress dialog
     Navigator.of(context, rootNavigator: true).pop();
 
     Utils.showSnackbar(
-      context: context, 
+      context: context,
       message: 'Student has been accepted successfully!',
+      textColor: Colors.white,
+      backgroundColor: Colors.green,
     );
 
     // Refresh list
     setState(() {});
   }
+
   Future<void> _declineUser(User user) async {
     // Dismiss dialog
     Navigator.of(context, rootNavigator: true).pop();
 
-    Utils.showProgressDialog(
-      context: context, 
-      message: 'Declining student...'
-    );
+    Utils.showProgressDialog(context: context, message: 'Declining student...');
 
-    await ClassMemberService.instance.denyOrRemoveMember(widget.classroom.id, user.id);
+    await ClassMemberService.instance
+        .denyOrRemoveMember(widget.classroom.id, user.id, leaveRoom: true);
 
     // Dismiss progress dialog
     Navigator.of(context, rootNavigator: true).pop();
 
     Utils.showSnackbar(
-      context: context, 
+      context: context,
       message: 'Student has been declined successfully!',
+      textColor: Colors.white,
+      backgroundColor: Colors.green,
     );
 
     // Refresh list

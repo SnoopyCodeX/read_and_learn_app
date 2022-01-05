@@ -16,10 +16,11 @@ class Body extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Text(
               "WELCOME TO READ AND LEARN",
-              style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 22),
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold, fontSize: 22),
             ),
             SizedBox(height: size.height * 0.08),
             SvgPicture.asset(
