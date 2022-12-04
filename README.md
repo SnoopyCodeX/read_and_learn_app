@@ -1,6 +1,6 @@
 # :book: Read and Learn
 [![Developed by SnoopyCodeX](https://img.shields.io/badge/Developed%20by-SnoopyCodeX-blue.svg?longCache=true&style=for-the-badge)](https://facebook.com/SnoopyCodeX)
-[![Github Release](https://img.shields.io/github/release/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app/releases) 
+[![Github Release](https://img.shields.io/github/release/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app/releases/tag/v1.0.0-beta) 
 [![Github Star](https://img.shields.io/github/stars/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app) 
 [![Github Fork](https://img.shields.io/github/forks/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](https://github.com/SnoopyCodeX/read_and_learn_app) 
 [![License](https://img.shields.io/github/license/SnoopyCodeX/read_and_learn_app.svg?style=for-the-badge)](./LICENSE)
